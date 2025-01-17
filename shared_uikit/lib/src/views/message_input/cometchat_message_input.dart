@@ -161,7 +161,7 @@ class _CometChatMessageInputState extends State<CometChatMessageInput> {
                 ),
               ),
               child: TextFormField(
-                textCapitalization: TextCapitalization.words,
+                textCapitalization: TextCapitalization.sentences,
                 keyboardAppearance:
                     CometChatThemeHelper.getBrightness(context),
                 style: TextStyle(

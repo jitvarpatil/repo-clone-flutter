@@ -1136,4 +1136,11 @@ class TranslationsMs extends Translations {
   @override
   String get addContactsToStartConversations =>
       'Tambah kenalan untuk memulakan perbualan dan melihatnya disenaraikan di sini.';
+
+  @override
+  String get edited => 'Disunting';
+
+  @override
+  String get deleteMessageWarning => 'Adakah anda pasti mahu memadam mesej ini? Tindakan ini tidak boleh dibatalkan.';
+
 }

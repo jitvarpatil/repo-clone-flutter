@@ -83,7 +83,7 @@ class CometChatStickerBubbleStyle
     );
   }
 
-  @override
+
   CometChatStickerBubbleStyle merge(CometChatStickerBubbleStyle? style) {
     if (style == null) return this;
     return copyWith(

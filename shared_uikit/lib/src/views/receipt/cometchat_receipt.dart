@@ -75,7 +75,7 @@ class CometChatReceipt extends StatelessWidget {
       receiptWidget = errorIcon ??
           Icon(
             Icons.error_outline_outlined,
-            color: receiptsStyle.errorIconColor ?? colorPalette.iconSecondary,
+            color: receiptsStyle.errorIconColor ?? colorPalette.error,
             size: size,
           );
     } else if (status == ReceiptStatus.read) {

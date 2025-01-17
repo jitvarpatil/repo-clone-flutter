@@ -60,6 +60,8 @@ class _CometChatThreadedHeaderState extends State<CometChatThreadedHeader> {
   late CometChatThreadedHeaderStyle threadedHeaderStyle;
 
   late CometChatMessageTemplate _messageTemplate;
+  final key = GlobalKey();
+  double? height;
 
   @override
   void didChangeDependencies() {
@@ -136,57 +138,74 @@ class _CometChatThreadedHeaderState extends State<CometChatThreadedHeader> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: widget.height ?? 150,
-      width: widget.width ?? double.infinity,
-      constraints: threadedHeaderStyle.constraints ??
-          BoxConstraints(
-            maxHeight: MediaQuery.of(context).size.height * 0.30,
-          ),
-      child: GetBuilder(
-        init: threadedHeaderController,
-        tag: threadedHeaderController.tag,
-        builder: (CometChatThreadedHeaderController value) {
-          return Column(
-            children: [
-              Expanded(
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: threadedHeaderStyle.bubbleContainerBackGroundColor ??
-                        colorPalette.background3,
-                    borderRadius:
-                        threadedHeaderStyle.bubbleContainerBorderRadius,
-                    border: threadedHeaderStyle.bubbleContainerBorder,
-                  ),
-                  child: SingleChildScrollView(
-                    child: Padding(
-                      padding: EdgeInsets.all(
-                        spacing.padding4 ?? 0,
+
+    final bubble = MessageUtils.getMessageBubble(
+        context: context,
+        colorPalette: colorPalette,
+        spacing: spacing,
+        typography: typography,
+        bubbleAlignment: widget.parentMessage.sender?.uid==widget.loggedInUser.uid? BubbleAlignment.right:BubbleAlignment.left,
+        message: widget.parentMessage,
+        template: _messageTemplate,
+        outgoingMessageBubbleStyle: threadedHeaderStyle
+            .outgoingMessageBubbleStyle,
+        incomingMessageBubbleStyle: threadedHeaderStyle.incomingMessageBubbleStyle,
+        textFormatters: CometChatUIKit.getDataSource().getDefaultTextFormatters(),
+        key: key
+    );
+
+    final maxHeight = MediaQuery.of(context).size.height * 0.30;
+
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        final keyContext = key.currentContext;
+        if (keyContext != null && height==null) {
+        final RenderBox renderBox = keyContext.findRenderObject() as RenderBox;
+        height = renderBox.size.height;
+        setState(() {
+        });
+      }
+      },);
+      
+
+        return Container(
+          width: widget.width ?? double.infinity,
+          constraints: threadedHeaderStyle.constraints ??
+              BoxConstraints(
+                maxHeight: widget.height ?? (height!=null && height!<maxHeight?(height??0)+64:maxHeight),
+              ),
+          child: GetBuilder(
+            init: threadedHeaderController,
+            tag: threadedHeaderController.tag,
+            builder: (CometChatThreadedHeaderController value) {
+              return Column(
+                children: [
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: threadedHeaderStyle.bubbleContainerBackGroundColor ??
+                            colorPalette.background3,
+                        borderRadius:
+                            threadedHeaderStyle.bubbleContainerBorderRadius,
+                        border: threadedHeaderStyle.bubbleContainerBorder,
                       ),
-                      child: IgnorePointer(
-                        child: MessageUtils.getMessageBubble(
-                          context: context,
-                          colorPalette: colorPalette,
-                          spacing: spacing,
-                          typography: typography,
-                          bubbleAlignment: widget.parentMessage.sender?.uid==widget.loggedInUser.uid? BubbleAlignment.right:BubbleAlignment.left,
-                          message: widget.parentMessage,
-                          template: _messageTemplate,
-                          outgoingMessageBubbleStyle: threadedHeaderStyle
-                              .outgoingMessageBubbleStyle,
-                          incomingMessageBubbleStyle: threadedHeaderStyle.incomingMessageBubbleStyle,
-                          textFormatters: CometChatUIKit.getDataSource().getDefaultTextFormatters(),
+                      child: SingleChildScrollView(
+                        child: Padding(
+                          padding: EdgeInsets.all(
+                            spacing.padding4 ?? 0,
+                          ),
+                          child: IgnorePointer(
+                            child: bubble,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ),
-              getActionView(value, context),
-            ],
-          );
-        },
-      ),
-    );
+                  getActionView(value, context),
+                ],
+              );
+            },
+          ),
+        );
+
   }
 }

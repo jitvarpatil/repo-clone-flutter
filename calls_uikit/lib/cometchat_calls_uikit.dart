@@ -10,6 +10,7 @@ export 'src/calling_configuration.dart';
 export 'src/calling_extension_decorator.dart';
 export 'src/utils/call_utils.dart';
 export 'src/utils/call_extension_constants.dart';
+export 'src/utils/call_state_controller.dart';
 
 //call bubble
 export 'src/call_bubble/cometchat_call_bubble.dart';

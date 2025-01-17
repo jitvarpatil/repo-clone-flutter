@@ -881,8 +881,8 @@ class CometChatMessageListController
         cc.Translations.of(context).deleteMessage,
         textAlign: TextAlign.center,
       ),
-      messageText: const Text(
-        "Are you sure you want to delete this message? This action cannot be un done.",
+      messageText:  Text(
+        cc.Translations.of(context).deleteMessageWarning,
         textAlign: TextAlign.center,
       ),
       onCancel: () {

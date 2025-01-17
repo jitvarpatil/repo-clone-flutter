@@ -301,7 +301,7 @@ class CometChatGroupMembers extends StatelessWidget {
                   groupMemberStyle.checkboxCheckedBackgroundColor ??
                       colorPalette.iconHighlight)
                   : WidgetStateProperty.all(
-                  groupMemberStyle.checkboxBackgroundColor ?? ((member.uid == controller.group.owner) ? colorPalette.borderDefault : colorPalette.transparent)),
+                  groupMemberStyle.checkboxBackgroundColor ??  colorPalette.transparent),
               value: controller.selectionMap[member.uid] != null,
               onChanged: (value) {
                 if (activateSelection ==

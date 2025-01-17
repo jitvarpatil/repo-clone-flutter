@@ -1137,4 +1137,11 @@ class TranslationsLt extends Translations {
   @override
   String get addContactsToStartConversations =>
       'Pridėkite kontaktus, kad pradėtumėte pokalbius ir matytumėte juos išvardytus čia.';
+
+  @override
+  String get edited => 'Redaguota';
+
+  @override
+  String get deleteMessageWarning => 'Ar tikrai norite ištrinti šį pranešimą? Šio veiksmo negalima atšaukti.';
+
 }

@@ -1,141 +1,105 @@
 package com.cometchat.cometchat_uikit_shared
 
 import android.content.Context
-import android.content.res.AssetManager
 import android.media.AudioAttributes
-import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
-import android.net.Uri
-import android.os.Build
-import android.os.Vibrator
+import android.util.Log
 import androidx.annotation.RequiresApi
-import io.flutter.embedding.engine.loader.FlutterLoader
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
-
+import android.os.Build
 
 class AudioPlayer {
+    private var isManuallyStopped = false // Track manual stop
 
-    private var mMediaPlayer = MediaPlayer()
+    companion object {
+        @Volatile
+        private var mMediaPlayer: MediaPlayer? = null
 
-//     fun playDefaultSound(call: MethodCall, result: MethodChannel.Result,context: Context) {
-//
-//         val ringId: Int = when (call.argument("ringId") ?: "") {
-//             "incomingMessage" -> {
-//                 R.raw.incoming_message
-//             }
-//             "outgoingMessage" -> {
-//                 R.raw.outgoing_message
-//             }
-//             "incomingMessageFromOther" -> {
-//                 R.raw.record_start
-//             }
-//             "beep" -> {
-//                 R.raw.beep2
-//             }
-//             else -> { // Note the block
-//                 R.raw.record_error
-//             }
-//         }
-//        val mMediaPlayer = MediaPlayer.create(context, ringId)
-//       // mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
-//
-//         mMediaPlayer.setAudioAttributes(
-//                 AudioAttributes.Builder()
-//                         .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-//                         .build())
-//
-//        mMediaPlayer.start()
-//        mMediaPlayer.setOnCompletionListener { mediaPlayer ->
-//            val mediaPlayer: MediaPlayer? = mediaPlayer
-//            if (mediaPlayer != null) {
-//                mediaPlayer.stop()
-//                mediaPlayer.release()
-//            }
-//            result.success("Sound Played" )
-//        }
-//
-//
-//    }
-
-     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-     fun playCustomSound(call: MethodCall, result: MethodChannel.Result, context: Context ) {
-        val assetAudioPath: String = call.argument("assetAudioPath") ?: ""
-
-
-        val mMediaPlayer = MediaPlayer()
-
-         //This code can be helpful for vibration issue
-        //val mmr = MediaMetadataRetriever()
-         // mmr.setDataSource(afd.fileDescriptor, afd.startOffset, afd.declaredLength)
-        //      mmr.release()
-         val afd = context.assets.openFd("flutter_assets/$assetAudioPath")
-        mMediaPlayer.setDataSource(afd.fileDescriptor, afd.startOffset, afd.declaredLength)
-
-        afd.close()
-
-
-         mMediaPlayer.setAudioAttributes(
-                 AudioAttributes.Builder()
-                         .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                         .build())
-
-
-        mMediaPlayer.setOnPreparedListener {
-            mMediaPlayer.start()
-            mMediaPlayer.setOnCompletionListener { mediaPlayer ->
-//                val mediaPlayer = mediaPlayer
-                if (mediaPlayer != null) {
-                    mediaPlayer.stop()
-                    mediaPlayer.release()
-                } }
+        fun getMediaPlayer(): MediaPlayer {
+            return mMediaPlayer ?: synchronized(this) {
+                mMediaPlayer ?: MediaPlayer().also { mMediaPlayer = it }
+            }
         }
-        mMediaPlayer.prepare()
-        result.success("Sound Played" )
+
+        fun releaseMediaPlayer() {
+            mMediaPlayer?.let {
+                if (it.isPlaying) {
+                    it.stop()
+                }
+                it.reset()
+                it.release()
+                mMediaPlayer = null
+                Log.d("AudioPlayer", "Singleton MediaPlayer instance released")
+            }
+        }
     }
 
-//     fun playURL(call: MethodCall, result: MethodChannel.Result,context: Context) {
-//        val audioURL: String = call.argument("audioURL") ?: ""
-//        val messageId: Int = call.argument<Int>("messageId") ?: 0
-//
-//        try {
-//            if(mMediaPlayer.isPlaying){
-//                this.mMediaPlayer.stop()
-//
-//            }
-//        } catch (e: Exception) {
-//            // handler
-//        }
-//
-//        this.mMediaPlayer = MediaPlayer.create(context, Uri.parse(audioURL))
-//
-//        mMediaPlayer.setOnCompletionListener { mediaPlayer ->
-//            val mediaPlayer = mediaPlayer
-//
-//            if (mediaPlayer != null) {
-//                mediaPlayer.stop()
-//                mediaPlayer.release()
-//            }
-//            val res =  hashMapOf(
-//                    "messageId" to messageId,
-//                    "status" to "Stopped"
-//            )
-//            result.success(res)
-//        }
-//        mMediaPlayer.start()
-//    }
-//
-     fun stopPlayer(result: MethodChannel.Result) {
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+    fun playCustomSound(call: MethodCall, result: MethodChannel.Result, context: Context) {
+        val assetAudioPath: String = call.argument("assetAudioPath") ?: ""
+
         try {
-            if(mMediaPlayer.isPlaying){
-                this.mMediaPlayer.stop()
-                this.mMediaPlayer.release()
-                this.mMediaPlayer = MediaPlayer()
+            Log.d("AudioPlayer", "Playing custom sound: $assetAudioPath")
+
+            // Stop any existing playback before starting a new one
+            val mediaPlayer = getMediaPlayer()
+            if (mediaPlayer.isPlaying) {
+                releaseMediaPlayer()
             }
+
+            val afd = context.assets.openFd("flutter_assets/$assetAudioPath")
+            mediaPlayer.setDataSource(afd.fileDescriptor, afd.startOffset, afd.declaredLength)
+            afd.close()
+
+            mediaPlayer.setAudioAttributes(
+                AudioAttributes.Builder()
+                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                    .build()
+            )
+
+            mediaPlayer.setOnPreparedListener {
+                Log.d("AudioPlayer", "MediaPlayer prepared, starting playback")
+                mediaPlayer.start()
+            }
+
+            mediaPlayer.setOnCompletionListener {
+                Log.d("AudioPlayer", "Playback completed")
+                if (!isManuallyStopped) {
+                    releaseMediaPlayer()
+                }
+            }
+
+            mediaPlayer.prepare()
+            result.success("Sound Played")
         } catch (e: Exception) {
-            // handler
-            e.printStackTrace()
+            Log.e("AudioPlayer", "Error playing custom sound: ${e.message}")
+            result.error("ERROR", "Failed to play sound: ${e.message}", null)
         }
-        result.success("Player Stopped")
+    }
+
+    fun stopPlayer(result: MethodChannel.Result) {
+        try {
+            Log.d("AudioPlayer", "stopPlayer method called")
+
+            isManuallyStopped = true
+            // Stop any existing playback before starting a new one
+            val mPlayer = getMediaPlayer()
+            if (mPlayer.isPlaying) {
+                releaseMediaPlayer()
+            } else {
+                Log.d("AudioPlayer", "MediaPlayer is already null or not playing")
+            }
+
+//            // Stop the current player if it's playing
+//            if (mPlayer.isPlaying) {
+//                releaseMediaPlayer()
+//            }
+
+            result.success("Player Stopped")
+        } catch (e: Exception) {
+            Log.e("AudioPlayer", "Error stopping player: ${e.message}")
+            result.error("ERROR", "Failed to stop player: ${e.message}", null)
+        }
     }
 }

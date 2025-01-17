@@ -69,7 +69,7 @@ class _SignUpState extends State<SignUp> {
                 child: Column(
                   children: [
                     TextFormField(
-                      textCapitalization: TextCapitalization.words,
+                      textCapitalization: TextCapitalization.sentences,
                       cursorColor: Colors.grey,
                       onSaved: (val) => uid = val,
                       decoration: const InputDecoration(
@@ -87,7 +87,7 @@ class _SignUpState extends State<SignUp> {
                       },
                     ),
                     TextFormField(
-                      textCapitalization: TextCapitalization.words,
+                      textCapitalization: TextCapitalization.sentences,
                       cursorColor: Colors.grey,
                       onSaved: (val) => name = val,
                       decoration: const InputDecoration(

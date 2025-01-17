@@ -1,8 +1,5 @@
 import 'dart:io' show Platform;
 
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
-
 import '../../../cometchat_uikit_shared.dart';
 
 ///[SoundManager] is an utility component that provides an audio player
@@ -17,8 +14,8 @@ class SoundManager {
 
   void play(
       {required Sound sound,
-      String? customSound,
-      String? packageName // Use it only when using other plugin
+        String? customSound,
+        String? packageName // Use it only when using other plugin
       }) async {
     String soundPath = "";
 
@@ -26,37 +23,22 @@ class SoundManager {
       soundPath = customSound;
 
       if (Platform.isAndroid && packageName != null && packageName.isNotEmpty) {
-        soundPath = "packages/$packageName/$soundPath";
+        soundPath = soundPath;
       }
     } else {
       soundPath = _getDefaultSoundPath(sound);
       packageName ??= UIConstants.packageName;
       if (Platform.isAndroid) {
-        //if (packageName != null && packageName.isNotEmpty) {
         soundPath = "packages/$packageName/$soundPath";
-        // } else {
-        //   _soundPath = "packages/${UIConstants.packageName}/" + _soundPath;
-        // }
       }
     }
-
     await UIConstants.channel.invokeMethod("playCustomSound",
         {'assetAudioPath': soundPath, 'package': packageName});
   }
 
-  Future<void> stop() async {
-    try {
-      await UIConstants.channel.invokeMethod("stopPlayer", {});
-
-      await Future.delayed(const Duration(milliseconds: 100));
-    } catch (e) {
-      debugPrint("Error stopping sound: $e");
-      if (e is PlatformException) {
-        debugPrint("PlatformException caught: ${e.message}");
-      }
-    }
+  void stop() async {
+    await UIConstants.channel.invokeMethod("stopPlayer", {});
   }
-
 
   String _getDefaultSoundPath(Sound sound) {
     String soundType = "assets/beep.mp3";

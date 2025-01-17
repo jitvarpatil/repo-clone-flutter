@@ -675,7 +675,7 @@ class _CometChatFormBubbleState extends State<CometChatFormBubble> {
               alignment: Alignment.centerLeft,
               padding: padding,
               child: TextFormField(
-                textCapitalization: TextCapitalization.words,
+                textCapitalization: TextCapitalization.sentences,
                 keyboardAppearance:
                 CometChatThemeHelper.getBrightness(context) ==
                     Brightness.dark

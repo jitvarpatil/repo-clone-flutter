@@ -23,6 +23,8 @@ class CometChatOngoingCallController extends GetxController
   /// [callWorkFlow] is used to determine the type of call workflow which is used to end the call.
   final CallWorkFlow? callWorkFlow;
 
+  List<RTCUser> _usersList = [];
+
   /// [CometChatOngoingCallController] is a constructor which requires [callSettingsBuilder], [sessionId], [errorHandler] and [callWorkFlow] as a parameter.
   CometChatOngoingCallController(
       {required this.callSettingsBuilder,
@@ -30,10 +32,21 @@ class CometChatOngoingCallController extends GetxController
       this.errorHandler,
       this.callWorkFlow});
 
+
+  CallStateController? _callStateController;
+
   @override
   void onInit() {
     super.onInit();
+     _callStateController = CallStateController.instance;
+    _callStateController?.setValue(true);
     loadCallingScreen();
+  }
+
+  @override
+  void onClose() {
+    _callStateController?.setValue(false);
+    super.onClose();
   }
 
   /// [loadCallingScreen] is used to load the calling screen.
@@ -81,6 +94,13 @@ class CometChatOngoingCallController extends GetxController
   }
 
   @override
+  void onUserListChanged(List<RTCUser> users) {
+    _usersList = [...users];
+    update();
+  }
+
+
+  @override
   void onAudioModeChanged(List<AudioMode> devices) {}
 
   @override
@@ -88,6 +108,9 @@ class CometChatOngoingCallController extends GetxController
     if (callWorkFlow == CallWorkFlow.directCalling) {
       _endSession();
     } else {
+      if (_usersList.length <= 1) {
+        _endCall();
+      }
       isCallEndedByMe = true;
       update();
     }
@@ -108,7 +131,10 @@ class CometChatOngoingCallController extends GetxController
     CometChat.endCall(
       sessionId,
       onSuccess: (call) {
-        _handleCallEnd(call);
+        _closeCallScreen(
+          call: call,
+          callStatus: "endCall",
+        );
       },
       onError: (error) {
         if (kDebugMode) {
@@ -129,24 +155,17 @@ class CometChatOngoingCallController extends GetxController
             }
           }
         }
-        _handleCallEnd(null);
+        _closeCallScreen();
       },
     );
   }
 
-  void _handleCallEnd(Call? call) {
-    if (call != null) {
-      call.category = MessageCategoryConstants.call;
-      CometChatCallEvents.ccCallEnded(call);
-    }
-    Navigator.pop(context);
-  }
 
   _endSession() {
     CometChatUIKitCalls.endSession(
       onSuccess: (message) {
         CometChat.clearActiveCall();
-        Navigator.pop(context);
+        _closeCallScreen();
       },
       onError: (error) {
         if (kDebugMode) {
@@ -183,8 +202,17 @@ class CometChatOngoingCallController extends GetxController
   void onUserLeft(RTCUser user) {}
 
   @override
-  void onUserListChanged(List<RTCUser> users) {}
-
-  @override
   void onUserMuted(RTCMutedUser muteObj) {}
+
+
+  void _closeCallScreen({
+    Call? call,
+    String? callStatus,
+  }) {
+    if (call != null && callStatus != null && callStatus == "endCall") {
+      call.category = MessageCategoryConstants.call;
+      CometChatCallEvents.ccCallEnded(call);
+    }
+    Navigator.pop(context);
+  }
 }
