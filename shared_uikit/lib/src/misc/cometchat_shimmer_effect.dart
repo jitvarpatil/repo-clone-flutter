@@ -1,0 +1,88 @@
+import 'package:cometchat_uikit_shared/cometchat_uikit_shared.dart';
+import 'package:flutter/material.dart';
+
+class CometChatShimmerEffect extends StatefulWidget {
+  const CometChatShimmerEffect({
+    Key? key,
+    required this.child,
+    this.linearGradient,
+    this.colorPalette,
+  }) : super(key: key);
+  final Widget child;
+  final LinearGradient? linearGradient;
+  final CometChatColorPalette? colorPalette;
+  @override
+  State<CometChatShimmerEffect> createState() => _CometChatShimmerEffectState();
+}
+
+class _CometChatShimmerEffectState extends State<CometChatShimmerEffect>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController.unbounded(vsync: this)
+      ..repeat(min: -0.5, max: 1.5, period: const Duration(milliseconds: 1000));
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  LinearGradient defaultGradient(context) {
+    return LinearGradient(
+      colors: [
+        widget.colorPalette?.neutral200 ?? Colors.transparent,
+        widget.colorPalette?.neutral300 ?? Colors.transparent,
+        widget.colorPalette?.neutral400 ?? Colors.transparent,
+      ],
+      stops: const [
+        0.1,
+        0.3,
+        0.4,
+      ],
+      begin: const Alignment(-1.0, -0.3),
+      end: const Alignment(1.0, 0.3),
+      tileMode: TileMode.clamp,
+    );
+  }
+
+  LinearGradient get gradient {
+    return LinearGradient(
+      colors: widget.linearGradient?.colors ?? defaultGradient(context).colors,
+      stops: widget.linearGradient?.stops ?? defaultGradient(context).stops,
+      begin: widget.linearGradient?.begin ?? defaultGradient(context).begin,
+      end: widget.linearGradient?.end ?? defaultGradient(context).end,
+      tileMode:
+          widget.linearGradient?.tileMode ?? defaultGradient(context).tileMode,
+      transform: _SlidingGradientTransform(slidePercent: _controller.value),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        return ShaderMask(
+          shaderCallback: (bounds) {
+            return gradient.createShader(bounds);
+          },
+          blendMode: BlendMode.srcATop,
+          child: widget.child,
+        );
+      },
+    );
+  }
+}
+
+class _SlidingGradientTransform extends GradientTransform {
+  final double slidePercent;
+  const _SlidingGradientTransform({required this.slidePercent});
+  @override
+  Matrix4? transform(Rect bounds, {TextDirection? textDirection}) {
+    return Matrix4.translationValues(bounds.width * slidePercent, 0.0, 0.0);
+  }
+}
