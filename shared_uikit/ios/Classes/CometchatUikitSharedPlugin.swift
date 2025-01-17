@@ -290,29 +290,40 @@ public class CometchatUikitSharedPlugin: NSObject, FlutterPlugin, QLPreviewContr
     
     
     
-    private func playCustomSound(args: [String: Any], result: @escaping FlutterResult){
-        
-        let audioType = args["assetAudioPath"] as? String
-        let package = args["package"] as? String
-        var assetKey:String?
-        
-        if(package != nil){
-            assetKey = globalRegistrar?.lookupKey(forAsset: audioType! , fromPackage: package! )
-        }else{
-            assetKey = globalRegistrar?.lookupKey(forAsset: audioType! )
-        }
-        
-        
-        guard let path = Bundle.main.path(forResource: assetKey, ofType: nil) else {
-            result("");
+    private func playCustomSound(args: [String: Any], result: @escaping FlutterResult) {
+        guard let assetAudioPath = args["assetAudioPath"] as? String else {
+            result(FlutterError(code: "INVALID_ARGUMENT", message: "Missing assetAudioPath", details: nil))
             return
         }
-        let url = URL(fileURLWithPath: path)
-        
-        return playSound(url: url, result: result)
-        
-        
+
+        let packageName = args["package"] as? String
+        var assetKey: String?
+
+
+        if let packageName = packageName {
+            if packageName == "cometchat_uikit_shared" {
+                // If the package is 'cometchat_uikit_shared', use lookupKey with package
+                assetKey = globalRegistrar?.lookupKey(forAsset: assetAudioPath, fromPackage: packageName)
+            } else {
+                // For other packages, use lookupKey for the asset directly
+                assetKey = globalRegistrar?.lookupKey(forAsset: assetAudioPath)
+            }
+        } else {
+            // Use lookupKey for main app when there's no package name
+            assetKey = globalRegistrar?.lookupKey(forAsset: assetAudioPath)
+        }
+
+        guard let resolvedAssetKey = assetKey,
+              let assetPath = Bundle.main.path(forResource: resolvedAssetKey, ofType: nil) else {
+            result(FlutterError(code: "ASSET_NOT_FOUND", message: "Asset not found: \(assetAudioPath)", details: nil))
+            return
+        }
+
+        let assetURL = URL(fileURLWithPath: assetPath)
+
+        playSound(url: assetURL, result: result)
     }
+
     
     
     private func pickFile(args: [String: Any], result: @escaping FlutterResult){

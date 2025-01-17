@@ -1129,4 +1129,11 @@ class TranslationsAr extends Translations {
   @override
   String get addContactsToStartConversations =>
       'أضف جهات اتصال لبدء المحادثات ورؤيتها مدرجة هنا.';
+
+  @override
+  String get edited => 'تم تحريره';
+
+  @override
+  String get deleteMessageWarning => 'هل تريد بالتأكيد حذف هذه الرسالة؟ لا يمكن التراجع عن هذا الإجراء.';
+
 }

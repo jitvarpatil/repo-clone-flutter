@@ -99,7 +99,7 @@ class _CometChatDateTimeFormFieldState
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      textCapitalization: TextCapitalization.words,
+      textCapitalization: TextCapitalization.sentences,
       decoration: InputDecoration.collapsed(
         hintText: widget.placeholder,
         hintStyle: TextStyle(

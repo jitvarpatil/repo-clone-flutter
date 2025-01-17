@@ -101,64 +101,62 @@ class _CometChatMessageInformationState
             child: Column(
               children: [
                 // Notch and the Name
-                SingleChildScrollView(
-                  controller: scrollController,
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(
-                          top: spacing.padding3 ?? 0,
-                          bottom: spacing.padding2 ?? 0,
-                        ),
-                        child: Container(
-                          height: 4,
-                          width: 32,
-                          decoration: BoxDecoration(
-                            color: colorPalette.neutral500,
-                            borderRadius: BorderRadius.circular(
-                              spacing.radiusMax ?? 0,
-                            ),
-                          ),
-                        ),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(
+                        top: spacing.padding3 ?? 0,
+                        bottom: spacing.padding2 ?? 0,
                       ),
-                      Container(
-                        height: 64,
+                      child: Container(
+                        height: 4,
+                        width: 32,
                         decoration: BoxDecoration(
-                          color: messageInfoStyle.backgroundColor ??
-                              colorPalette.background1,
-                        ),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                              vertical: spacing.padding2 ?? 0,
-                              horizontal: spacing.padding4 ?? 0,
-                            ),
-                            child: Text(
-                              widget.title ??
-                                  cc.Translations.of(context)
-                                      .messageInformation,
-                              style: TextStyle(
-                                color: messageInfoStyle.titleTextColor ??
-                                    colorPalette.textPrimary,
-                                fontSize: typography.heading2?.bold?.fontSize,
-                                fontWeight:
-                                    typography.heading2?.bold?.fontWeight,
-                                fontFamily:
-                                    typography.heading2?.bold?.fontFamily,
-                              )
-                                  .merge(
-                                    messageInfoStyle.titleTextStyle,
-                                  )
-                                  .copyWith(
-                                    color: messageInfoStyle.titleTextColor,
-                                  ),
-                            ),
+                          color: colorPalette.neutral500,
+                          borderRadius: BorderRadius.circular(
+                            spacing.radiusMax ?? 0,
                           ),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                    Container(
+                      height: 64,
+                      decoration: BoxDecoration(
+                        color: messageInfoStyle.backgroundColor ??
+                            colorPalette.background1,
+                      ),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            vertical: spacing.padding2 ?? 0,
+                            horizontal: spacing.padding4 ?? 0,
+                          ),
+                          child: Text(
+                            widget.title ??
+                                cc.Translations.of(context)
+                                    .messageInformation,
+                            style: TextStyle(
+                              color: messageInfoStyle.titleTextColor ??
+                                  colorPalette.textPrimary,
+                              fontSize: typography.heading2?.bold?.fontSize,
+                              fontWeight:
+                                  typography.heading2?.bold?.fontWeight,
+                              fontFamily:
+                                  typography.heading2?.bold?.fontFamily,
+                            )
+                                .merge(
+                                  messageInfoStyle.titleTextStyle,
+                                )
+                                .copyWith(
+                                  color: messageInfoStyle.titleTextColor,
+                                ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
                 GetBuilder(
                   init: cometchatMessageInformationController,

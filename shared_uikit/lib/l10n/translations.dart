@@ -2296,6 +2296,19 @@ abstract class Translations {
   ///In en, this translates to :
   ///**'Add contacts to start conversations and see them listed here.'
   String get addContactsToStartConversations;
+
+
+  ///No description provided for @edited.
+
+  ///In en, this translates to :
+  ///**'Edited'
+  String get edited;
+
+  ///No description provided for @deleteMessageWarning.
+
+  ///In en, this translates to :
+  ///**'Are you sure you want to delete this message? This action cannot be undone.'
+  String get deleteMessageWarning;
 }
 
 class _TranslationsDelegate extends LocalizationsDelegate<Translations> {

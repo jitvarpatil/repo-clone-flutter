@@ -1261,6 +1261,7 @@ class MessagesDataSource implements DataSource {
       fontSize: typography.body?.regular?.fontSize,
       fontWeight: typography.body?.regular?.fontWeight,
       fontFamily: typography.body?.regular?.fontFamily,
+      letterSpacing: 0
     ).merge(
       subtitleStyle,
     );

@@ -481,7 +481,6 @@ class _CometChatStickerKeyboardState extends State<CometChatStickerKeyboard> {
                               ),
                             ),
                             Container(
-                              height: 50,
                               decoration: BoxDecoration(
                                 color: colorPalette.background1,
                                 border: Border.all(
@@ -513,8 +512,9 @@ class _CometChatStickerKeyboardState extends State<CometChatStickerKeyboard> {
                                             });
                                           },
                                           child: Container(
-                                            height: 40,
-                                            width: 40,
+                                            padding: EdgeInsets.all(
+                                              spacing.padding2 ?? 0,
+                                            ),
                                             decoration: BoxDecoration(
                                               color: containerColor,
                                               borderRadius:
@@ -526,8 +526,8 @@ class _CometChatStickerKeyboardState extends State<CometChatStickerKeyboard> {
                                                 defaultStickersMap[
                                                         stickerSetOrder]![0]
                                                     .stickerUrl,
-                                                height: 17,
-                                                width: 17,
+                                                height: 28,
+                                                width: 28,
                                               ),
                                             ),
                                           ),

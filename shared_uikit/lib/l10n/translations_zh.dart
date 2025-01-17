@@ -1116,6 +1116,14 @@ class TranslationsZh extends Translations {
   @override
   String get addContactsToStartConversations =>
       '添加联系人以开始对话，并在此处查看列表。';
+
+  @override
+  String get edited => '已编辑';
+
+  @override
+  String get deleteMessageWarning => '您确定要删除此消息吗？此操作无法撤消。';
+
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -2207,4 +2215,11 @@ class TranslationsZhTw extends TranslationsZh {
   @override
   String get addContactsToStartConversations =>
       '新增聯絡人以開始對話，並在此處查看列表。';
+
+  @override
+  String get edited => '編輯';
+
+  @override
+  String get deleteMessageWarning => '您確定要刪除此消息嗎？此動作無法復原。';
+
 }

@@ -27,6 +27,7 @@ class MessageUtils {
     List<CometChatTextFormatter>? textFormatters,
     CometChatOutgoingMessageBubbleStyle? outgoingMessageBubbleStyle,
     CometChatIncomingMessageBubbleStyle? incomingMessageBubbleStyle,
+    Key? key,
   }) {
     if (template?.bubbleView != null) {
       return template?.bubbleView!(message, context, BubbleAlignment.left) ??
@@ -55,6 +56,7 @@ class MessageUtils {
     );
 
     return Column(
+      key: key,
       children: [
         Row(
           mainAxisAlignment: bubbleAlignment == BubbleAlignment.left
@@ -146,11 +148,13 @@ return messageObject.sender?.uid == CometChatUIKit.loggedInUser?.uid
               mainAxisAlignment: MainAxisAlignment.end,
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (message.editedAt != null)
+                if (message.editedAt != null &&
+                    (message.category == MessageCategoryConstants.message &&
+                        message.type == MessageTypeConstants.text))
                   Padding(
                     padding: EdgeInsets.only(left: spacing.padding1 ?? 0),
                     child: Text(
-                      "Edited",
+                      Translations.of(context).edited,
                       style: TextStyle(
                           color: alignment == BubbleAlignment.right
                               ? colorPalette.white

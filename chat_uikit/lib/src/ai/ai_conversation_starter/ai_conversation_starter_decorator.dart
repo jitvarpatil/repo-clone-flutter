@@ -101,14 +101,13 @@ class AIConversationStarterDecorator extends DataSourceDecorator
   @override
   void ccActiveChatChanged(Map<String, dynamic>? id, BaseMessage? lastMessage,
       User? user, Group? group, int unreadMessageCount) {
-    CometChatTheme theme = configuration?.theme ?? cometChatTheme;
     if (lastMessage == null && id?["parentMessageId"] == null) {
-      onRepliesListBottom(user, group, theme);
+      onRepliesListBottom(user, group);
       return;
     }
   }
 
-  onRepliesListBottom(User? user, Group? group, CometChatTheme? theme) async {
+  onRepliesListBottom(User? user, Group? group) async {
     Map<String, dynamic>? apiMap;
 
     if (configuration != null && configuration?.apiConfiguration != null) {
@@ -130,19 +129,9 @@ class AIConversationStarterDecorator extends DataSourceDecorator
       CustomUIPosition.composerTop,
       (context) => CometChatAIConversationStarterView(
         style: configuration?.conversationStarterStyle,
-        theme: configuration?.theme ?? theme ?? cometChatTheme,
         user: user,
         group: group,
-        emptyStateText: configuration?.emptyStateText,
-        errorStateText: configuration?.errorStateText,
         customView: configuration?.customView,
-        loadingStateText: configuration?.loadingStateText,
-        emptyIconUrl: configuration?.emptyIconUrl,
-        loadingStateView: configuration?.loadingStateView,
-        loadingIconUrl: configuration?.loadingIconUrl,
-        errorStateView: configuration?.errorStateView,
-        emptyStateView: configuration?.errorStateView,
-        errorIconUrl: configuration?.errorIconUrl,
         apiConfiguration: apiMap,
       ),
     );

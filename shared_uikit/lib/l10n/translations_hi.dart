@@ -1136,4 +1136,11 @@ class TranslationsHi extends Translations {
   @override
   String get addContactsToStartConversations =>
       'संपर्क जोड़ें और उन्हें यहां सूचीबद्ध देखने के लिए बातचीत शुरू करें।';
+
+  @override
+  String get edited => 'संपादित किया गया';
+
+  @override
+  String get deleteMessageWarning => 'क्या आप वाकई इस संदेश को मिटाना चाहते हैं? यह क्रिया पूर्ववत नहीं की जा सकती।';
+
 }

@@ -139,9 +139,9 @@ class _CometChatReactionsState extends State<CometChatReactions> {
                       width: 1)),
               borderRadius: style.borderRadius ?? BorderRadius.all(Radius.circular(spacing.radius5 ?? 0)),
             ),
-            child: Text("+ $extraReactionsCount",
+            child: Text("+$extraReactionsCount",
                 style: TextStyle(
-                    fontSize:typography.caption1?.regular?.fontSize,
+                    fontSize:typography.body?.regular?.fontSize,
                     color: colorPalette.textPrimary).merge(style.countTextStyle)),
           ),
         );
@@ -211,8 +211,8 @@ class _CometChatReactionsState extends State<CometChatReactions> {
                 child: Text(
                     " ${reactionCount.count}",
                     style: TextStyle(
-                        fontSize: typography.caption1?.regular?.fontSize,
-                        fontWeight: typography.caption1?.regular?.fontWeight,
+                        fontSize: typography.body?.regular?.fontSize,
+                        fontWeight: typography.body?.regular?.fontWeight,
                         color: style.countTextColor ?? colorPalette.textPrimary)
                         .merge(
                         style.countTextStyle)

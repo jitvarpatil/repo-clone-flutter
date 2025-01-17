@@ -1139,4 +1139,11 @@ class TranslationsEs extends Translations {
   @override
   String get addContactsToStartConversations =>
       'Agrega contactos para iniciar conversaciones y verlos listados aquí.';
+
+  @override
+  String get edited => 'Editado';
+
+  @override
+  String get deleteMessageWarning => '¿Estás seguro de que deseas eliminar este mensaje? Esta acción no se puede deshacer.';
+
 }

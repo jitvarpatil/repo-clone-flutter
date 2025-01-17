@@ -459,7 +459,7 @@ class _CometChatCreatePollState extends State<CometChatCreatePoll> {
             bottom: spacing.padding5 ?? 0,
           ),
           child: TextFormField(
-            textCapitalization: TextCapitalization.words,
+            textCapitalization: TextCapitalization.sentences,
             keyboardAppearance:
             CometChatThemeHelper.getBrightness(context),
             validator: (value) {
@@ -539,7 +539,7 @@ class _CometChatCreatePollState extends State<CometChatCreatePoll> {
                 bottom: spacing.padding2 ?? 0,
               ),
               child: TextFormField(
-                textCapitalization: TextCapitalization.words,
+                textCapitalization: TextCapitalization.sentences,
                 keyboardAppearance:
                 CometChatThemeHelper.getBrightness(context),
                 key: ValueKey('$index'),

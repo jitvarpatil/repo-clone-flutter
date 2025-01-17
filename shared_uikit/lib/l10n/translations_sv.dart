@@ -1130,4 +1130,11 @@ class TranslationsSv extends Translations {
   @override
   String get addContactsToStartConversations =>
       'Lägg till kontakter för att starta konversationer och se dem listade här.';
+
+  @override
+  String get edited => 'Redigerad';
+
+  @override
+  String get deleteMessageWarning => 'Är du säker på att du vill ta bort det här meddelandet? Denna åtgärd kan inte ångras.';
+
 }

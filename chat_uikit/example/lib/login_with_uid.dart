@@ -57,7 +57,7 @@ class _LoginWithUIDState extends State<LoginWithUID> {
                 SizedBox(
                   height: 46,
                   child: TextFormField(
-                    textCapitalization: TextCapitalization.words,
+                    textCapitalization: TextCapitalization.sentences,
                     onChanged: (val) {
                       customUidLogin = val;
                     },

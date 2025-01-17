@@ -1137,4 +1137,11 @@ class TranslationsHu extends Translations {
   @override
   String get addContactsToStartConversations =>
       'Adjon hozzá névjegyeket a beszélgetések megkezdéséhez, és látni fogja őket itt felsorolva.';
+
+  @override
+  String get edited => 'Szerkesztett';
+
+  @override
+  String get deleteMessageWarning => 'Biztos, hogy törölni szeretné ezt az üzenetet? Ezt a műveletet nem lehet visszavonni.';
+
 }

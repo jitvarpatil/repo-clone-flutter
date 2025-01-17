@@ -953,6 +953,7 @@ class CometChatConversations extends StatelessWidget {
                     fontWeight: typography.body?.regular?.fontWeight,
                     fontSize: typography.body?.regular?.fontSize,
                     fontFamily: typography.body?.regular?.fontFamily,
+                    letterSpacing: 0
                   )
                       .merge(
                         conversationStyle.itemSubtitleTextStyle,
@@ -1080,6 +1081,7 @@ class CometChatConversations extends StatelessWidget {
       fontSize: typography.body?.regular?.fontSize,
       fontWeight: typography.body?.regular?.fontWeight,
       fontFamily: typography.body?.regular?.fontFamily,
+      letterSpacing: 0
     )
         .merge(
           conversationsStyle.itemSubtitleTextStyle,

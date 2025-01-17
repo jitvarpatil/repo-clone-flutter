@@ -668,6 +668,7 @@ class _CometChatMessageListState extends State<CometChatMessageList> {
             color: colorPalette.primary,
             fontWeight: typography.caption1?.medium?.fontWeight,
             fontFamily: typography.caption1?.medium?.fontFamily,
+            letterSpacing: 0
           ).merge(messageBubbleStyleData?.senderNameTextStyle),
           overflow: TextOverflow.ellipsis),
     );

@@ -1133,4 +1133,11 @@ class TranslationsRu extends Translations {
   @override
   String get addContactsToStartConversations =>
       'Добавьте контакты, чтобы начать разговоры и увидеть их здесь.';
+
+  @override
+  String get edited => 'Редактировано';
+
+  @override
+  String get deleteMessageWarning => 'Вы действительно хотите удалить это сообщение? Это действие нельзя отменить.';
+
 }
