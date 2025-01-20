@@ -1,4 +1,4 @@
-# master_app
+# sample_app_push_notifications
 
 A new Flutter project.
 

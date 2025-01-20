@@ -10,9 +10,9 @@ import 'package:flutter_callkit_incoming/entities/call_event.dart';
 import 'package:flutter_callkit_incoming/entities/call_kit_params.dart';
 import 'package:flutter_callkit_incoming/entities/ios_params.dart';
 import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
-import 'package:master_app/app_credentials.dart';
-import 'package:master_app/notifications/models/notification_date_model.dart';
-import 'package:master_app/notifications/services/shared_preferences.dart';
+import 'package:sample_app_push_notifications/app_credentials.dart';
+import 'package:sample_app_push_notifications/notifications/models/notification_date_model.dart';
+import 'package:sample_app_push_notifications/notifications/services/shared_preferences.dart';
 
 import '../../demo_meta_info_constants.dart';
 import '../../messages.dart';

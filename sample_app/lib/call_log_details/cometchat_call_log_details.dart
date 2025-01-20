@@ -1,8 +1,8 @@
 import 'package:cometchat_calls_uikit/cometchat_calls_uikit.dart';
 import 'package:cometchat_chat_uikit/cometchat_chat_uikit.dart';
 import 'package:flutter/material.dart';
-import 'package:master_app/call_log_details/call_log_history/cometchat_call_log_history.dart';
-import 'package:master_app/call_log_details/call_log_participants/cometchat_call_log_participants.dart';
+import 'package:sample_app/call_log_details/call_log_history/cometchat_call_log_history.dart';
+import 'package:sample_app/call_log_details/call_log_participants/cometchat_call_log_participants.dart';
 
 import 'call_log_detail_utils.dart';
 import 'call_log_recordings/cometchat_call_log_recordings.dart';

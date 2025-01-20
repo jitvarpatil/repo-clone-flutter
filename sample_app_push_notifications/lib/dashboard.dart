@@ -3,16 +3,17 @@ import 'dart:io';
 import 'package:cometchat_calls_uikit/cometchat_calls_uikit.dart';
 import 'package:cometchat_chat_uikit/cometchat_chat_uikit.dart';
 import 'package:flutter/material.dart';
-import 'package:master_app/create_group/cometchat_create_group.dart';
-import 'package:master_app/guard_screen.dart';
-import 'package:master_app/messages.dart';
-import 'package:master_app/notifications/services/cometchat_services.dart';
-import 'package:master_app/utils/join_protected_group_util.dart';
-
+import 'package:sample_app_push_notifications/create_group/cometchat_create_group.dart';
+import 'package:sample_app_push_notifications/guard_screen.dart';
+import 'package:sample_app_push_notifications/messages.dart';
+import 'package:sample_app_push_notifications/notifications/services/cometchat_services.dart';
+import 'package:sample_app_push_notifications/utils/join_protected_group_util.dart';
 import 'call_log_details/cometchat_call_log_details.dart';
 import 'notifications/services/apns_services.dart';
 import 'notifications/services/firebase_services.dart';
 import 'notifications/services/globals.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'dart:async';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -22,7 +23,11 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage>
-    with WidgetsBindingObserver, CometChatUIEventListener {
+    with
+        WidgetsBindingObserver,
+        CometChatUIEventListener,
+        CallListener,
+        CometChatCallEventListener {
   final FirebaseService notificationService = FirebaseService();
   final APNSService apnsServices = APNSService();
 
@@ -34,14 +39,20 @@ class _MyHomePageState extends State<MyHomePage>
   late String _dateString;
 
   String conversationEventListenerId = "CWMConversationListener";
+  final String _listenerId = "callingEventListener";
 
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
+
+    _checkPermissions();
+
     _dateString = DateTime.now().millisecondsSinceEpoch.toString();
 
     CometChatUIEvents.addUiListener(
         _dateString + conversationEventListenerId, this);
+    CometChat.addCallListener(_dateString + _listenerId, this);
+    CometChatCallEvents.addCallEventsListener(_dateString + _listenerId, this);
     super.initState();
     if (Platform.isAndroid) {
       notificationService.init(context);
@@ -64,6 +75,8 @@ class _MyHomePageState extends State<MyHomePage>
     WidgetsBinding.instance.removeObserver(this);
     CometChatUIEvents.removeUiListener(
         _dateString + conversationEventListenerId);
+    CometChat.removeCallListener(_dateString + _listenerId);
+    CometChatCallEvents.removeCallEventsListener(_dateString + _listenerId);
     super.dispose();
   }
 
@@ -79,6 +92,31 @@ class _MyHomePageState extends State<MyHomePage>
     setState(() {
       _selectedIndex = index;
     });
+  }
+
+  ///[onIncomingCallReceived] method is used to handle incoming call events.
+  @override
+  void onIncomingCallReceived(Call call) {
+    final callStateController = CallStateController.instance;
+    print(callStateController.isActiveCall.value);
+    if (callStateController.isActiveCall.value == true) {
+      IncomingCallOverlay.dismiss();
+      return;
+    } else {
+      super.onIncomingCallReceived(call);
+    }
+  }
+
+  Future<void> _checkPermissions() async {
+    // Check and request microphone permission if not granted
+    if (await Permission.microphone.isDenied) {
+      await Permission.microphone.request();
+    }
+
+    // Check and request camera permission if not granted
+    if (await Permission.camera.isDenied) {
+      await Permission.camera.request();
+    }
   }
 
   @override

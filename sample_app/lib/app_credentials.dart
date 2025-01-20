@@ -1,5 +1,5 @@
 class AppCredentials {
-  static String _appId = "";
+    static String _appId = "";
   static String _authKey = "";
   static String _region = "";
 

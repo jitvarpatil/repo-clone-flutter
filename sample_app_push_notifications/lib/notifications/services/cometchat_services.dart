@@ -5,7 +5,7 @@ import 'package:cometchat_chat_uikit/cometchat_chat_uikit.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:master_app/app_credentials.dart';
+import 'package:sample_app_push_notifications/app_credentials.dart';
 import '../../dashboard.dart';
 import '../../guard_screen.dart';
 
