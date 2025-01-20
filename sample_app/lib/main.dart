@@ -2,7 +2,8 @@ import 'dart:async';
 import 'dart:ui';
 import 'package:cometchat_calls_uikit/cometchat_calls_uikit.dart';
 import 'package:flutter/material.dart';
-import 'package:master_app/guard_screen.dart';
+import 'package:sample_app/guard_screen.dart';
+
 
 
 Future<void> main() async {
@@ -23,6 +24,7 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
   }
+
 
   // This widget is the root of your application.
   @override

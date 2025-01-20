@@ -1,4 +1,4 @@
-# master_app
+# sample_app
 
 A new Flutter project.
 

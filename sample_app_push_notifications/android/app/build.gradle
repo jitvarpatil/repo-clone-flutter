@@ -18,6 +18,7 @@ android {
 
     kotlinOptions {
         jvmTarget = "17"
+        freeCompilerArgs += ["-Xlint:-options"] // Suppress warnings
     }
 
     buildFeatures {

@@ -1,7 +1,7 @@
 import 'package:cometchat_chat_uikit/cometchat_chat_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:master_app/group_info/cometchat_group_info_controller.dart';
+import 'package:sample_app_push_notifications/group_info/cometchat_group_info_controller.dart';
 
 class CometchatGroupInfo extends StatefulWidget {
   const CometchatGroupInfo({

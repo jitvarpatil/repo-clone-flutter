@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cometchat_chat_uikit/cometchat_chat_uikit.dart';
-import 'package:master_app/thread_screen/cometchat_thread.dart';
-import 'package:master_app/user_info/cometchat_user_info.dart';
+import 'package:sample_app_push_notifications/thread_screen/cometchat_thread.dart';
+import 'package:sample_app_push_notifications/user_info/cometchat_user_info.dart';
 
 import 'group_info/cometchat_group_info.dart';
 

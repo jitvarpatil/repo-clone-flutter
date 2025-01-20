@@ -3,8 +3,8 @@ import 'package:get/get.dart';
 import 'package:cometchat_chat_uikit/cometchat_chat_uikit.dart';
 import 'package:cometchat_chat_uikit/cometchat_chat_uikit.dart' as cc;
 import 'package:flutter/material.dart';
-import 'package:master_app/banned_members/cometchat_banned_members.dart';
-import 'package:master_app/transfer_ownership/cometchat_transfer_ownership.dart';
+import 'package:sample_app_push_notifications/banned_members/cometchat_banned_members.dart';
+import 'package:sample_app_push_notifications/transfer_ownership/cometchat_transfer_ownership.dart';
 
 import '../add_memebers/cometchat_add_members.dart';
 
