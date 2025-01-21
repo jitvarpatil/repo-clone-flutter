@@ -33,12 +33,12 @@ This is a reference application showcasing the integration of [CometChat's Flutt
    git checkout v5
    ```
 
-3. Open the project in Android Studio by navigating to the cloned directory and open the `cometchat-uikit-flutter` folder.
+3. Open the project in Android Studio by navigating to the cloned directory.
 
-4.  run `flutter pub get` to fetch all dependencies.
+4. Run `flutter pub get` to fetch all dependencies.
 
 5. `[Optional]` Configure CometChat credentials:
-   - Open the `AppCredentials.dart` file located at `sample_app/lib/AppCredentials.dart` and enter your CometChat _`App ID`_, _`Region`_, and _`Auth Key`_:
+   - Open the `app_credentials.dart` file located at `sample_app/lib/app_credentials.dart` and enter your CometChat _`App ID`_, _`Region`_, and _`Auth Key`_:
      ```dart
      AppCredentials {
         static String _appId = "YOUR_APP_ID";

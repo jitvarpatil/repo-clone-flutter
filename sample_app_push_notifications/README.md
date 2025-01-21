@@ -47,7 +47,7 @@ Ensure the following are installed and configured on your system:
    git checkout v5
    ```
 
-3. Open the project in Android Studio by navigating to the cloned directory and open the `cometchat-uikit-flutter` folder.
+3. Open the project in Android Studio by navigating to the cloned directory.
 
 4. Sync Dependencies.
     ``` 
@@ -64,7 +64,7 @@ Ensure the following are installed and configured on your system:
 
 
 7. `[Optional]` Configure CometChat credentials:
-   - Open the `AppCredentials.dart` file located at `sample_app/lib/AppCredentials.dart` and enter your CometChat _`App ID`_, _`Region`_, and _`Auth Key`_:
+   - Open the `AppCredentials.dart` file located at `sample_app_push_notification/lib/AppCredentials.dart` and enter your CometChat _`App ID`_, _`Region`_, and _`Auth Key`_:
      ```dart
      AppCredentials {
         static String _appId = "YOUR_APP_ID";
@@ -73,7 +73,7 @@ Ensure the following are installed and configured on your system:
      }
      ```
 
-8. In the Run/Debug Configurations dropdown (on the top toolbar), select the preconfigured `sample_app` run configuration. Connect a `physical device` or select an `emulator` from the Device Selector dropdown. Click the Run ▶ button to launch the app.
+8. In the Run/Debug Configurations dropdown (on the top toolbar), select the preconfigured `sample_app_push_notification` run configuration. Connect a `physical device` or select an `emulator` from the Device Selector dropdown. Click the Run ▶ button to launch the app.
 
 
 ## Help and Support
