@@ -21,12 +21,12 @@ Dive straight into our Sample Apps to see CometChat UI Kit in action! Whether yo
 
 ## Prerequisites
 
-iOS
+**iOS**
 - XCode
 - Pod (CocoaPods) for iOS
 - An iOS device or emulator with iOS 12.0 or above.
 
-Android
+**Android**
 - Android Studio
 - Android device or emulator with Android version 5.0 or above.
 
