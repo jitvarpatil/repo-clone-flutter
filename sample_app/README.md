@@ -11,15 +11,20 @@ This is a reference application showcasing the integration of [CometChat's Flutt
    <img src="../screenshots/overview_cometchat_screens.png" />
 </div>
 
+
 ## Prerequisites
 
-- Ensure you have the following installed:
-   - XCode for iOS platform and Android Studio for Android platform
-   - Pod (CocoaPods) for iOS
-   - An iOS device or emulator with iOS 12.0 or above.
-   - Android device or emulator with Android version 5.0 or above.
+Sign up for a [CometChat](https://app.cometchat.com/) account to obtain your app credentials: _`App ID`_, _`Region`_, and _`Auth Key`_
 
-- Sign up for a [CometChat](https://app.cometchat.com/) account to obtain your app credentials: _`App ID`_, _`Region`_, and _`Auth Key`_
+**iOS**
+- XCode
+- Pod (CocoaPods) for iOS
+- An iOS device or emulator with iOS 12.0 or above.
+
+**Android**
+- Android Studio
+- Android device or emulator with Android version 5.0 or above.
+
 
 ## Installation
 

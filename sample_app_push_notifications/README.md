@@ -15,23 +15,16 @@ This is a reference application showcasing the integration of [CometChat's Flutt
 
 ## Prerequisites
 
-Ensure the following are installed and configured on your system:
+Sign up for a [CometChat](https://app.cometchat.com/) account to obtain your app credentials: _`App ID`_, _`Region`_, and _`Auth Key`_
 
-- **Development Environment:**
-  - Xcode (for iOS)
-  - Android Studio (for Android)
-  - Flutter SDK (latest stable version)
-  - CocoaPods (for iOS dependencies)
+**iOS**
+- XCode
+- Pod (CocoaPods) for iOS
+- An iOS device or emulator with iOS 12.0 or above.
 
-- **Supported Platforms:**
-  - iOS: Version 12.0 or higher
-  - Android: Version 5.0 (API level 21) or higher
-
-- **CometChat Credentials:**
-  Sign up at [CometChat](https://app.cometchat.com/) to obtain:
-  - `App ID`
-  - `Region`
-  - `Auth Key`
+**Android**
+- Android Studio
+- Android device or emulator with Android version 5.0 or above.
 
 ---
 
