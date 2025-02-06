@@ -78,7 +78,7 @@ func convertDictionaryToJsonString(dictionary: [String: Any]) -> String? {
         pushRegistry.desiredPushTypes = Set([.voIP])
 
         // CallKit setup (unchanged)
-        let providerConfiguration = CXProviderConfiguration(localizedName: "Master App")
+        let providerConfiguration = CXProviderConfiguration(localizedName: "Your App")
         providerConfiguration.supportsVideo = false
         providerConfiguration.supportedHandleTypes = [.phoneNumber]
         let callKitProvider = CXProvider(configuration: providerConfiguration)
@@ -130,16 +130,9 @@ func convertDictionaryToJsonString(dictionary: [String: Any]) -> String? {
         // Check if the app is in the foreground
         if UIApplication.shared.applicationState == .active {
             // App is in the foreground, do nothing or perform any desired action
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                completion()
-            }
             return
         }
-        guard type == .voIP else {
-            print("Received non-VoIP push, ignoring.")
-            completion()
-            return
-        }
+        guard type == .voIP else { return }
         if let payloadData = payload.dictionaryPayload as? [String : Any] {
             let category = payloadData["type"] as! String
             switch category {
@@ -173,11 +166,8 @@ func convertDictionaryToJsonString(dictionary: [String: Any]) -> String? {
             default: break
             }
         }
-        // Ensure the completion is called with a do statement
-            do {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                    completion()
-                }
-            }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            completion()
+        }
     }
 }

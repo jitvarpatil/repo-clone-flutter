@@ -381,7 +381,6 @@ class _CometChatCreateGroupState extends State<CometChatCreateGroup>
               nameController,
               "Enter the group name",
               value.onNameChange,
-              false,
             ),
           ),
           AnimatedContainer(
@@ -402,7 +401,6 @@ class _CometChatCreateGroupState extends State<CometChatCreateGroup>
                       passwordController,
                       "Enter the group password",
                       value.onPasswordChange,
-                      true,
                     ),
                   ),
                 ],
@@ -435,10 +433,9 @@ class _CometChatCreateGroupState extends State<CometChatCreateGroup>
     TextEditingController controller,
     String hintText,
     void Function(String)? onChanged,
-      bool isPassword,
   ) {
     return TextFormField(
-      textCapitalization: isPassword ? TextCapitalization.none : TextCapitalization.sentences,
+      textCapitalization: TextCapitalization.words,
       keyboardAppearance:
       CometChatThemeHelper.getBrightness(context),
       controller: controller,
