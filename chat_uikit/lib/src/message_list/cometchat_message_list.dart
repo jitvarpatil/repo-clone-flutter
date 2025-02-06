@@ -480,6 +480,7 @@ class _CometChatMessageListState extends State<CometChatMessageList> {
         GestureDetector(
           onLongPress: () async {
             if (hideOptions == true) return;
+            FocusManager.instance.primaryFocus?.unfocus();
             if (messageObject.id > 0) {
               await _showOptions(
                   messageObject, controller, colorPalette.background1);
@@ -994,6 +995,7 @@ class _CometChatMessageListState extends State<CometChatMessageList> {
         child: CometChatShimmerEffect(
           colorPalette: colorPalette,
           child: ListView.builder(
+            reverse: true,
             itemCount: 30,
             itemBuilder: (context, index) {
               return Align(
@@ -1250,7 +1252,7 @@ class _CometChatMessageListState extends State<CometChatMessageList> {
                     Padding(
                       padding: EdgeInsets.only(left: spacing.padding1 ?? 0),
                       child: Text(
-                        "Edited",
+                        cc.Translations.of(context).edited,
                         style: TextStyle(
                             color: alignment == BubbleAlignment.right
                                 ? colorPalette.white
@@ -1316,7 +1318,9 @@ class _CometChatMessageListState extends State<CometChatMessageList> {
     if (widget.emptyStateView != null) {
       return Center(child: widget.emptyStateView!(context));
     } else {
-      return const SizedBox();
+      return const SizedBox(
+        width: double.infinity,
+      );
     }
   }
 
@@ -1330,7 +1334,7 @@ class _CometChatMessageListState extends State<CometChatMessageList> {
       decoration: BoxDecoration(
         border: messageListStyle.border,
         borderRadius: messageListStyle.borderRadius ?? BorderRadius.circular(0),
-        color: messageListStyle.backgroundColor ?? colorPalette.background2,
+        color: messageListStyle.backgroundColor ?? colorPalette.background3,
       ),
       child: _getList(messageListController, context, messageListStyle,
           colorPalette, typography, spacing),

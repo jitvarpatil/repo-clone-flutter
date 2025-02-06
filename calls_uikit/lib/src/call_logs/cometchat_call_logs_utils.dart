@@ -60,15 +60,16 @@ class CallLogsUtils {
         date: dateTime,
         pattern: DateTimePattern.dayDateFormat,
         customDateString: datePattern ?? formattedDate,
+        padding: EdgeInsets.zero,
         style: CometChatDateStyle(
           backgroundColor:
               dateStyle.backgroundColor ?? colorPalette.transparent,
           textStyle: TextStyle(
             overflow: TextOverflow.ellipsis,
             color: dateStyle.textColor ?? colorPalette.textSecondary,
-            fontSize: typography.body?.regular?.fontSize,
-            fontWeight: typography.body?.regular?.fontWeight,
-            fontFamily: typography.body?.regular?.fontFamily,
+            fontSize: typography.caption1?.regular?.fontSize,
+            fontWeight: typography.caption1?.regular?.fontWeight,
+            fontFamily: typography.caption1?.regular?.fontFamily,
           )
               .merge(
                 dateStyle.textStyle,

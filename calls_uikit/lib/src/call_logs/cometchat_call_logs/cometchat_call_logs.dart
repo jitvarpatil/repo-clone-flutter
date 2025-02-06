@@ -186,7 +186,9 @@ class _CometChatCallLogsState extends State<CometChatCallLogs> {
   @override
   Widget build(BuildContext context) {
     return (_callLogsController == null)
-        ? const Scaffold()
+        ? Scaffold(
+            backgroundColor: colorPalette.background1,
+          )
         : CometChatListBase(
             title: widget.title ?? cc.Translations.of(context).calls,
             hideSearch: true,
@@ -251,7 +253,7 @@ class _CometChatCallLogsState extends State<CometChatCallLogs> {
                             }
                             final log = value.list[index];
                             if (widget.listItemView != null) {
-                              return widget.listItemView!(log,context);
+                              return widget.listItemView!(log, context);
                             } else {
                               return GestureDetector(
                                 onTap: () {
@@ -280,11 +282,11 @@ class _CometChatCallLogsState extends State<CometChatCallLogs> {
                                     titleStyle: TextStyle(
                                       overflow: TextOverflow.ellipsis,
                                       fontSize:
-                                      typography.heading4?.medium?.fontSize,
-                                      fontWeight:
-                                      typography.heading4?.medium?.fontWeight,
-                                      fontFamily:
-                                      typography.heading4?.medium?.fontFamily,
+                                          typography.heading4?.medium?.fontSize,
+                                      fontWeight: typography
+                                          .heading4?.medium?.fontWeight,
+                                      fontFamily: typography
+                                          .heading4?.medium?.fontFamily,
                                       color: style.itemTitleTextColor ??
                                           CallUtils.getCallStatusColor(
                                             log,
@@ -293,11 +295,11 @@ class _CometChatCallLogsState extends State<CometChatCallLogs> {
                                           ),
                                     )
                                         .merge(
-                                      style.itemTitleTextStyle,
-                                    )
+                                          style.itemTitleTextStyle,
+                                        )
                                         .copyWith(
-                                      color: style.itemTitleTextColor,
-                                    ),
+                                          color: style.itemTitleTextColor,
+                                        ),
                                     padding: EdgeInsets.only(
                                       left: spacing.padding4 ?? 0,
                                       right: spacing.padding4 ?? 0,

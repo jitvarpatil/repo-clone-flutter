@@ -7,8 +7,10 @@ import 'package:sample_app/auth/login_sample_users.dart';
 
 import '../demo_meta_info_constants.dart';
 import '../models/region_model.dart';
+import '../prefs/shared_preferences.dart';
 import '../utils/constant_utisl.dart';
 import '../utils/show_snackBar.dart';
+import '../utils/text_constants.dart';
 
 class LoginAppCredential extends StatefulWidget {
   const LoginAppCredential({super.key});
@@ -43,16 +45,20 @@ class _LoginAppCredentialState extends State<LoginAppCredential> {
   Region? selectedRegion;
 
   init() async {
+    final region = SharedPreferencesClass.getString(TextConstants.region);
+    final authKey = SharedPreferencesClass.getString(TextConstants.authKey);
+    final appId = SharedPreferencesClass.getString(TextConstants.appId);
     UIKitSettings uiKitSettings = (UIKitSettingsBuilder()
-          ..subscriptionType = CometChatSubscriptionType.allUsers
-          ..region = AppCredentials.region
-          ..autoEstablishSocketConnection = true
-          ..appId = AppCredentials.appId
-          ..authKey = AppCredentials.authKey
-          ..callingExtension = CometChatCallingExtension()
-          ..extensions = CometChatUIKitChatExtensions.getDefaultExtensions()
-          ..aiFeature = CometChatUIKitChatAIFeatures.getDefaultAiFeatures())
+      ..subscriptionType = CometChatSubscriptionType.allUsers
+      ..region = region
+      ..autoEstablishSocketConnection = true
+      ..appId = appId
+      ..authKey = authKey
+      ..callingExtension = CometChatCallingExtension()
+      ..extensions = CometChatUIKitChatExtensions.getDefaultExtensions()
+      ..aiFeature = CometChatUIKitChatAIFeatures.getDefaultAiFeatures())
         .build();
+
 
     CometChatUIKit.init(
       uiKitSettings: uiKitSettings,

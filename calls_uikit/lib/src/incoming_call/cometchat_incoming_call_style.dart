@@ -29,6 +29,7 @@ class CometChatIncomingCallStyle
     this.acceptTextStyle,
     this.declineTextColor,
     this.declineTextStyle,
+    this.callIconColor
   });
 
   ///[titleTextStyle] is used to set the text style for the title.
@@ -73,6 +74,9 @@ class CometChatIncomingCallStyle
   ///[acceptButtonColor] is used to set a custom color to accept button
   final Color? acceptButtonColor;
 
+  ///[callIconColor] is used to set a custom color to call icon
+  final Color? callIconColor;
+
   static CometChatIncomingCallStyle of(BuildContext context) =>
       CometChatIncomingCallStyle();
 
@@ -92,6 +96,7 @@ class CometChatIncomingCallStyle
     TextStyle? acceptTextStyle,
     Color? acceptTextColor,
     Color? declineTextColor,
+    Color? callIconColor
   }) {
     return CometChatIncomingCallStyle(
       backgroundColor: backgroundColor ?? this.backgroundColor,
@@ -108,6 +113,7 @@ class CometChatIncomingCallStyle
       declineTextColor: declineTextColor ?? this.declineTextColor,
       acceptTextStyle: acceptTextStyle ?? this.acceptTextStyle,
       declineTextStyle: declineTextStyle ?? this.declineTextStyle,
+      callIconColor: callIconColor ?? this.callIconColor
     );
   }
 
@@ -128,6 +134,7 @@ class CometChatIncomingCallStyle
       declineTextColor: style.declineTextColor,
       acceptTextStyle: style.acceptTextStyle,
       declineTextStyle: style.declineTextStyle,
+      callIconColor: style.callIconColor
     );
   }
 
@@ -158,6 +165,7 @@ class CometChatIncomingCallStyle
           TextStyle.lerp(acceptTextStyle, other.acceptTextStyle, t),
       declineTextStyle:
           TextStyle.lerp(declineTextStyle, other.declineTextStyle, t),
+      callIconColor: Color.lerp(callIconColor, other.callIconColor, t)
     );
   }
 }

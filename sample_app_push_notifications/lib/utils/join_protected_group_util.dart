@@ -1,6 +1,8 @@
 import 'package:cometchat_chat_uikit/cometchat_chat_uikit.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:sample_app_push_notifications/utils/page_manager.dart';
 
 import '../join_protected_group/cometchat_join_protected_group.dart';
 import '../messages.dart';
@@ -72,6 +74,7 @@ class JoinProtectedGroupUtils {
     CometChatColorPalette colorPalette,
     CometChatTypography typography,
     CometChatSpacing spacing,
+    int id,
   ) {
     if (group.hasJoined) {
       _navigateToMessages(
@@ -158,13 +161,7 @@ class JoinProtectedGroupUtils {
     required CometChatTypography typography,
     required CometChatSpacing spacing,
   }) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => MessagesSample(
-          group: group,
-        ),
-      ),
-    );
+    final pageManager = Get.find<PageManager>();
+    pageManager.navigateToMessages(context: context, group: group);
   }
 }

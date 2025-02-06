@@ -102,8 +102,7 @@ class _CometChatCreatePollState extends State<CometChatCreatePoll> {
           FocusScope.of(context).unfocus();
         },
         child: DraggableScrollableSheet(
-          initialChildSize: 0.5,
-          minChildSize: 0.5,
+          initialChildSize: 0.98,
           maxChildSize: 0.98,
           expand: false,
           builder: (context, scrollController) {

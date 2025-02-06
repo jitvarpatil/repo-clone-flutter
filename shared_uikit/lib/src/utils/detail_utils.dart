@@ -292,7 +292,7 @@ class DetailUtils {
     },
     GroupMemberScope.admin: {
       GroupOptionConstants.addMembers: true,
-      GroupOptionConstants.delete: false,
+      GroupOptionConstants.delete: true,
       GroupOptionConstants.leave: true,
       GroupOptionConstants.bannedMembers: true,
       GroupOptionConstants.viewMembers: true

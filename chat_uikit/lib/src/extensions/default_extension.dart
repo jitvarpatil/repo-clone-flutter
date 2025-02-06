@@ -12,7 +12,6 @@ class CometChatUIKitChatExtensions {
       LinkPreviewExtension(),
       MessageTranslationExtension(),
       PollsExtension(),
-      SmartReplyExtension(),
       ThumbnailGenerationExtension(),
     ];
   }

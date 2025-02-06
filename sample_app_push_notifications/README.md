@@ -57,14 +57,14 @@ Sign up for a [CometChat](https://app.cometchat.com/) account to obtain your app
 
 
 7. `[Optional]` Configure CometChat credentials:
-   - Open the `AppCredentials.dart` file located at `sample_app_push_notification/lib/AppCredentials.dart` and enter your CometChat _`App ID`_, _`Region`_, and _`Auth Key`_:
-     ```dart
-     AppCredentials {
-        static String _appId = "YOUR_APP_ID";
-        static String _authKey = "YOUR_AUTH_KEY";
-        static String _region = "REGION";
-     }
-     ```
+    - Open the `AppCredentials.dart` file located at `sample_app_push_notification/lib/AppCredentials.dart` and enter your CometChat _`App ID`_, _`Region`_, and _`Auth Key`_:
+      ```dart
+      AppCredentials {
+         static String _appId = "YOUR_APP_ID";
+         static String _authKey = "YOUR_AUTH_KEY";
+         static String _region = "REGION";
+      }
+      ```
 
 8. In the Run/Debug Configurations dropdown (on the top toolbar), select the preconfigured `sample_app_push_notification` run configuration. Connect a `physical device` or select an `emulator` from the Device Selector dropdown. Click the Run ▶ button to launch the app.
 

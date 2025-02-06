@@ -153,53 +153,48 @@ class CometChatListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SwipeTile(
-      menuItems: options ?? [],
-      key: UniqueKey(),
-      id: id,
-      child: Container(
-        margin: style.margin,
-        padding: style.padding,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: style.background,
-          border: style.border,
-          borderRadius: style.borderRadius,
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            _CometChatListTile(
-              height: style.height,
-              leading: Stack(
-                children: [
-                  getAvatar(),
-                  if (statusIndicatorColor != null ||
-                      statusIndicatorIcon != null)
-                    Positioned(
-                      height: statusIndicatorHeight ?? 14,
-                      width: statusIndicatorWidth ?? 14,
-                      right: 0,
-                      bottom: 0,
-                      child: getStatus(),
-                    )
-                ],
-              ),
-              title: getTitle(
-                context,
-              ),
-              subtitle: getSubtitle(),
-              trailing: tailView,
-              titlePadding: titlePadding,
+    return Container(
+      margin: style.margin,
+      padding: style.padding,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: style.background,
+        border: style.border,
+        borderRadius: style.borderRadius,
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          _CometChatListTile(
+            height: style.height,
+            leading: Stack(
+              children: [
+                getAvatar(),
+                if (statusIndicatorColor != null ||
+                    statusIndicatorIcon != null)
+                  Positioned(
+                    height: statusIndicatorHeight ?? 14,
+                    width: statusIndicatorWidth ?? 14,
+                    right: 0,
+                    bottom: 0,
+                    child: getStatus(),
+                  )
+              ],
             ),
-            if (hideSeparator == false)
-              Divider(
-                thickness: 1,
-                height: 1,
-                color: style.separatorColor,
-              )
-          ],
-        ),
+            title: getTitle(
+              context,
+            ),
+            subtitle: getSubtitle(),
+            trailing: tailView,
+            titlePadding: titlePadding,
+          ),
+          if (hideSeparator == false)
+            Divider(
+              thickness: 1,
+              height: 1,
+              color: style.separatorColor,
+            )
+        ],
       ),
     );
   }

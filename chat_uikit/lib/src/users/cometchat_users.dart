@@ -636,25 +636,36 @@ class _CometChatUsersState extends State<CometChatUsers> {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Image.asset(
-              AssetConstants(CometChatThemeHelper.getBrightness(context))
-                  .emptyUserList,
-              package: UIConstants.packageName,
-              width: 120,
-              height: 120,
+            Padding(
+              padding: EdgeInsets.only(
+                bottom: spacing.padding5 ?? 0,
+              ),
+              child: Image.asset(
+                AssetConstants(CometChatThemeHelper.getBrightness(context))
+                    .emptyUserList,
+                package: UIConstants.packageName,
+                width: 120,
+                height: 120,
+              ),
             ),
-            Text(
-              cc.Translations.of(context).usersUnavailable,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: style.emptyStateTextColor ?? colorPalette.textPrimary,
-                fontSize: typography.heading3?.bold?.fontSize,
-                fontWeight: typography.heading3?.bold?.fontWeight,
-                fontFamily: typography.heading3?.bold?.fontFamily,
-              )
-                  .merge(style.emptyStateTextStyle)
-                  .copyWith(color: style.emptyStateTextColor),
+            Padding(
+              padding: EdgeInsets.only(
+                bottom: spacing.padding1 ?? 0,
+              ),
+              child: Text(
+                cc.Translations.of(context).usersUnavailable,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: style.emptyStateTextColor ?? colorPalette.textPrimary,
+                  fontSize: typography.heading3?.bold?.fontSize,
+                  fontWeight: typography.heading3?.bold?.fontWeight,
+                  fontFamily: typography.heading3?.bold?.fontFamily,
+                )
+                    .merge(style.emptyStateTextStyle)
+                    .copyWith(color: style.emptyStateTextColor),
+              ),
             ),
             Text(
               cc.Translations.of(context).addContactsToStartConversations,
@@ -662,9 +673,9 @@ class _CometChatUsersState extends State<CometChatUsers> {
               style: TextStyle(
                 color: style.emptyStateSubTitleTextColor ??
                     colorPalette.textSecondary,
-                fontSize: typography.heading3?.regular?.fontSize,
-                fontWeight: typography.heading3?.regular?.fontWeight,
-                fontFamily: typography.heading3?.regular?.fontFamily,
+                fontSize: typography.body?.regular?.fontSize,
+                fontWeight: typography.body?.regular?.fontWeight,
+                fontFamily: typography.body?.regular?.fontFamily,
               )
                   .merge(
                     style.emptyStateSubTitleTextStyle,
@@ -694,7 +705,7 @@ class _CometChatUsersState extends State<CometChatUsers> {
           bottom: 0,
         ),
         child: SectionSeparator(
-          text: controller.list[index].name.substring(0, 1),
+          text: controller.list[index].name.substring(0, 1).toUpperCase(),
           dividerColor: colorPalette.transparent,
           textStyle: TextStyle(
             color: style.stickyTitleColor ?? colorPalette.primary,
