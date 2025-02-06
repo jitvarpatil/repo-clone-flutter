@@ -66,6 +66,19 @@ Sign up for a [CometChat](https://app.cometchat.com/) account to obtain your app
      }
      ```
 
+8. Set up CometChat Push Notification:
+   - Go to the [Notification Documentation](https://www.cometchat.com/docs/notifications/push-integration) and follow integration steps.
+   - Note the provider id entered while configuring the Push Notifications in CometChat Dashboard.
+   
+   Update provide ID in the `AppCredentials.dart` for push notification
+
+      ```dart
+     AppCredentials {
+        static String _fcmProviderId = "";
+        static String _apnProviderId = "";
+     }
+     ```
+
 8. In the Run/Debug Configurations dropdown (on the top toolbar), select the preconfigured `sample_app_push_notification` run configuration. Connect a `physical device` or select an `emulator` from the Device Selector dropdown. Click the Run ▶ button to launch the app.
 
 
