@@ -13,8 +13,10 @@ class MessageReceiptUtils {
       receiptStatus = ReceiptStatus.read;
     } else if (message.deliveredAt != null) {
       receiptStatus = ReceiptStatus.delivered;
-    } else if (message.sentAt != null) {
+    } else if (message.sentAt != null && message.id != 0) {
       receiptStatus = ReceiptStatus.sent;
+    } else {
+      receiptStatus = ReceiptStatus.waiting;
     }
 
     return receiptStatus;

@@ -18,10 +18,23 @@ import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 
-class APNSService with CometChatCallsEventsListener {
+class APNSService with CometChatCallsEventsListener, CometChatUIEventListener {
 
 
   String? id;
+
+  late String _listenerId;
+
+  String? conversationId;
+
+  // This methods helps to retrieve the conversation id from the last message received in the chat.
+  @override
+  void ccActiveChatChanged(Map<String, dynamic>? id, BaseMessage? lastMessage,
+      User? user, Group? group, int unreadMessageCount) {
+    if (lastMessage != null) {
+      conversationId = lastMessage.conversationId;
+    }
+  }
 
   @override
   void onCallEndButtonPressed() async {
@@ -31,7 +44,7 @@ class APNSService with CometChatCallsEventsListener {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
   FlutterLocalNotificationsPlugin();
 
-  void _showNotification(Map<String, dynamic> data, RemoteMessage msg) async {
+  void _showNotification(Map<String, dynamic> data, RemoteMessage msg, String? conversationId) async {
     AndroidNotificationDetails androidPlatformChannelSpecifics =
     const AndroidNotificationDetails('channel_id', 'channel_name',
       importance: Importance.max, priority: Priority.high, icon: 'ic_launcher',);
@@ -40,9 +53,22 @@ class APNSService with CometChatCallsEventsListener {
 
     String jsonPayload = jsonEncode(msg.data);
 
-    print("Notification PAYLOAD MKAP: ${msg.data}");
+    if (conversationId != null &&
+        conversationId.isNotEmpty &&
+        conversationId == (data["conversationId"] ?? "")) {
+      return;
+    }
+
+    int? notifyId;
+    try {
+      notifyId = int.parse(data["tag"] ?? 0);
+    } catch (e) {
+      notifyId = 0;
+      debugPrint("Error while parsing notification id ${e.toString()}");
+    }
+
     await flutterLocalNotificationsPlugin.show(
-      0, // Notification ID
+      notifyId,
       data['title'], // Notification title
       data['body'], // Notification body
       platformChannelSpecifics,
@@ -98,7 +124,7 @@ class APNSService with CometChatCallsEventsListener {
               sendUser != null) ||
           (notificationDataModel.receiverType == ReceiverTypeConstants.group && sendGroup != null)) {
         if (CallNavigationContext.navigatorKey.currentContext != null && CallNavigationContext.navigatorKey.currentContext!.mounted) {
-          Future.delayed(const Duration(seconds: 2), () {
+          Future.delayed(const Duration(milliseconds: 100), () {
             Navigator.of(CallNavigationContext.navigatorKey.currentContext!).push(
               MaterialPageRoute(
                 builder: (context) => MessagesSample(
@@ -156,23 +182,25 @@ class APNSService with CometChatCallsEventsListener {
 
     _connector.shouldPresent = (x) => Future.value(false);
 
+    _listenerId = "NotificationListener";
+    CometChatUIEvents.addUiListener(_listenerId, this);
 
     _connector.configure(
       // onLaunch gets called, when you tap on notification on a closed app
       onLaunch: (message) async {
         debugPrint('onResume APNS MKAP: ${message.toString()}');
-        openNotification(message,context);
+        openNotification(message,context, "");
       },
 
       // onResume gets called, when you tap on notification with app in background
       onResume: (message) async {
         debugPrint('onResume APNS MKAP: ${message.toString()}');
-        openNotification(message,context);
+        openNotification(message,context, conversationId);
       },
 
       onMessage: (message) async{
         debugPrint('onMessage APNS MKAP: ${message.toString()}');
-        _showNotification(message.data,message);
+        _showNotification(message.data,message, conversationId);
       },
     );
 
@@ -281,7 +309,7 @@ class APNSService with CometChatCallsEventsListener {
 
   // This method processes the incoming Remote message to handle user or group notifications and carries out appropriate actions such as initiating a chat or call.
 
-  Future<void> openNotification(RemoteMessage? message, BuildContext context) async {
+  Future<void> openNotification(RemoteMessage? message, BuildContext context, String? conversationId) async {
     if (message != null) {
       PayloadData payloadData = PayloadData.fromJson(message.data);
       if (payloadData.type == NotificationMessageTypeConstants.call) {
@@ -323,7 +351,12 @@ class APNSService with CometChatCallsEventsListener {
             (receiverType == CometChatReceiverType.user && sendUser != null) ||
             (receiverType == CometChatReceiverType.group && sendGroup != null)) {
           if (context.mounted) {
-            Future.delayed(const Duration(seconds: 2), () {
+            Future.delayed(const Duration(milliseconds: 100), () {
+              if (conversationId != null &&
+                  conversationId.isNotEmpty &&
+                  conversationId == (payloadData.conversationId ?? "")) {
+                return;
+              }
               Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) =>
                     MessagesSample(

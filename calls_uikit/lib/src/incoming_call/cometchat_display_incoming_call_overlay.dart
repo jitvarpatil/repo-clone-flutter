@@ -23,7 +23,6 @@ class IncomingCallOverlay {
     String? declineButtonText,
     String? acceptButtonText,
   }) {
-    if (_overlayEntry != null) return;
 
     _overlayEntry = OverlayEntry(
       builder: (context) => Positioned(
@@ -53,7 +52,12 @@ class IncomingCallOverlay {
       ),
     );
 
-    Overlay.of(context).insert(_overlayEntry!);
+
+    if (CallNavigationContext.navigatorKey.currentState?.overlay != null && _overlayEntry != null) {
+      CallNavigationContext.navigatorKey.currentState!.overlay!.insert(_overlayEntry!);
+    } else {
+      debugPrint("Overlay is null, cannot insert entry.");
+    }
   }
 
   // Dismiss incoming call overlay

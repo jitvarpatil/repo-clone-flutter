@@ -118,12 +118,14 @@ class _CometChatAudioBubbleState extends State<CometChatAudioBubble>
   String? localPath;
 
   Duration? totalDuration;
+  late int tag;
 
   @override
   void initState() {
     super.initState();
+    tag = widget.id ?? DateTime.now().millisecondsSinceEpoch;
+    setupEventStream();
     fileExists();
-    initializeController();
   }
 
   Future<void> initializeController() async {
@@ -171,6 +173,7 @@ class _CometChatAudioBubbleState extends State<CometChatAudioBubble>
   }
 
   String fileName = '';
+
   fileExists() async {
     if (widget.id != null) {
       fileName += '${widget.id}';
@@ -198,12 +201,40 @@ class _CometChatAudioBubbleState extends State<CometChatAudioBubble>
     if (mounted) {
       setState(() {});
     }
+    initializeController();
   }
 
   late CometChatAudioBubbleStyle audioBubbleStyle;
   late CometChatColorPalette colorPalette;
   late CometChatSpacing spacing;
   late CometChatTypography typography;
+  late List<Widget> audioBars;
+  late bool usedByMediaRecorder;
+
+  int getBarCount() {
+    return usedByMediaRecorder ? 130 : 43;
+  }
+
+  setAudioBarHeights() {
+    audioBars = List.generate(
+      getBarCount(),
+      (index) {
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 400),
+          margin: const EdgeInsets.only(right: 2.69),
+          width: barWidth,
+          height: randomHeight(),
+          decoration: BoxDecoration(
+            color: audioBubbleStyle.audioBarColor ??
+                (widget.alignment == BubbleAlignment.right
+                    ? colorPalette.white
+                    : colorPalette.primary),
+            borderRadius: BorderRadius.circular(spacing.radiusMax ?? 0),
+          ),
+        );
+      },
+    );
+  }
 
   @override
   void didChangeDependencies() {
@@ -213,6 +244,13 @@ class _CometChatAudioBubbleState extends State<CometChatAudioBubble>
     colorPalette = CometChatThemeHelper.getColorPalette(context);
     spacing = CometChatThemeHelper.getSpacing(context);
     typography = CometChatThemeHelper.getTypography(context);
+    if (widget.metadata != null &&
+        widget.metadata!.containsKey(AudioBubbleConstants.usedByMediaRecorder)) {
+      usedByMediaRecorder = widget.metadata![AudioBubbleConstants.usedByMediaRecorder] ?? false;
+    } else {
+      usedByMediaRecorder = false;
+    }
+    setAudioBarHeights();
     super.didChangeDependencies();
   }
 
@@ -231,8 +269,7 @@ class _CometChatAudioBubbleState extends State<CometChatAudioBubble>
       timer?.cancel();
       timer = Timer.periodic(const Duration(milliseconds: 500), (timer) {
         setState(() {
-          barHeights =
-              List.generate(getNumberOfBars(), (index) => randomHeight());
+          barHeights = List.generate(getBarCount(), (index) => randomHeight());
         });
       });
       isAnimating = true;
@@ -243,12 +280,6 @@ class _CometChatAudioBubbleState extends State<CometChatAudioBubble>
   @override
   void dispose() {
     if (_controller != null) {
-      _controller!.removeListener(() {
-        if (mounted) {
-          setState(() {});
-        }
-      });
-      _controller!.pause();
       _controller!.dispose();
       _controller = null;
     }
@@ -271,13 +302,14 @@ class _CometChatAudioBubbleState extends State<CometChatAudioBubble>
         _ticker = null;
       }
     }
-
+    closeEventStream();
     super.dispose();
   }
 
-
   void playAudio() {
     if (_controller != null && _controller!.value.isInitialized) {
+      AudioBubbleStream().controller.sink.add(
+          AudioBubbleEvents(id: tag, action: AudioBubbleActions.pausePlayer));
       playerStatus = PlayStates.playing;
       _controller!.play();
       toggleAnimation(true);
@@ -305,13 +337,13 @@ class _CometChatAudioBubbleState extends State<CometChatAudioBubble>
     setState(() {});
   }
 
-  int getNumberOfBars() {
+  double getBarSpace() {
     double width = (widget.width ?? 265) - 6;
     double factor = widget.alignment == BubbleAlignment.right ||
             (widget.alignment == BubbleAlignment.left && isFileExists)
         ? 0.775
         : 0.6;
-    return (width * factor) ~/ 4.69;
+    return width * factor;
   }
 
   @override
@@ -392,28 +424,32 @@ class _CometChatAudioBubbleState extends State<CometChatAudioBubble>
                   padding: EdgeInsets.only(bottom: spacing.padding ?? 0),
                   child: SizedBox(
                     height: 20,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(
-                        getNumberOfBars(),
-                        (index) {
-                          List<double> barHeights = List.generate(
-                              getNumberOfBars(), (index) => randomHeight());
-                          return AnimatedContainer(
-                            duration: const Duration(milliseconds: 400),
-                            margin: const EdgeInsets.only(right: 2.69),
-                            width: barWidth,
-                            height: barHeights[index],
-                            decoration: BoxDecoration(
-                              color: audioBubbleStyle.audioBarColor ??
-                                  (widget.alignment == BubbleAlignment.right
-                                      ? colorPalette.white
-                                      : colorPalette.primary),
-                              borderRadius:
-                                  BorderRadius.circular(spacing.radiusMax ?? 0),
-                            ),
-                          );
-                        },
+                    width: getBarSpace(),
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: playerStatus == PlayStates.playing
+                            ? List.generate(
+                                getBarCount(),
+                                (index) {
+                                  return AnimatedContainer(
+                                    duration: const Duration(milliseconds: 400),
+                                    margin: const EdgeInsets.only(right: 2.69),
+                                    width: barWidth,
+                                    height: randomHeight(),
+                                    decoration: BoxDecoration(
+                                      color: audioBubbleStyle.audioBarColor ??
+                                          (widget.alignment ==
+                                                  BubbleAlignment.right
+                                              ? colorPalette.white
+                                              : colorPalette.primary),
+                                      borderRadius: BorderRadius.circular(
+                                          spacing.radiusMax ?? 0),
+                                    ),
+                                  );
+                                },
+                              )
+                            : audioBars,
                       ),
                     ),
                   ),
@@ -545,5 +581,20 @@ class _CometChatAudioBubbleState extends State<CometChatAudioBubble>
     int minutes = duration.inMinutes.remainder(60);
     int seconds = duration.inSeconds.remainder(60);
     return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+  }
+
+  late StreamSubscription<AudioBubbleEvents> streamSubscription;
+
+  void setupEventStream() {
+    streamSubscription =
+        AudioBubbleStream().stream.asBroadcastStream().listen((event) {
+      if (event.id != tag && event.action == AudioBubbleActions.pausePlayer) {
+        pauseAudio();
+      }
+    });
+  }
+
+  void closeEventStream() {
+    streamSubscription.cancel();
   }
 }

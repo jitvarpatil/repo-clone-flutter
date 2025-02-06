@@ -2,13 +2,15 @@ import 'package:cometchat_calls_uikit/cometchat_calls_uikit.dart';
 import 'package:cometchat_chat_uikit/cometchat_chat_uikit.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:sample_app_push_notifications/app_credentials.dart';
 import 'package:sample_app_push_notifications/auth/login_sample_users.dart';
 
+import '../app_credentials.dart';
 import '../demo_meta_info_constants.dart';
 import '../models/region_model.dart';
+import '../prefs/shared_preferences.dart';
 import '../utils/constant_utisl.dart';
 import '../utils/show_snackBar.dart';
+import '../utils/text_constants.dart';
 
 class LoginAppCredential extends StatefulWidget {
   const LoginAppCredential({super.key});
@@ -43,16 +45,20 @@ class _LoginAppCredentialState extends State<LoginAppCredential> {
   Region? selectedRegion;
 
   init() async {
+    final region = SharedPreferencesClass.getString(TextConstants.region);
+    final authKey = SharedPreferencesClass.getString(TextConstants.authKey);
+    final appId = SharedPreferencesClass.getString(TextConstants.appId);
     UIKitSettings uiKitSettings = (UIKitSettingsBuilder()
-          ..subscriptionType = CometChatSubscriptionType.allUsers
-          ..region = AppCredentials.region
-          ..autoEstablishSocketConnection = true
-          ..appId = AppCredentials.appId
-          ..authKey = AppCredentials.authKey
-          ..callingExtension = CometChatCallingExtension()
-          ..extensions = CometChatUIKitChatExtensions.getDefaultExtensions()
-          ..aiFeature = CometChatUIKitChatAIFeatures.getDefaultAiFeatures())
+      ..subscriptionType = CometChatSubscriptionType.allUsers
+      ..region = region
+      ..autoEstablishSocketConnection = true
+      ..appId = appId
+      ..authKey = authKey
+      ..callingExtension = CometChatCallingExtension()
+      ..extensions = CometChatUIKitChatExtensions.getDefaultExtensions()
+      ..aiFeature = CometChatUIKitChatAIFeatures.getDefaultAiFeatures())
         .build();
+
 
     CometChatUIKit.init(
       uiKitSettings: uiKitSettings,

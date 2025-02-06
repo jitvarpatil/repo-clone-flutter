@@ -98,13 +98,32 @@ class CometChatAddMembersController extends GetxController {
               ));
             }
           }
-          group.membersCount += addedMembers.length;
-          CometChatGroupEvents.ccGroupMemberAdded(
-              messages, addedMembers, group, _loggedInUser!);
-          isLoading = false;
-          userController?.clearSelection();
-          Navigator.of(context).pop();
-          update();
+          if(messages.isEmpty || addedMembers.isEmpty){
+            var snackBar = SnackBar(
+              backgroundColor: colorPalette.error,
+              content: Text(
+                "Unable to add members. Please check if they already exist.",
+                style: TextStyle(
+                  color: colorPalette.white,
+                  fontSize: typography.button?.medium?.fontSize,
+                  fontWeight: typography.button?.medium?.fontWeight,
+                  fontFamily: typography.button?.medium?.fontFamily,
+                ),
+              ),
+            );
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            isLoading = false;
+            update();
+          }else{
+            group.membersCount += addedMembers.length;
+            CometChatGroupEvents.ccGroupMemberAdded(
+                messages, addedMembers, group, _loggedInUser!);
+            isLoading = false;
+            userController?.clearSelection();
+            Navigator.of(context).pop();
+            update();
+          }
+
         },
         onError: (CometChatException e) {
           isLoading = false;

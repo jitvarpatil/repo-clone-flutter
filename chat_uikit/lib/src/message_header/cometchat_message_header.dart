@@ -22,7 +22,7 @@ import '../../../cometchat_chat_uikit.dart' as cc;
 /// );
 ///
 /// ```
-class CometChatMessageHeader extends StatelessWidget
+class CometChatMessageHeader extends StatefulWidget
     implements PreferredSizeWidget {
   const CometChatMessageHeader(
       {super.key,
@@ -141,15 +141,32 @@ class CometChatMessageHeader extends StatelessWidget
   ///[padding] set padding for message header
   final EdgeInsetsGeometry? padding;
 
+  @override
+  State<CometChatMessageHeader> createState() => _CometChatMessageHeaderState();
+
+  @override
+  // TODO: implement preferredSize
+  Size get preferredSize {
+    return Size.fromHeight(height ?? 65);
+  }
+}
+
+class _CometChatMessageHeaderState extends State<CometChatMessageHeader> {
+
+  late CometChatMessageHeaderController controller;
+  late CometChatMessageHeaderStyle messageHeaderStyle;
+  late CometChatColorPalette colorPalette;
+  late CometChatTypography typography;
+  late CometChatSpacing spacing;
 
   Widget getBackButton(BuildContext context,CometChatMessageHeaderStyle style, CometChatColorPalette colorPalette) {
-    if (hideBackButton != true) {
-      if (backButton != null) {
-        return backButton!(context);
+    if (widget.hideBackButton != true) {
+      if (widget.backButton != null) {
+        return widget.backButton!(context);
       }
       Widget backIcon;
       backIcon = GestureDetector(
-        onTap: onBack ??
+        onTap: widget.onBack ??
             () {
               Navigator.pop(context);
             },
@@ -203,9 +220,9 @@ class CometChatMessageHeader extends StatelessWidget
 
     if (controller.isTyping == true) {
       subtitle = _getTypingIndicator(context, controller, style.typingIndicatorTextStyle,typography, colorPalette.primary);
-    } else if (subtitleView != null) {
+    } else if (widget.subtitleView != null) {
       subtitle =
-          subtitleView!(controller.groupObject, controller.userObject, context);
+          widget.subtitleView!(controller.groupObject, controller.userObject, context);
     } else if (controller.userObject != null) {
       if(controller.userIsNotBlocked(controller.userObject!)){
         subtitle = Text(
@@ -239,8 +256,8 @@ class CometChatMessageHeader extends StatelessWidget
 
   Widget _getListItem(CometChatMessageHeaderController controller,
     BuildContext context, CometChatMessageHeaderStyle style,CometChatColorPalette colorPalette, CometChatTypography typography,CometChatSpacing spacing) {
-    if (listItemView != null) {
-      return listItemView!(group, user, context);
+    if (widget.listItemView != null) {
+      return widget.listItemView!(widget.group, widget.user, context);
     }
 
     String? avatarName;
@@ -251,7 +268,7 @@ class CometChatMessageHeader extends StatelessWidget
     Widget? icon;
     Widget? tailView;
 
-    if (user != null) {
+    if (widget.user != null) {
       avatarName = controller.userObject?.name;
       avatarUrl = controller.userObject?.avatar;
       title = controller.userObject?.name;
@@ -279,13 +296,13 @@ class CometChatMessageHeader extends StatelessWidget
     List<Widget>? tailWidgetList = [];
 
     Widget? auxiliaryHeaderMenu = CometChatUIKit.getDataSource()
-        .getAuxiliaryHeaderMenu(context, user, group, AdditionalConfigurations(callButtonsStyle: style.callButtonsStyle));
+        .getAuxiliaryHeaderMenu(context, widget.user, widget.group, AdditionalConfigurations(callButtonsStyle: style.callButtonsStyle));
     if (auxiliaryHeaderMenu != null) {
       tailWidgetList.add(auxiliaryHeaderMenu);
     }
 
-    if (appBarOptions != null) {
-      var temp = appBarOptions!(
+    if (widget.appBarOptions != null) {
+      var temp = widget.appBarOptions!(
           controller.userObject, controller.groupObject, context);
 
       if (temp != null) {
@@ -309,13 +326,13 @@ class CometChatMessageHeader extends StatelessWidget
       child: CometChatListItem(
         avatarName: avatarName,
         avatarURL: avatarUrl,
-        avatarWidth: avatarWidth ?? 40,
-        avatarHeight: avatarHeight ?? 40,
+        avatarWidth: widget.avatarWidth ?? 40,
+        avatarHeight: widget.avatarHeight ?? 40,
         title: title,
         subtitleView: subtitleView,
         titlePadding: EdgeInsets.only(left: spacing.padding2 ??0),
         avatarStyle: CometChatAvatarStyle(
-          backgroundColor: group!=null? style.groupIconBackgroundColor:null,
+          backgroundColor: widget.group!=null? style.groupIconBackgroundColor:null,
         ).merge(style.avatarStyle),
         statusIndicatorColor: statusIndicatorColor,
         statusIndicatorIcon: icon,
@@ -326,10 +343,10 @@ class CometChatMessageHeader extends StatelessWidget
                     color: colorPalette.background1 ?? Colors.white,
                   ),
               backgroundColor: colorPalette.success,
-            ).merge(statusIndicatorStyle),
+            ).merge(widget.statusIndicatorStyle),
         hideSeparator: true,
         tailView: tailView,
-        style: listItemStyle ??
+        style: widget.listItemStyle ??
             ListItemStyle(
                 background: Colors.transparent,
                 height: 56,
@@ -345,22 +362,26 @@ class CometChatMessageHeader extends StatelessWidget
   }
 
   @override
-  Widget build(BuildContext context) {
-    CometChatMessageHeaderController controller =
-        CometChatMessageHeaderController(
-            userObject: user, groupObject: group, disableTyping: disableTyping, disableUserPresence: disableUserPresence);
-    final messageHeaderStyle =
+  void didChangeDependencies() {
+    controller =
+    CometChatMessageHeaderController(
+        userObject: widget.user, groupObject: widget.group, disableTyping: widget.disableTyping, disableUserPresence: widget.disableUserPresence);
+     messageHeaderStyle =
     CometChatThemeHelper.getTheme<CometChatMessageHeaderStyle>(context: context,defaultTheme: CometChatMessageHeaderStyle.of)
-        .merge(style);
-    final typography = CometChatThemeHelper.getTypography(context);
-    final colorPalette = CometChatThemeHelper.getColorPalette(context);
-    final spacing = CometChatThemeHelper.getSpacing(context);
+        .merge(widget.style);
+     typography = CometChatThemeHelper.getTypography(context);
+     colorPalette = CometChatThemeHelper.getColorPalette(context);
+     spacing = CometChatThemeHelper.getSpacing(context);
 
+    super.didChangeDependencies();
+  }
+  @override
+  Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
-        height: height,
-        width: width ?? MediaQuery.of(context).size.width,
-        padding: padding ?? EdgeInsets.only(left: spacing.padding4 ?? 0),
+        height: widget.height,
+        width: widget.width ?? MediaQuery.of(context).size.width,
+        padding: widget.padding ?? EdgeInsets.only(left: spacing.padding4 ?? 0),
         decoration: BoxDecoration(
             color: messageHeaderStyle.backgroundColor ?? colorPalette.background1,
             border: messageHeaderStyle.border,
@@ -383,5 +404,5 @@ class CometChatMessageHeader extends StatelessWidget
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(height ?? 65);
+  Size get preferredSize => Size.fromHeight(widget.height ?? 65);
 }

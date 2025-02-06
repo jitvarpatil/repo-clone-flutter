@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cometchat_calls_uikit/cometchat_calls_uikit.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 /// [CometChatCallButtons] is a button widget with voice and video call icons.
@@ -140,12 +141,14 @@ class CometChatCallButtons extends StatelessWidget {
                     }
                   },
                   icon: videoCallIcon ??
-                      Icon(
-                        Icons.videocam_outlined,
-                        size: 24,
-                        color: callButtonsStyle.videoCallIconColor ??
-                            colorPalette.iconPrimary,
-                      ),
+                  SvgPicture.asset(
+                     SvgAssetConstants.videoCall,
+                      height: 24,
+                      width: 24,
+                      color: callButtonsStyle.videoCallIconColor ??
+                          colorPalette.iconPrimary,
+                    package: UIConstants.packageName,
+                  ),
                 ),
             ],
           );

@@ -49,6 +49,9 @@ class CometChatIncomingCall extends StatelessWidget {
   ///[acceptButtonText] is used to set a custom accept text
   final String? acceptButtonText;
 
+  ///[callIcon] is used to set a custom call icon
+  final Widget? callIcon;
+
   CometChatIncomingCall({
     Key? key,
     required Call call,
@@ -66,6 +69,7 @@ class CometChatIncomingCall extends StatelessWidget {
     this.width,
     this.declineButtonText,
     this.acceptButtonText,
+    this.callIcon
   })  : _incomingCallController = CometChatIncomingCallController(
           onAccept: onAccept,
           onDecline: onDecline,
@@ -200,9 +204,9 @@ class CometChatIncomingCall extends StatelessWidget {
                               padding: EdgeInsets.only(
                                 right: spacing.padding ?? 0,
                               ),
-                              child: Icon(
+                              child: callIcon ?? Icon(
                                 Icons.call,
-                                color: colorPalette.iconSecondary,
+                                color: incomingCallStyle.callIconColor ?? colorPalette.iconSecondary,
                                 size: 16,
                               ),
                             ),

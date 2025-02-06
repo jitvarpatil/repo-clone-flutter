@@ -39,13 +39,13 @@ class CometChatOngoingCallController extends GetxController
   void onInit() {
     super.onInit();
      _callStateController = CallStateController.instance;
-    _callStateController?.setValue(true);
+    _callStateController?.setActiveCallValue(true);
     loadCallingScreen();
   }
 
   @override
   void onClose() {
-    _callStateController?.setValue(false);
+    _callStateController?.setActiveCallValue(false);
     super.onClose();
   }
 

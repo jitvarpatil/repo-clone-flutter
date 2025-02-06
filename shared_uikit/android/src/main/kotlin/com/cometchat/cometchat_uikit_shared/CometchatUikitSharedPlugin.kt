@@ -319,6 +319,10 @@ class CometchatUikitSharedPlugin: FlutterPlugin, MethodCallHandler, ActivityAwar
                 val permissionToRecord = grantResults[0] == PackageManager.PERMISSION_GRANTED
 
               if (permissionToRecord) {
+                    AudioRecorderEventHandler.audioRecorder?.startRecording()
+                if(audioRecordResult!=null){
+                  audioRecordResult?.success(permissionToRecord)
+                }
                     Toast.makeText(context, "Permissions Granted for record audio", Toast.LENGTH_LONG).show()
                 } else {
                     Toast.makeText(context, "Permissions Denied for record audio", Toast.LENGTH_LONG).show()
@@ -523,16 +527,21 @@ class CometchatUikitSharedPlugin: FlutterPlugin, MethodCallHandler, ActivityAwar
     showToastOnMainThread(context, message)
   }
 
+  private var audioRecordResult: Result? = null
+
 ///[startRecordingAudio] is used to start the recording audio
   private fun startRecordingAudio(call: MethodCall, result: Result){
     val isRecording: Boolean?
+    audioRecordResult = result
     if (AudioRecorderEventHandler.audioRecorder == null) {
       AudioRecorderEventHandler.audioRecorder = AudioRecorder(context,activity)
       isRecording = AudioRecorderEventHandler.audioRecorder?.startRecording()
     } else{
       isRecording = AudioRecorderEventHandler.audioRecorder?.resumeRecording()
     }
-    result.success(isRecording)
+    if(isRecording==true){
+      result.success(isRecording)
+    }
   }
 
   ///[stopRecordingAudio] is used to stop the recording audio
@@ -541,6 +550,7 @@ class CometchatUikitSharedPlugin: FlutterPlugin, MethodCallHandler, ActivityAwar
       val filePath : String? = AudioRecorderEventHandler.audioRecorder?.stopRecording()
       AudioRecorderEventHandler.onCancel(null)
       AudioRecorderEventHandler.audioRecorder = null
+      audioRecordResult=null
       result.success(filePath)
     }
 
