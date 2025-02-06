@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cometchat_chat_uikit/cometchat_chat_uikit.dart';
-import 'package:sample_app/auth/login_app_credential.dart';
-import 'package:sample_app/utils/show_snackBar.dart';
+import 'package:master_app/auth/login_app_credential.dart';
+import 'package:master_app/utils/show_snackBar.dart';
 
 import '../dashboard.dart';
 import '../models/user_model.dart';

@@ -1,7 +1,7 @@
 import 'package:cometchat_chat_uikit/cometchat_chat_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sample_app/transfer_ownership/cometchat_transfer_ownership_controller.dart';
+import 'package:master_app/transfer_ownership/cometchat_transfer_ownership_controller.dart';
 
 
 class CometChatTransferOwnership extends StatelessWidget {
@@ -97,30 +97,8 @@ class CometChatTransferOwnership extends StatelessWidget {
                               Get.find<CometChatGroupMembersController>(tag: tag);
                           if (membersController.selectionMap.entries.isNotEmpty) {
                             final member = membersController.selectionMap.entries.first.value;
-                            if(member.uid == group.owner) {
-                              var snackBar = SnackBar(
-                                backgroundColor: colorPalette.error,
-                                content: Text(
-                                  "You are already the owner of this group.",
-                                  style: TextStyle(
-                                    color: colorPalette.white,
-                                    fontSize: typography.button?.medium?.fontSize,
-                                    fontWeight: typography.button?.medium?.fontWeight,
-                                    fontFamily: typography.button?.medium?.fontFamily,
-                                  ),
-                                ),
-                              );
-                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                            }else {
-                              controller.showConfirmDialog(
-                                context,
-                                group.guid,
-                                member,
-                                colorPalette,
-                                typography,
-                                spacing,
-                              );
-                            }
+                            controller.showConfirmDialog(context,group.guid,member,
+                              colorPalette, typography, spacing,);
                           } else {
                             debugPrint("No members selected.");
                             var snackBar = SnackBar(
