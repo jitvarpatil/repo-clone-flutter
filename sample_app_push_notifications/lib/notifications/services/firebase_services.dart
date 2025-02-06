@@ -232,10 +232,47 @@ Future<void> displayIncomingCall(RemoteMessage rMessage) async {
               SharedPreferencesClass.init();
               break;
             case Event.actionCallAccept:
-              SharedPreferencesClass.setString(
-                  "SessionId", callEvent?.body["id"]);
-              SharedPreferencesClass.setString(
-                  "callType", callEvent?.body["type"] == 0 ? "audio" : "video");
+              String sessionId = callEvent?.body["id"];
+              String callType = callEvent?.body["type"] == 0 ? "audio" : "video";
+
+              SharedPreferencesClass.setString("SessionId", sessionId);
+              SharedPreferencesClass.setString("callType", callType);
+
+              // Wait for Flutter to initialize UI before navigating
+              Future.delayed(const Duration(milliseconds: 200), () {
+                if (CallNavigationContext.navigatorKey.currentContext != null &&
+                    CallNavigationContext.navigatorKey.currentContext!.mounted) {
+                  Navigator.push(
+                    CallNavigationContext.navigatorKey.currentContext!,
+                    MaterialPageRoute(
+                      builder: (context) => CometChatOngoingCall(
+                        sessionId: sessionId,
+                        callSettingsBuilder: (CallSettingsBuilder()
+                          ..enableDefaultLayout = true
+                          ..setAudioOnlyCall = (callType == "audio")),
+                      ),
+                    ),
+                  );
+                } else {
+                  debugPrint("Navigation context is still null, retrying...");
+                  Future.delayed(const Duration(milliseconds: 500), () {
+                    if (CallNavigationContext.navigatorKey.currentContext != null &&
+                        CallNavigationContext.navigatorKey.currentContext!.mounted) {
+                      Navigator.push(
+                        CallNavigationContext.navigatorKey.currentContext!,
+                        MaterialPageRoute(
+                          builder: (context) => CometChatOngoingCall(
+                            sessionId: sessionId,
+                            callSettingsBuilder: (CallSettingsBuilder()
+                              ..enableDefaultLayout = true
+                              ..setAudioOnlyCall = (callType == "audio")),
+                          ),
+                        ),
+                      );
+                    }
+                  });
+                }
+              });
               break;
             case Event.actionCallDecline:
               init();
@@ -412,7 +449,8 @@ class FirebaseService with CometChatUIEventListener {
   }
 
   // This method processes the incoming Firebase message to handle user or group notifications and carries out appropriate actions such as initiating a chat or call.
-  Future<void> openNotification(context, RemoteMessage? message, String? conversationId) async {
+  Future<void> openNotification(
+      context, RemoteMessage? message, String? conversationId) async {
     if (message != null) {
       Map<String, dynamic> data = message.data;
 
