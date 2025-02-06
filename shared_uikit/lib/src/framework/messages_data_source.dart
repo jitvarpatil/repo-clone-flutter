@@ -1287,13 +1287,15 @@ class MessagesDataSource implements DataSource {
             color: colorPalette.iconSecondary,
             size: 16,
           ),
-          Padding(
-            padding: EdgeInsets.only(left: spacing.padding ?? 0),
-            child: Text(
-              Translations.of(context).thisMessageDeleted,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: subtitleStyle0,
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.only(left: spacing.padding ?? 0),
+              child: Text(
+                Translations.of(context).thisMessageDeleted,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: subtitleStyle0,
+              ),
             ),
           ),
         ],

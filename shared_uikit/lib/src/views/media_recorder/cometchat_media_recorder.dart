@@ -80,6 +80,12 @@ class _CometChatMediaRecorderState extends State<CometChatMediaRecorder> {
   Duration _elapsedTime = Duration.zero;
 
   @override
+  void initState() {
+    super.initState();
+    startRecording();
+  }
+
+  @override
   void dispose() {
     _stopTimer();
     releaseAudioRecorderResources();
@@ -130,7 +136,7 @@ class _CometChatMediaRecorderState extends State<CometChatMediaRecorder> {
               padding: EdgeInsets.only(bottom: spacing.padding5 ?? 0),
               child: _isAudioRecordingCompleted
                   ? CometChatAudioBubble(
-                      metadata: {'localPath': path},
+                      metadata: {AudioBubbleConstants.localPath: path,AudioBubbleConstants.usedByMediaRecorder:true},
                       alignment: BubbleAlignment.right,
                       width: MediaQuery.of(context).size.width-40,
                       padding: EdgeInsets.all(spacing.padding2 ?? 0),

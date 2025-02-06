@@ -1,6 +1,9 @@
 import 'package:cometchat_uikit_shared/cometchat_uikit_shared.dart';
 import 'package:flutter/material.dart';
 
+import 'package:cometchat_uikit_shared/cometchat_uikit_shared.dart';
+import 'package:flutter/material.dart';
+
 class CometChatShimmerEffect extends StatefulWidget {
   const CometChatShimmerEffect({
     Key? key,
@@ -8,16 +11,19 @@ class CometChatShimmerEffect extends StatefulWidget {
     this.linearGradient,
     this.colorPalette,
   }) : super(key: key);
+
   final Widget child;
   final LinearGradient? linearGradient;
   final CometChatColorPalette? colorPalette;
+
   @override
   State<CometChatShimmerEffect> createState() => _CometChatShimmerEffectState();
 }
 
 class _CometChatShimmerEffectState extends State<CometChatShimmerEffect>
     with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
+  late final AnimationController _controller;
+
   @override
   void initState() {
     super.initState();
@@ -31,32 +37,29 @@ class _CometChatShimmerEffectState extends State<CometChatShimmerEffect>
     super.dispose();
   }
 
-  LinearGradient defaultGradient(context) {
+  LinearGradient get _defaultGradient {
+    final palette = widget.colorPalette;
     return LinearGradient(
       colors: [
-        widget.colorPalette?.neutral200 ?? Colors.transparent,
-        widget.colorPalette?.neutral300 ?? Colors.transparent,
-        widget.colorPalette?.neutral400 ?? Colors.transparent,
+        palette?.neutral200 ?? Colors.transparent,
+        palette?.neutral300 ?? Colors.transparent,
+        palette?.neutral400 ?? Colors.transparent,
       ],
-      stops: const [
-        0.1,
-        0.3,
-        0.4,
-      ],
+      stops: const [0.1, 0.3, 0.4],
       begin: const Alignment(-1.0, -0.3),
       end: const Alignment(1.0, 0.3),
       tileMode: TileMode.clamp,
     );
   }
 
-  LinearGradient get gradient {
+  LinearGradient get _computedGradient {
+    final baseGradient = widget.linearGradient ?? _defaultGradient;
     return LinearGradient(
-      colors: widget.linearGradient?.colors ?? defaultGradient(context).colors,
-      stops: widget.linearGradient?.stops ?? defaultGradient(context).stops,
-      begin: widget.linearGradient?.begin ?? defaultGradient(context).begin,
-      end: widget.linearGradient?.end ?? defaultGradient(context).end,
-      tileMode:
-          widget.linearGradient?.tileMode ?? defaultGradient(context).tileMode,
+      colors: baseGradient.colors,
+      stops: baseGradient.stops,
+      begin: baseGradient.begin,
+      end: baseGradient.end,
+      tileMode: baseGradient.tileMode,
       transform: _SlidingGradientTransform(slidePercent: _controller.value),
     );
   }
@@ -65,11 +68,9 @@ class _CometChatShimmerEffectState extends State<CometChatShimmerEffect>
   Widget build(BuildContext context) {
     return AnimatedBuilder(
       animation: _controller,
-      builder: (context, child) {
+      builder: (_, child) {
         return ShaderMask(
-          shaderCallback: (bounds) {
-            return gradient.createShader(bounds);
-          },
+          shaderCallback: (bounds) => _computedGradient.createShader(bounds),
           blendMode: BlendMode.srcATop,
           child: widget.child,
         );
@@ -80,7 +81,9 @@ class _CometChatShimmerEffectState extends State<CometChatShimmerEffect>
 
 class _SlidingGradientTransform extends GradientTransform {
   final double slidePercent;
+
   const _SlidingGradientTransform({required this.slidePercent});
+
   @override
   Matrix4? transform(Rect bounds, {TextDirection? textDirection}) {
     return Matrix4.translationValues(bounds.width * slidePercent, 0.0, 0.0);

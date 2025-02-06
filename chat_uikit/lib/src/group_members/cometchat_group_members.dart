@@ -53,11 +53,10 @@ class CometChatGroupMembers extends StatelessWidget {
       this.onItemLongPress,
       this.activateSelection,
       this.height,
-        this.width,
+      this.width,
       this.emptyStateSubtitleText,
-        this.controllerTag,
-        this.hideAppbar
-      });
+      this.controllerTag,
+      this.hideAppbar});
 
   ///property to be set internally by using passed parameters [groupMembersProtocol] ,[selectionMode] ,[options]
   ///these are passed to the [CometChatGroupMembersController] which is responsible for the business logic
@@ -206,7 +205,8 @@ class CometChatGroupMembers extends StatelessWidget {
     if (tailView != null) {
       tail = tailView!(context, member);
     } else {
-      tail = _getTail(member, controller, groupMemberStyle,colorPalette, typography, spacing);
+      tail = _getTail(member, controller, groupMemberStyle, colorPalette,
+          typography, spacing);
     }
 
     StatusIndicatorUtils statusIndicatorUtils =
@@ -226,23 +226,23 @@ class CometChatGroupMembers extends StatelessWidget {
       decoration: BoxDecoration(
         color: (controller.selectionMap[member.uid] != null)
             ? (groupMemberStyle.listItemSelectedBackgroundColor ??
-            colorPalette.background4)
+                colorPalette.background4)
             : colorPalette.transparent,
       ),
       // padding: EdgeInsets.symmetric(vertical:spacing.padding2 ?? 0 , horizontal: spacing.padding4 ?? 0),
       padding: EdgeInsets.only(
-        left: (controller.selectionMap.isNotEmpty)
-            ? 0
-            : spacing.padding4 ?? 0,
+        left: (controller.selectionMap.isNotEmpty) ? 0 : spacing.padding4 ?? 0,
         right: spacing.padding4 ?? 0,
         top: spacing.padding2 ?? 0,
         bottom: spacing.padding2 ?? 0,
       ),
       child: GestureDetector(
         onLongPress: () {
-          if (member.uid != controller.group.owner && (activateSelection == ActivateSelection.onLongClick &&
-              controller.selectionMap.isEmpty &&
-              !(selectionMode == null || selectionMode == SelectionMode.none))) {
+          if (member.uid != controller.group.owner &&
+              (activateSelection == ActivateSelection.onLongClick &&
+                  controller.selectionMap.isEmpty &&
+                  !(selectionMode == null ||
+                      selectionMode == SelectionMode.none))) {
             controller.onTap(member);
 
             _isSelectionOn.value = true;
@@ -251,15 +251,17 @@ class CometChatGroupMembers extends StatelessWidget {
           } else {
             List<CometChatOption>? options = (this.options != null)
                 ? this.options!(
-              group,
-              member,
-              controller,
-              context,
-            )
-                : controller.defaultFunction(group, member, context, colorPalette, typography, spacing);
-            if(options != null && options.isNotEmpty){
-              if(group.owner != CometChatUIKit.loggedInUser?.uid &&  member.scope == GroupMemberScope.admin) {
-              return;
+                    group,
+                    member,
+                    controller,
+                    context,
+                  )
+                : controller.defaultFunction(
+                    group, member, context, colorPalette, typography, spacing);
+            if (options != null && options.isNotEmpty) {
+              if (group.owner != CometChatUIKit.loggedInUser?.uid &&
+                  member.scope == GroupMemberScope.admin) {
+                return;
               }
               showPopupMenu(
                 context,
@@ -275,11 +277,12 @@ class CometChatGroupMembers extends StatelessWidget {
           }
         },
         onTap: () {
-          if (member.uid != controller.group.owner && (activateSelection == ActivateSelection.onClick ||
-              (activateSelection == ActivateSelection.onLongClick &&
-                      controller.selectionMap.isNotEmpty) &&
-                  !(selectionMode == null ||
-                      selectionMode == SelectionMode.none))) {
+          if (member.uid != controller.group.owner &&
+              (activateSelection == ActivateSelection.onClick ||
+                  (activateSelection == ActivateSelection.onLongClick &&
+                          controller.selectionMap.isNotEmpty) &&
+                      !(selectionMode == null ||
+                          selectionMode == SelectionMode.none))) {
             controller.onTap(member);
             if (controller.selectionMap.isEmpty) {
               _isSelectionOn.value = false;
@@ -296,48 +299,49 @@ class CometChatGroupMembers extends StatelessWidget {
           children: [
             (controller.selectionMap.isNotEmpty)
                 ? Checkbox(
-              fillColor: (controller.selectionMap[member.uid] != null)
-                  ? WidgetStateProperty.all(
-                  groupMemberStyle.checkboxCheckedBackgroundColor ??
-                      colorPalette.iconHighlight)
-                  : WidgetStateProperty.all(
-                  groupMemberStyle.checkboxBackgroundColor ??  colorPalette.transparent),
-              value: controller.selectionMap[member.uid] != null,
-              onChanged: (value) {
-                if (activateSelection ==
-                    ActivateSelection.onClick ||
-                    (activateSelection ==
-                        ActivateSelection.onLongClick &&
-                        controller.selectionMap.isNotEmpty) &&
-                        !(selectionMode == null ||
-                            selectionMode == SelectionMode.none)) {
-                  controller.onTap(member);
-                  if (controller.selectionMap.isEmpty) {
-                    _isSelectionOn.value = false;
-                  } else if (activateSelection ==
-                      ActivateSelection.onClick &&
-                      controller.selectionMap.isNotEmpty &&
-                      _isSelectionOn.value == false) {
-                    _isSelectionOn.value = true;
-                  }
-                }
-              },
-              shape: RoundedRectangleBorder(
-                borderRadius: groupMemberStyle.checkboxBorderRadius ??
-                    BorderRadius.circular(
-                      spacing.radius1 ?? 0,
+                    fillColor: (controller.selectionMap[member.uid] != null)
+                        ? WidgetStateProperty.all(
+                            groupMemberStyle.checkboxCheckedBackgroundColor ??
+                                colorPalette.iconHighlight)
+                        : WidgetStateProperty.all(
+                            groupMemberStyle.checkboxBackgroundColor ??
+                                colorPalette.transparent),
+                    value: controller.selectionMap[member.uid] != null,
+                    onChanged: (value) {
+                      if (activateSelection == ActivateSelection.onClick ||
+                          (activateSelection == ActivateSelection.onLongClick &&
+                                  controller.selectionMap.isNotEmpty) &&
+                              !(selectionMode == null ||
+                                  selectionMode == SelectionMode.none)) {
+                        controller.onTap(member);
+                        if (controller.selectionMap.isEmpty) {
+                          _isSelectionOn.value = false;
+                        } else if (activateSelection ==
+                                ActivateSelection.onClick &&
+                            controller.selectionMap.isNotEmpty &&
+                            _isSelectionOn.value == false) {
+                          _isSelectionOn.value = true;
+                        }
+                      }
+                    },
+                    shape: RoundedRectangleBorder(
+                      borderRadius: groupMemberStyle.checkboxBorderRadius ??
+                          BorderRadius.circular(
+                            spacing.radius1 ?? 0,
+                          ),
                     ),
-              ),
-              checkColor: groupMemberStyle.checkboxSelectedIconColor ?? colorPalette.white,
-              side: groupMemberStyle.checkboxBorder ??
-                  BorderSide(
-                    color:
-                    ( controller.selectionMap[member.uid] != null?colorPalette.borderHighlight:colorPalette.borderDefault )?? Colors.transparent,
-                    width: 1.25,
-                    style: BorderStyle.solid,
-                  ),
-
-            )
+                    checkColor: groupMemberStyle.checkboxSelectedIconColor ??
+                        colorPalette.white,
+                    side: groupMemberStyle.checkboxBorder ??
+                        BorderSide(
+                          color: (controller.selectionMap[member.uid] != null
+                                  ? colorPalette.borderHighlight
+                                  : colorPalette.borderDefault) ??
+                              Colors.transparent,
+                          width: 1.25,
+                          style: BorderStyle.solid,
+                        ),
+                  )
                 : const SizedBox(),
             Expanded(
               child: CometChatListItem(
@@ -348,13 +352,14 @@ class CometChatGroupMembers extends StatelessWidget {
                   key: UniqueKey(),
                   subtitleView: subtitle,
                   tailView: tail,
-                  avatarStyle: groupMemberStyle.avatarStyle ?? const CometChatAvatarStyle(),
+                  avatarStyle: groupMemberStyle.avatarStyle ??
+                      const CometChatAvatarStyle(),
                   avatarHeight: 40,
                   avatarWidth: 40,
                   statusIndicatorColor: backgroundColor,
                   statusIndicatorIcon: icon,
-                  statusIndicatorStyle:
-                  groupMemberStyle.statusIndicatorStyle ?? const CometChatStatusIndicatorStyle(),
+                  statusIndicatorStyle: groupMemberStyle.statusIndicatorStyle ??
+                      const CometChatStatusIndicatorStyle(),
                   hideSeparator: hideSeparator ?? true,
                   style: ListItemStyle(
                     background: colorPalette.transparent,
@@ -383,8 +388,8 @@ class CometChatGroupMembers extends StatelessWidget {
     if (listItemView != null) {
       return listItemView!(member);
     } else {
-      return getDefaultItem(
-          member, controller, context,key,groupMemberStyle, colorPalette, typography, spacing);
+      return getDefaultItem(member, controller, context, key, groupMemberStyle,
+          colorPalette, typography, spacing);
     }
   }
 
@@ -471,7 +476,6 @@ class CometChatGroupMembers extends StatelessWidget {
     }
   }
 
-
   Widget _getList(
       CometChatGroupMembersController value,
       BuildContext context,
@@ -479,64 +483,69 @@ class CometChatGroupMembers extends StatelessWidget {
       CometChatColorPalette colorPalette,
       CometChatTypography typography,
       CometChatSpacing spacing) {
-
-        if (value.hasError == true) {
-          if (errorStateView != null) {
-            return errorStateView!(context);
-          } else {
-            return UIStateUtils.getDefaultErrorStateView(
-                context,
-                colorPalette,
-                typography,
-                spacing,
-                value.loadMoreElements,
-            errorStateTextStyle: groupMemberStyle.errorStateTextStyle,
-              errorStateSubtitleStyle: groupMemberStyle.errorStateSubtitleStyle,
-              buttonBackgroundColor: groupMemberStyle.retryButtonBackgroundColor,
-              buttonBorderRadius: groupMemberStyle.retryButtonBorderRadius,
-              buttonBorderSide: groupMemberStyle.retryButtonBorder,
-              buttonTextColor: groupMemberStyle.retryButtonTextColor,
-              buttonTextStyle: groupMemberStyle.retryButtonTextStyle,
-            );
-          }
-        } else if (value.isLoading == true && (value.list.isEmpty)) {
-          return _getLoadingIndicator(
-              context, colorPalette, typography, spacing);
-        } else if (value.list.isEmpty) {
-          //----------- empty list widget-----------
-          return _getNoUserIndicator(
-              context, groupMemberStyle, colorPalette, typography,spacing);
-        } else {
-          List<GlobalKey> tileKeys =
+    if (value.hasError == true) {
+      if (errorStateView != null) {
+        return errorStateView!(context);
+      } else {
+        return UIStateUtils.getDefaultErrorStateView(
+          context,
+          colorPalette,
+          typography,
+          spacing,
+          value.loadMoreElements,
+          errorStateTextStyle: groupMemberStyle.errorStateTextStyle,
+          errorStateSubtitleStyle: groupMemberStyle.errorStateSubtitleStyle,
+          buttonBackgroundColor: groupMemberStyle.retryButtonBackgroundColor,
+          buttonBorderRadius: groupMemberStyle.retryButtonBorderRadius,
+          buttonBorderSide: groupMemberStyle.retryButtonBorder,
+          buttonTextColor: groupMemberStyle.retryButtonTextColor,
+          buttonTextStyle: groupMemberStyle.retryButtonTextStyle,
+        );
+      }
+    } else if (value.isLoading == true && (value.list.isEmpty)) {
+      return _getLoadingIndicator(context, colorPalette, typography, spacing);
+    } else if (value.list.isEmpty) {
+      //----------- empty list widget-----------
+      return _getNoUserIndicator(
+          context, groupMemberStyle, colorPalette, typography, spacing);
+    } else {
+      List<GlobalKey> tileKeys =
           List.generate(value.list.length, (index) => GlobalKey());
 
-          return ListView.builder(
-            controller: controller,
-            itemCount: value.hasMoreItems
-                ? value.list.length + 1
-                : value.list.length,
-            itemBuilder: (context, index) {
-              if (index >= value.list.length) {
-                value.loadMoreElements();
-                return Center(
-                  child: SizedBox(
-                    height: 30,
-                    width: 30,
-                    child: CircularProgressIndicator(
-                      color: groupMemberStyle.loadingIconColor ?? colorPalette.primary,
-                    ),
-                  ),
-                );
-              }
+      return ListView.builder(
+        controller: controller,
+        itemCount:
+            value.hasMoreItems ? value.list.length + 1 : value.list.length,
+        itemBuilder: (context, index) {
+          if (index >= value.list.length) {
+            value.loadMoreElements();
+            return Center(
+              child: SizedBox(
+                height: 30,
+                width: 30,
+                child: CircularProgressIndicator(
+                  color:
+                      groupMemberStyle.loadingIconColor ?? colorPalette.primary,
+                ),
+              ),
+            );
+          }
 
-              return SizedBox(
-                key: tileKeys[index],
-                child: getListItem(value.list[index], value, context,tileKeys[index], groupMemberStyle, colorPalette,
-                    typography, spacing),
-              );
-            },
+          return SizedBox(
+            key: tileKeys[index],
+            child: getListItem(
+                value.list[index],
+                value,
+                context,
+                tileKeys[index],
+                groupMemberStyle,
+                colorPalette,
+                typography,
+                spacing),
           );
-        }
+        },
+      );
+    }
   }
 
   Widget _getTail(
@@ -546,33 +555,43 @@ class CometChatGroupMembers extends StatelessWidget {
       CometChatColorPalette colorPalette,
       CometChatTypography typography,
       CometChatSpacing spacing) {
-
     Color? backgroundColor;
     BoxBorder? border;
     String scope = groupMember.scope ?? GroupMemberScope.participant;
     Color? textColor;
     TextStyle? textStyle;
 
-    if (groupMember.uid == controller.group.owner){
+    if (groupMember.uid == controller.group.owner) {
       scope = GroupMemberScope.owner;
-      backgroundColor = groupMembersStyle.ownerMemberScopeBackgroundColor ?? colorPalette.primary;
-      textColor =groupMembersStyle.ownerMemberScopeTextColor ?? groupMembersStyle.ownerMemberScopeTextStyle?.color ?? colorPalette.white;
+      backgroundColor = groupMembersStyle.ownerMemberScopeBackgroundColor ??
+          colorPalette.primary;
+      textColor = groupMembersStyle.ownerMemberScopeTextColor ??
+          groupMembersStyle.ownerMemberScopeTextStyle?.color ??
+          colorPalette.white;
       border = groupMembersStyle.ownerMemberScopeBorder;
       textStyle = groupMembersStyle.ownerMemberScopeTextStyle;
     } else if (scope == GroupMemberScope.admin) {
-      backgroundColor = groupMembersStyle.adminMemberScopeBackgroundColor ?? colorPalette.extendedPrimary100;
-      border = groupMembersStyle.adminMemberScopeBorder ??  Border.all(color: colorPalette.borderHighlight ?? Colors.transparent, width: 1);
-      textColor = groupMembersStyle.adminMemberScopeTextColor ?? groupMembersStyle.adminMemberScopeTextStyle?.color ?? colorPalette.textHighlight;
+      backgroundColor = groupMembersStyle.adminMemberScopeBackgroundColor ??
+          colorPalette.extendedPrimary100;
+      border = groupMembersStyle.adminMemberScopeBorder ??
+          Border.all(
+              color: colorPalette.borderHighlight ?? Colors.transparent,
+              width: 1);
+      textColor = groupMembersStyle.adminMemberScopeTextColor ??
+          groupMembersStyle.adminMemberScopeTextStyle?.color ??
+          colorPalette.textHighlight;
       textStyle = groupMembersStyle.adminMemberScopeTextStyle;
     } else if (scope == GroupMemberScope.moderator) {
-      backgroundColor = groupMembersStyle.moderatorMemberScopeBackgroundColor ?? colorPalette.extendedPrimary100;
-      textColor = groupMembersStyle.moderatorMemberScopeTextColor ?? groupMembersStyle.moderatorMemberScopeTextStyle?.color ?? colorPalette.textHighlight;
+      backgroundColor = groupMembersStyle.moderatorMemberScopeBackgroundColor ??
+          colorPalette.extendedPrimary100;
+      textColor = groupMembersStyle.moderatorMemberScopeTextColor ??
+          groupMembersStyle.moderatorMemberScopeTextStyle?.color ??
+          colorPalette.textHighlight;
       border = groupMembersStyle.moderatorMemberScopeBorder;
       textStyle = groupMembersStyle.moderatorMemberScopeTextStyle;
     } else {
       return const SizedBox();
     }
-
 
     return Container(
       alignment: Alignment.center,
@@ -581,17 +600,16 @@ class CometChatGroupMembers extends StatelessWidget {
       decoration: BoxDecoration(
         color: backgroundColor,
         border: border,
-        borderRadius:
-            BorderRadius.circular(spacing.radiusMax ?? 0),
+        borderRadius: BorderRadius.circular(spacing.radiusMax ?? 0),
       ),
       child: Text(
-          scope.capitalizeFirst ?? "",
-          style:TextStyle(
-                  fontSize: typography.caption1?.regular?.fontSize,
-                  fontWeight: typography.caption1?.regular?.fontWeight,
-                  color: textColor)
-          .merge(textStyle)
-        .copyWith(color: textColor),
+        scope.capitalizeFirst ?? "",
+        style: TextStyle(
+                fontSize: typography.caption1?.regular?.fontSize,
+                fontWeight: typography.caption1?.regular?.fontWeight,
+                color: textColor)
+            .merge(textStyle)
+            .copyWith(color: textColor),
       ),
     );
   }
@@ -601,11 +619,20 @@ class CometChatGroupMembers extends StatelessWidget {
     final colorPalette = CometChatThemeHelper.getColorPalette(context);
     final typography = CometChatThemeHelper.getTypography(context);
     final spacing = CometChatThemeHelper.getSpacing(context);
-    final groupMemberStyle = CometChatThemeHelper.getTheme<CometChatGroupMembersStyle>(context: context, defaultTheme: CometChatGroupMembersStyle.of).merge(style);
-    final confirmDialogStyle = CometChatThemeHelper.getTheme<CometChatConfirmDialogStyle>(context: context, defaultTheme: CometChatConfirmDialogStyle.of).merge(groupMemberStyle.confirmDialogStyle);
-    final changeScopeStyle = CometChatThemeHelper.getTheme<CometChatChangeScopeStyle>(context: context, defaultTheme: CometChatChangeScopeStyle.of).merge(groupMemberStyle.changeScopeStyle);
-    final groupMembersController =
-        Get.put(CometChatGroupMembersController(
+    final groupMemberStyle =
+        CometChatThemeHelper.getTheme<CometChatGroupMembersStyle>(
+                context: context, defaultTheme: CometChatGroupMembersStyle.of)
+            .merge(style);
+    final confirmDialogStyle =
+        CometChatThemeHelper.getTheme<CometChatConfirmDialogStyle>(
+                context: context, defaultTheme: CometChatConfirmDialogStyle.of)
+            .merge(groupMemberStyle.confirmDialogStyle);
+    final changeScopeStyle =
+        CometChatThemeHelper.getTheme<CometChatChangeScopeStyle>(
+                context: context, defaultTheme: CometChatChangeScopeStyle.of)
+            .merge(groupMemberStyle.changeScopeStyle);
+    final groupMembersController = Get.put(
+        CometChatGroupMembersController(
           groupMembersBuilderProtocol: groupMembersProtocol ??
               UIGroupMembersBuilder(
                 groupMembersRequestBuilder ??
@@ -616,184 +643,166 @@ class CometChatGroupMembers extends StatelessWidget {
           onError: onError,
           confirmDialogStyle: confirmDialogStyle,
           changeScopeStyle: changeScopeStyle,
-        ),tag: controllerTag);
+        ),
+        tag: controllerTag);
 
     if (stateCallBack != null) {
       WidgetsBinding.instance
           .addPostFrameCallback((_) => stateCallBack!(groupMembersController));
     }
 
-
-          return CometChatListBase(
-              titleSpacing: showBackButton ? 0 : 16,
-              titleView:  GetBuilder<CometChatGroupMembersController>(
-                  global: false,
-                  init: groupMembersController,
-                  tag: controllerTag,
-                  builder: (CometChatGroupMembersController value)=>Text(
-                    value.selectionMap.isNotEmpty
-                        ? "${value.selectionMap.length}"
-                        : title ?? cc.Translations
-                        .of(context)
-                        .members,
-                    style: TextStyle(
-                      color:colorPalette.textPrimary,
-                      fontSize: typography.heading1?.bold?.fontSize,
-                      fontWeight: typography.heading1?.bold?.fontWeight,
-                      fontFamily: typography.heading1?.bold?.fontFamily,
-                    ).merge(groupMemberStyle.titleStyle),
-                  )),
-
-              hideSearch: hideSearch,
-              hideAppBar: hideAppbar ?? false,
-              backIcon: GetBuilder<CometChatGroupMembersController>(
-                  init: groupMembersController,
-                  global: false,
-                  tag: controllerTag,
-                  builder: (controller) => controller.selectionMap.isNotEmpty
-                      ? IconButton(
-                    onPressed: () {
-                      controller.clearSelection();
-                      _isSelectionOn.value = false;
-                    },
-                    icon: Icon(
-                      Icons.clear,
-                      color: colorPalette.iconPrimary,
-                      size: 24,
-                    ),
-                    padding: EdgeInsets.zero,
-                  )
-                      : (backButton ?? IconButton(
+    return CometChatListBase(
+        titleSpacing: showBackButton ? 0 : 16,
+        titleView: GetBuilder<CometChatGroupMembersController>(
+            global: false,
+            init: groupMembersController,
+            tag: controllerTag,
+            builder: (CometChatGroupMembersController value) => Text(
+                  value.selectionMap.isNotEmpty
+                      ? "${value.selectionMap.length}"
+                      : title ?? cc.Translations.of(context).members,
+                  style: TextStyle(
+                    color: colorPalette.textPrimary,
+                    fontSize: typography.heading1?.bold?.fontSize,
+                    fontWeight: typography.heading1?.bold?.fontWeight,
+                    fontFamily: typography.heading1?.bold?.fontFamily,
+                  ).merge(groupMemberStyle.titleStyle),
+                )),
+        hideSearch: hideSearch,
+        hideAppBar: hideAppbar ?? false,
+        backIcon: GetBuilder<CometChatGroupMembersController>(
+          init: groupMembersController,
+          global: false,
+          tag: controllerTag,
+          builder: (controller) => controller.selectionMap.isNotEmpty
+              ? IconButton(
+                  onPressed: () {
+                    controller.clearSelection();
+                    _isSelectionOn.value = false;
+                  },
+                  icon: Icon(
+                    Icons.clear,
+                    color: colorPalette.iconPrimary,
+                    size: 24,
+                  ),
+                  padding: EdgeInsets.zero,
+                )
+              : (backButton ??
+                  IconButton(
                     onPressed: () {
                       Navigator.pop(context);
                     },
                     icon: Icon(
                       Icons.arrow_back,
-                      color: groupMemberStyle.backIconColor ?? colorPalette.iconPrimary,
+                      color: groupMemberStyle.backIconColor ??
+                          colorPalette.iconPrimary,
                       size: 24,
                     ),
                     padding: EdgeInsets.zero,
-                  )),),
-              onBack: onBack,
-              placeholder: searchPlaceholder,
-              showBackButton: showBackButton,
-              searchBoxIcon: searchBoxIcon,
-              onSearch: groupMembersController.onSearch,
-              menuOptions: [
-                if (appBarOptions != null && appBarOptions!.isNotEmpty)
-                  ...appBarOptions!,
-                Obx(() => getSelectionWidget(groupMembersController,groupMemberStyle, colorPalette)),
-              ],
-              searchPadding: EdgeInsets.symmetric(
-                horizontal: spacing.padding4 ?? 0,
-                vertical: spacing.padding3 ?? 0,
-              ),
-              searchContentPadding: EdgeInsets.symmetric(
-                horizontal: spacing.padding3 ?? 0,
-                vertical: spacing.padding2 ?? 0,
-              ),
-              searchBoxHeight: 40,
-              style: ListBaseStyle(
-                background: groupMemberStyle.backgroundColor
-                    ?? colorPalette.background1,
-                titleStyle: TextStyle(
-                  color: colorPalette.textPrimary,
-                  fontSize: typography.heading1?.bold?.fontSize,
-                  fontWeight: typography.heading1?.bold?.fontWeight,
-                  fontFamily: typography.heading1?.bold?.fontFamily,
-                ).merge(groupMemberStyle.titleStyle),
-                height: height,
-                width: width,
-                backIconTint: groupMemberStyle.backIconColor,
-                searchIconTint: groupMemberStyle.searchIconColor ??
-                    colorPalette.iconSecondary,
-                border: groupMemberStyle.border,
-                borderRadius: groupMemberStyle.borderRadius,
-                searchTextStyle: TextStyle(
-                  color: colorPalette.textPrimary,
-                  fontSize: typography.heading4?.regular?.fontSize,
-                  fontWeight: typography.heading4?.regular?.fontWeight,
-                  fontFamily: typography.heading4?.regular?.fontFamily,
-                ).merge(groupMemberStyle.searchTextStyle),
-                searchPlaceholderStyle: TextStyle(
-                  color: colorPalette.textTertiary,
-                  fontSize: typography.heading4?.regular?.fontSize,
-                  fontWeight: typography.heading4?.regular?.fontWeight,
-                  fontFamily: typography.heading4?.regular?.fontFamily,
-                ).merge(groupMemberStyle.searchPlaceholderStyle),
-                searchTextFieldRadius: groupMemberStyle.searchBorderRadius,
-                searchBoxBackground: groupMemberStyle.searchBackground ??
-                    colorPalette.background3,
-                  appBarShape: Border(
-                    bottom: BorderSide(
-                      color: groupMemberStyle.separatorColor ??
-                          colorPalette.borderLight ??
-                          Colors.transparent,
-                      width: groupMemberStyle.separatorHeight ?? 1,
-                    ),
-                  ),
-              ),
-              container:GetBuilder<CometChatGroupMembersController>(
-                  init: groupMembersController,
-                  global: false,
-                  tag: controllerTag,
-                  builder: (CometChatGroupMembersController value) => _getList(
-                  value, context, groupMemberStyle,
-                  colorPalette,
-                  typography, spacing)));
-
-
+                  )),
+        ),
+        onBack: onBack,
+        placeholder: searchPlaceholder,
+        showBackButton: showBackButton,
+        searchBoxIcon: searchBoxIcon,
+        onSearch: groupMembersController.onSearch,
+        menuOptions: [
+          if (appBarOptions != null && appBarOptions!.isNotEmpty)
+            ...appBarOptions!,
+          Obx(() => getSelectionWidget(
+              groupMembersController, groupMemberStyle, colorPalette)),
+        ],
+        searchPadding: EdgeInsets.symmetric(
+          horizontal: spacing.padding4 ?? 0,
+          vertical: spacing.padding3 ?? 0,
+        ),
+        searchContentPadding: EdgeInsets.symmetric(
+          horizontal: spacing.padding3 ?? 0,
+          vertical: spacing.padding2 ?? 0,
+        ),
+        searchBoxHeight: 40,
+        style: ListBaseStyle(
+          background:
+              groupMemberStyle.backgroundColor ?? colorPalette.background1,
+          titleStyle: TextStyle(
+            color: colorPalette.textPrimary,
+            fontSize: typography.heading1?.bold?.fontSize,
+            fontWeight: typography.heading1?.bold?.fontWeight,
+            fontFamily: typography.heading1?.bold?.fontFamily,
+          ).merge(groupMemberStyle.titleStyle),
+          height: height,
+          width: width,
+          backIconTint: groupMemberStyle.backIconColor,
+          searchIconTint:
+              groupMemberStyle.searchIconColor ?? colorPalette.iconSecondary,
+          border: groupMemberStyle.border,
+          borderRadius: groupMemberStyle.borderRadius,
+          searchTextStyle: TextStyle(
+            color: colorPalette.textPrimary,
+            fontSize: typography.heading4?.regular?.fontSize,
+            fontWeight: typography.heading4?.regular?.fontWeight,
+            fontFamily: typography.heading4?.regular?.fontFamily,
+          ).merge(groupMemberStyle.searchTextStyle),
+          searchPlaceholderStyle: TextStyle(
+            color: colorPalette.textTertiary,
+            fontSize: typography.heading4?.regular?.fontSize,
+            fontWeight: typography.heading4?.regular?.fontWeight,
+            fontFamily: typography.heading4?.regular?.fontFamily,
+          ).merge(groupMemberStyle.searchPlaceholderStyle),
+          searchTextFieldRadius: groupMemberStyle.searchBorderRadius,
+          searchBoxBackground:
+              groupMemberStyle.searchBackground ?? colorPalette.background3,
+          appBarShape: Border(
+            bottom: BorderSide(
+              color: groupMemberStyle.separatorColor ??
+                  colorPalette.borderLight ??
+                  Colors.transparent,
+              width: groupMemberStyle.separatorHeight ?? 1,
+            ),
+          ),
+        ),
+        container: GetBuilder<CometChatGroupMembersController>(
+            init: groupMembersController,
+            global: false,
+            tag: controllerTag,
+            builder: (CometChatGroupMembersController value) => _getList(value,
+                context, groupMemberStyle, colorPalette, typography, spacing)));
   }
 
   // Function to show pop-up menu on long press
   void showPopupMenu(
-      BuildContext context,
-      List<CometChatOption> options,
-      CometChatGroupMembersStyle groupMemberStyle,
-      CometChatColorPalette colorPalette,
-      CometChatTypography typography,
-      CometChatSpacing spacing,
-      GlobalKey widgetKey,
-      GroupMember member,
-      ) {
+    BuildContext context,
+    List<CometChatOption> options,
+    CometChatGroupMembersStyle groupMemberStyle,
+    CometChatColorPalette colorPalette,
+    CometChatTypography typography,
+    CometChatSpacing spacing,
+    GlobalKey widgetKey,
+    GroupMember member,
+  ) {
     RelativeRect? position = _getWidgetPosition(context, widgetKey);
     showMenu(
       context: context,
       position: position ?? const RelativeRect.fromLTRB(0, 0, 0, 0),
-      color: groupMemberStyle.optionsBackgroundColor ?? colorPalette.background1,
-      menuPadding: EdgeInsets.symmetric(vertical: spacing.padding2 ?? 0),
+      menuPadding: EdgeInsets.zero,
+      color:
+          groupMemberStyle.optionsBackgroundColor ?? colorPalette.transparent,
       shape: RoundedRectangleBorder(
-        borderRadius:
-            BorderRadius.circular(spacing.radius2 ?? 0),
+        borderRadius: BorderRadius.circular(spacing.radius2 ?? 0),
+        side: BorderSide(
+          color: colorPalette.borderLight ?? Colors.transparent,
+          width: 1,
+        ),
       ),
+      shadowColor: colorPalette.transparent,
+      elevation: 8,
       items: options.map((CometChatOption option) {
-        return PopupMenuItem<CometChatOption>(
+        return CustomPopupMenuItem<CometChatOption>(
           value: option,
-          // height: 48,
-          child: SizedBox(
-            height: 48,
-            child: ListTile(
-              contentPadding: const EdgeInsets.all(0),
-              leading: option.icon!=null && option.icon!.isNotEmpty?Image.asset(
-                option.icon!,
-                package: UIConstants.packageName,
-                width: 24,
-                height: 24,
-                color: groupMemberStyle.optionsIconColor ?? option.iconTint,
-              ):null,
-              minLeadingWidth: 0,
-              minVerticalPadding: 0,
-              horizontalTitleGap: 8,
-              title: Text(
-                option.title ?? "",
-                style: TextStyle(
-                  color: colorPalette.textPrimary,
-                  fontSize: typography.body?.regular?.fontSize,
-                  fontWeight: typography.body?.regular?.fontWeight,
-                  fontFamily: typography.body?.regular?.fontFamily,
-                ).merge(groupMemberStyle.optionsTextStyle),
-              ),
-            ),
+          child: GetMenuView(
+            option: option,
+            textStyle: groupMemberStyle.optionsTextStyle,
+            iconTint: groupMemberStyle.optionsIconColor ?? option.iconTint,
           ),
         );
       }).toList(),
@@ -804,22 +813,24 @@ class CometChatGroupMembers extends StatelessWidget {
     });
   }
 
-  static RelativeRect? _getWidgetPosition(BuildContext context, GlobalKey widgetKey) {
+  static RelativeRect? _getWidgetPosition(
+      BuildContext context, GlobalKey widgetKey) {
     // Check if widget is mounted
-    if (widgetKey.currentContext == null || !widgetKey.currentContext!.mounted) {
+    if (widgetKey.currentContext == null ||
+        !widgetKey.currentContext!.mounted) {
       debugPrint("Widget is not mounted, skipping position calculation.");
       return null;
     }
 
     try {
       final RenderBox? renderBox =
-      widgetKey.currentContext?.findRenderObject() as RenderBox?;
+          widgetKey.currentContext?.findRenderObject() as RenderBox?;
 
       if (renderBox != null) {
         final Offset offset = renderBox.localToGlobal(Offset.zero);
 
         // Optional: Adjustments for alignment
-        double horizontalOffset = MediaQuery.of(context).size.width*.8;
+        double horizontalOffset = MediaQuery.of(context).size.width * .8;
         const double verticalOffset = 10.0;
 
         return RelativeRect.fromLTRB(
@@ -839,45 +850,56 @@ class CometChatGroupMembers extends StatelessWidget {
     return null;
   }
 
-  Widget _getNoUserIndicator(BuildContext context, CometChatGroupMembersStyle style,
-      CometChatColorPalette colorPalette, CometChatTypography typography,CometChatSpacing spacing) {
+  Widget _getNoUserIndicator(
+      BuildContext context,
+      CometChatGroupMembersStyle style,
+      CometChatColorPalette colorPalette,
+      CometChatTypography typography,
+      CometChatSpacing spacing) {
     if (emptyStateView != null) {
       return Center(child: emptyStateView!(context));
     } else {
-      return UIStateUtils.getDefaultEmptyStateView(context, colorPalette, typography, spacing,
-         icon: Image.asset(
-            AssetConstants(CometChatThemeHelper.getBrightness(context))
-                .emptyUserList,
-            package: UIConstants.packageName,
-            width: 120,
-            height: 120,
-          ),
-        emptyStateText: emptyStateText ?? cc.Translations.of(context).usersUnavailable,
+      return UIStateUtils.getDefaultEmptyStateView(
+        context,
+        colorPalette,
+        typography,
+        spacing,
+        icon: Image.asset(
+          AssetConstants(CometChatThemeHelper.getBrightness(context))
+              .emptyUserList,
+          package: UIConstants.packageName,
+          width: 120,
+          height: 120,
+        ),
+        emptyStateText:
+            emptyStateText ?? cc.Translations.of(context).usersUnavailable,
         emptyStateTextStyle: style.emptyStateTextStyle,
         emptyStateTextColor: style.emptyStateTextColor,
-        emptyStateSubtitle: emptyStateSubtitleText ?? cc.Translations.of(context).usersUnavailableMessage,
+        emptyStateSubtitle: emptyStateSubtitleText ??
+            cc.Translations.of(context).usersUnavailableMessage,
         emptyStateSubtitleStyle: style.emptyStateSubtitleTextStyle,
         emptyStateSubtitleColor: style.emptyStateSubtitleTextColor,
       );
     }
   }
 
-  Widget getSelectionWidget(
-      CometChatGroupMembersController memberController,CometChatGroupMembersStyle style, CometChatColorPalette colorPalette){
+  Widget getSelectionWidget(CometChatGroupMembersController memberController,
+      CometChatGroupMembersStyle style, CometChatColorPalette colorPalette) {
     if (_isSelectionOn.value) {
       return IconButton(
-          onPressed: () {
-            List<GroupMember>? member = memberController.getSelectedList();
-            if (onSelection != null) {
-              onSelection!(member);
-            }
-          },
-          icon: submitIcon ??
-              Icon(
-                Icons.check,
-                color: style.submitIconColor ?? colorPalette.iconPrimary,
-                size: 24,
-              ),);
+        onPressed: () {
+          List<GroupMember>? member = memberController.getSelectedList();
+          if (onSelection != null) {
+            onSelection!(member);
+          }
+        },
+        icon: submitIcon ??
+            Icon(
+              Icons.check,
+              color: style.submitIconColor ?? colorPalette.iconPrimary,
+              size: 24,
+            ),
+      );
     } else {
       return const SizedBox(
         height: 0,

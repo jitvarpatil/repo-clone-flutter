@@ -1,13 +1,11 @@
 import 'dart:io';
-
 import 'package:cometchat_calls_uikit/cometchat_calls_uikit.dart';
 import 'package:cometchat_chat_uikit/cometchat_chat_uikit.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:sample_app_push_notifications/create_group/cometchat_create_group.dart';
-import 'package:sample_app_push_notifications/guard_screen.dart';
-import 'package:sample_app_push_notifications/messages.dart';
-import 'package:sample_app_push_notifications/notifications/services/cometchat_services.dart';
 import 'package:sample_app_push_notifications/utils/join_protected_group_util.dart';
+import 'package:sample_app_push_notifications/utils/page_manager.dart';
 import 'call_log_details/cometchat_call_log_details.dart';
 import 'notifications/services/apns_services.dart';
 import 'notifications/services/firebase_services.dart';
@@ -15,14 +13,26 @@ import 'notifications/services/globals.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:async';
 
-class MyHomePage extends StatefulWidget {
+import '../guard_screen.dart';
+import '../notifications/services/cometchat_services.dart';
+
+class MyHomePage extends StatelessWidget {
   const MyHomePage({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  Widget build(BuildContext context) {
+    return MyPageView();
+  }
 }
 
-class _MyHomePageState extends State<MyHomePage>
+class MyPageView extends StatefulWidget {
+  const MyPageView({super.key});
+
+  @override
+  State<MyPageView> createState() => _MyPageViewState();
+}
+
+class _MyPageViewState extends State<MyPageView>
     with
         WidgetsBindingObserver,
         CometChatUIEventListener,
@@ -30,8 +40,7 @@ class _MyHomePageState extends State<MyHomePage>
         CometChatCallEventListener {
   final FirebaseService notificationService = FirebaseService();
   final APNSService apnsServices = APNSService();
-
-  int _selectedIndex = 0;
+  late PageManager _pageController;
   late CometChatColorPalette colorPalette;
   late CometChatTypography typography;
   late CometChatSpacing spacing;
@@ -44,7 +53,7 @@ class _MyHomePageState extends State<MyHomePage>
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
-
+    _pageController = Get.find<PageManager>();
     _checkPermissions();
 
     _dateString = DateTime.now().millisecondsSinceEpoch.toString();
@@ -86,20 +95,25 @@ class _MyHomePageState extends State<MyHomePage>
     colorPalette = CometChatThemeHelper.getColorPalette(context);
     typography = CometChatThemeHelper.getTypography(context);
     spacing = CometChatThemeHelper.getSpacing(context);
+    _pageController
+        .setKeyboardVisible(_pageController.isKeyboardVisible(context));
   }
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    _pageController.setSelectedIndex(index);
   }
 
   ///[onIncomingCallReceived] method is used to handle incoming call events.
   @override
   void onIncomingCallReceived(Call call) {
     final callStateController = CallStateController.instance;
-    print(callStateController.isActiveCall.value);
     if (callStateController.isActiveCall.value == true) {
+      IncomingCallOverlay.dismiss();
+      return;
+    } else if (callStateController.isActiveOutgoingCall.value == true) {
+      IncomingCallOverlay.dismiss();
+      return;
+    }else if (callStateController.isActiveIncomingCall.value == true) {
       IncomingCallOverlay.dismiss();
       return;
     } else {
@@ -117,14 +131,6 @@ class _MyHomePageState extends State<MyHomePage>
     if (await Permission.camera.isDenied) {
       await Permission.camera.request();
     }
-  }
-
-  @override
-  void openChat(
-    User? user,
-    Group? group,
-  ) {
-    navigateToMessages(user: user, group: group);
   }
 
   bool isLoading = false;
@@ -156,340 +162,395 @@ class _MyHomePageState extends State<MyHomePage>
     }
   }
 
-  void navigateToMessages({User? user, Group? group}) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) {
-          return MessagesSample(
-            user: user,
-            group: group,
-          );
 
-          // return MyScrollTestWidget();
-        },
-      ),
+  @override
+  void openChat(
+    User? user,
+    Group? group,
+  ) {
+    _pageController.navigateToMessages(
+      context: context,
+      user: user,
+      group: group,
     );
+  }
+
+  List<Widget> _getPages(context) {
+    return [
+      (_pageController.selectedIndex == 0)
+          ? CometChatConversations(
+              showBackButton: false,
+              appBarOptions: [
+                PopupMenuButton(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(spacing.radius2 ?? 0),
+                    side: BorderSide(
+                      color: colorPalette.borderLight ?? Colors.transparent,
+                      width: 1,
+                    ),
+                  ),
+                  color: colorPalette.background1,
+                  elevation: 4,
+                  menuPadding: EdgeInsets.zero,
+                  padding: EdgeInsets.zero,
+                  icon: Padding(
+                    padding: EdgeInsets.only(
+                      left: spacing.padding3 ?? 0,
+                      right: spacing.padding4 ?? 0,
+                    ),
+                    child: CometChatAvatar(
+                      width: 40,
+                      height: 40,
+                      image: CometChatUIKit.loggedInUser?.avatar,
+                      name: CometChatUIKit.loggedInUser?.name,
+                    ),
+                  ),
+                  onSelected: (value) {
+                    switch (value) {
+                      case '/Create':
+                        _pageController.setSelectedIndex(2);
+                        _pageController.pageController
+                            .jumpToPage(_pageController.selectedIndex);
+                        break;
+                      case '/logout':
+                        logout();
+                        break;
+                      case '/name':
+                        break;
+                      case '/version':
+                        break;
+                    }
+                  },
+                  position: PopupMenuPosition.under,
+                  enableFeedback: false,
+                  itemBuilder: (BuildContext bc) {
+                    return [
+                      PopupMenuItem(
+                        height: 44,
+                        padding: EdgeInsets.all(spacing.padding4 ?? 0),
+                        value: '/Create',
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding:
+                                  EdgeInsets.only(right: spacing.padding2 ?? 0),
+                              child: Icon(
+                                Icons.add_comment_outlined,
+                                color: colorPalette.iconSecondary,
+                                size: 24,
+                              ),
+                            ),
+                            Text(
+                              "Create Conversation",
+                              style: TextStyle(
+                                fontSize: typography.body?.regular?.fontSize,
+                                fontFamily:
+                                    typography.body?.regular?.fontFamily,
+                                fontWeight:
+                                    typography.body?.regular?.fontWeight,
+                                color: colorPalette.textPrimary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      PopupMenuItem(
+                        height: 44,
+                        padding: EdgeInsets.all(spacing.padding4 ?? 0),
+                        value: '/name',
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding:
+                                  EdgeInsets.only(right: spacing.padding2 ?? 0),
+                              child: Icon(
+                                Icons.account_circle_outlined,
+                                color: colorPalette.iconSecondary,
+                                size: 24,
+                              ),
+                            ),
+                            Text(
+                              CometChatUIKit.loggedInUser?.name ?? "",
+                              style: TextStyle(
+                                fontSize: typography.body?.regular?.fontSize,
+                                fontFamily:
+                                    typography.body?.regular?.fontFamily,
+                                fontWeight:
+                                    typography.body?.regular?.fontWeight,
+                                color: colorPalette.textPrimary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      PopupMenuItem(
+                        height: 44,
+                        padding: EdgeInsets.all(spacing.padding4 ?? 0),
+                        value: '/logout',
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding:
+                                  EdgeInsets.only(right: spacing.padding2 ?? 0),
+                              child: Icon(
+                                Icons.logout,
+                                color: colorPalette.error,
+                                size: 24,
+                              ),
+                            ),
+                            Text(
+                              "Logout",
+                              style: TextStyle(
+                                fontSize: typography.body?.regular?.fontSize,
+                                fontFamily:
+                                    typography.body?.regular?.fontFamily,
+                                fontWeight:
+                                    typography.body?.regular?.fontWeight,
+                                color: colorPalette.error,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      PopupMenuItem(
+                        enabled: false,
+                        height: 44,
+                        padding: EdgeInsets.zero,
+                        value: '/version',
+                        child: Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            border: Border(
+                              top: BorderSide(
+                                color: colorPalette.borderLight ??
+                                    Colors.transparent,
+                                width: 1,
+                              ),
+                            ),
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.all(spacing.padding4 ?? 0),
+                            child: Text(
+                              "v5.0.0_beta1",
+                              style: TextStyle(
+                                fontSize: typography.body?.regular?.fontSize,
+                                fontFamily:
+                                    typography.body?.regular?.fontFamily,
+                                fontWeight:
+                                    typography.body?.regular?.fontWeight,
+                                color: colorPalette.textSecondary,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ];
+                  },
+                ),
+              ],
+              onItemTap: (conversation) {
+                User? user;
+                Group? group;
+                if (conversation.conversationWith is User) {
+                  user = conversation.conversationWith as User;
+                } else {
+                  group = conversation.conversationWith as Group;
+                }
+                _pageController.navigateToMessages(
+                  context: context,
+                  user: user,
+                  group: group,
+                );
+              },
+            )
+          : SizedBox.shrink(),
+      (_pageController.selectedIndex == 1)
+          ? CometChatCallLogs(
+              showBackButton: false,
+              onItemClick: (callLog) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return CometChatCallLogDetails(
+                        callLog: callLog,
+                      );
+                    },
+                  ),
+                );
+              },
+            )
+          : SizedBox.shrink(),
+      (_pageController.selectedIndex == 2)
+          ? CometChatUsers(
+              showBackButton: false,
+              onBack: () {},
+              onItemTap: (context, user) {
+                _pageController.navigateToMessages(
+                  context: context,
+                  user: user,
+                );
+              },
+            )
+          : SizedBox.shrink(),
+      (_pageController.selectedIndex == 3)
+          ? CometChatGroups(
+              appBarOptions: (context) {
+                return [
+                  IconButton(
+                    onPressed: () {
+                      FocusManager.instance.primaryFocus?.unfocus();
+                      showCreateGroup(
+                        context: context,
+                        colorPalette: colorPalette,
+                        typography: typography,
+                        spacing: spacing,
+                      );
+                    },
+                    icon: Icon(
+                      Icons.group_add,
+                      color: colorPalette.iconHighlight,
+                    ),
+                  ),
+                ];
+              },
+              showBackButton: false,
+              onItemTap: (context, group) {
+                FocusManager.instance.primaryFocus?.unfocus();
+                JoinProtectedGroupUtils.onGroupItemTap(
+                    context,
+                    group,
+                    colorPalette,
+                    typography,
+                    spacing,
+                    _pageController.selectedIndex);
+              },
+            )
+          : SizedBox.shrink(),
+    ];
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: colorPalette.background1,
-      body: IndexedStack(
-        index: _selectedIndex,
-        children: [
-          CometChatConversations(
-            showBackButton: false,
-            appBarOptions: [
-              PopupMenuButton(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(spacing.radius2 ?? 0),
-                  side: BorderSide(
-                    color: colorPalette.borderLight ?? Colors.transparent,
-                    width: 1,
-                  ),
-                ),
-                color: colorPalette.background1,
-                elevation: 4,
-                menuPadding: EdgeInsets.zero,
-                padding: EdgeInsets.zero,
-                icon: Padding(
-                  padding: EdgeInsets.only(
-                    left: spacing.padding3 ?? 0,
-                    right: spacing.padding4 ?? 0,
-                  ),
-                  child: CometChatAvatar(
-                    width: 40,
-                    height: 40,
-                    image: CometChatUIKit.loggedInUser?.avatar,
-                    name: CometChatUIKit.loggedInUser?.name,
-                  ),
-                ),
-                onSelected: (value) {
-                  switch (value) {
-                    case '/Create':
-                      setState(() {
-                        _selectedIndex = 2;
-                      });
-                      break;
-                    case '/logout':
-                      logout();
-                      break;
-                    case '/name':
-                      break;
-                    case '/version':
-                      break;
-                  }
-                },
-                position: PopupMenuPosition.under,
-                enableFeedback: false,
-                itemBuilder: (BuildContext bc) {
-                  return [
-                    PopupMenuItem(
-                      height: 44,
-                      padding: EdgeInsets.all(spacing.padding4 ?? 0),
-                      value: '/Create',
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding:
-                                EdgeInsets.only(right: spacing.padding2 ?? 0),
-                            child: Icon(
-                              Icons.add_comment_outlined,
-                              color: colorPalette.iconSecondary,
-                              size: 24,
-                            ),
-                          ),
-                          Text(
-                            "Create Conversation",
-                            style: TextStyle(
-                              fontSize: typography.body?.regular?.fontSize,
-                              fontFamily: typography.body?.regular?.fontFamily,
-                              fontWeight: typography.body?.regular?.fontWeight,
-                              color: colorPalette.textPrimary,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    PopupMenuItem(
-                      height: 44,
-                      padding: EdgeInsets.all(spacing.padding4 ?? 0),
-                      value: '/name',
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding:
-                                EdgeInsets.only(right: spacing.padding2 ?? 0),
-                            child: Icon(
-                              Icons.account_circle_outlined,
-                              color: colorPalette.iconSecondary,
-                              size: 24,
-                            ),
-                          ),
-                          Text(
-                            CometChatUIKit.loggedInUser?.name ?? "",
-                            style: TextStyle(
-                              fontSize: typography.body?.regular?.fontSize,
-                              fontFamily: typography.body?.regular?.fontFamily,
-                              fontWeight: typography.body?.regular?.fontWeight,
-                              color: colorPalette.textPrimary,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    PopupMenuItem(
-                      height: 44,
-                      padding: EdgeInsets.all(spacing.padding4 ?? 0),
-                      value: '/logout',
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding:
-                                EdgeInsets.only(right: spacing.padding2 ?? 0),
-                            child: Icon(
-                              Icons.logout,
-                              color: colorPalette.error,
-                              size: 24,
-                            ),
-                          ),
-                          Text(
-                            "Logout",
-                            style: TextStyle(
-                              fontSize: typography.body?.regular?.fontSize,
-                              fontFamily: typography.body?.regular?.fontFamily,
-                              fontWeight: typography.body?.regular?.fontWeight,
-                              color: colorPalette.error,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    PopupMenuItem(
-                      enabled: false,
-                      height: 44,
-                      padding: EdgeInsets.zero,
-                      value: '/version',
-                      child: Container(
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          border: Border(
-                            top: BorderSide(
-                              color: colorPalette.borderLight ??
-                                  Colors.transparent,
-                              width: 1,
-                            ),
-                          ),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.all(spacing.padding4 ?? 0),
-                          child: Text(
-                            "V5.0.0_alpha9",
-                            style: TextStyle(
-                              fontSize: typography.body?.regular?.fontSize,
-                              fontFamily: typography.body?.regular?.fontFamily,
-                              fontWeight: typography.body?.regular?.fontWeight,
-                              color: colorPalette.textSecondary,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ];
-                },
-              ),
-            ],
-            onItemTap: (conversation) {
-              User? user;
-              Group? group;
-              if (conversation.conversationWith is User) {
-                user = conversation.conversationWith as User;
-              } else {
-                group = conversation.conversationWith as Group;
-              }
-              navigateToMessages(user: user, group: group);
-            },
+    return Obx(
+      () {
+        if (_pageController.keyboardVisible &&
+            _pageController.navigateToMessageScreen) {
+          return const SizedBox();
+        }
+        return Scaffold(
+          resizeToAvoidBottomInset: false,
+          backgroundColor: colorPalette.background1,
+          body: MediaQuery.removePadding(
+            context: context,
+            removeBottom: true,
+            child: IndexedStack(
+              index: _pageController.selectedIndex,
+              // controller: _pageController.pageController,
+              // physics: const NeverScrollableScrollPhysics(),
+              // onPageChanged: (index) {
+              //   _pageController.setSelectedIndex(index);
+              // },
+              children: _getPages(context),
+            ),
           ),
-          CometChatCallLogs(
-            showBackButton: false,
-            onItemClick: (callLog) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return CometChatCallLogDetails(
-                      callLog: callLog,
-                    );
-                  },
+          bottomNavigationBar: Obx(
+            () {
+              return Container(
+                padding: EdgeInsets.symmetric(vertical: spacing.padding ?? 0),
+                decoration: BoxDecoration(
+                  color: colorPalette.background1,
+                  border: Border(
+                    top: BorderSide(
+                      color: colorPalette.borderLight ?? Colors.transparent,
+                      width: 1,
+                    ),
+                  ),
+                ),
+                child: Theme(
+                  data: Theme.of(context).copyWith(
+                    splashFactory:
+                        NoSplash.splashFactory, // Remove ripple effect
+                    highlightColor:
+                        Colors.transparent, // Disable highlight feedback
+                  ),
+                  child: BottomNavigationBar(
+                    currentIndex: _pageController.selectedIndex,
+                    elevation: 0,
+                    onTap: _onItemTapped,
+                    selectedItemColor: colorPalette.primary,
+                    showUnselectedLabels: false,
+                    unselectedItemColor: colorPalette.textSecondary,
+                    selectedLabelStyle: TextStyle(
+                      color: colorPalette.primary,
+                      fontSize: typography.caption1?.medium?.fontSize,
+                      fontFamily: typography.caption1?.medium?.fontFamily,
+                      fontWeight: typography.caption1?.medium?.fontWeight,
+                    ),
+                    unselectedLabelStyle: TextStyle(
+                      color: colorPalette.textSecondary,
+                      fontSize: typography.caption1?.regular?.fontSize,
+                      fontFamily: typography.caption1?.regular?.fontFamily,
+                      fontWeight: typography.caption1?.regular?.fontWeight,
+                    ),
+                    iconSize: 32,
+                    type: BottomNavigationBarType.fixed,
+                    backgroundColor: colorPalette.background1,
+                    enableFeedback: false,
+                    items: [
+                      BottomNavigationBarItem(
+                        icon: Icon(
+                          Icons.chat_outlined,
+                          color: colorPalette.iconSecondary,
+                        ),
+                        activeIcon: Icon(
+                          Icons.chat_rounded,
+                          color: colorPalette.primary,
+                        ),
+                        label: 'Chats',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: Icon(
+                          Icons.call_outlined,
+                          color: colorPalette.iconSecondary,
+                        ),
+                        activeIcon: Icon(
+                          Icons.call_rounded,
+                          color: colorPalette.primary,
+                        ),
+                        label: 'Calls',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: Icon(Icons.person_outline_rounded,
+                            color: colorPalette.iconSecondary),
+                        activeIcon: Icon(
+                          Icons.person_rounded,
+                          color: colorPalette.primary,
+                        ),
+                        label: 'Users',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: Icon(
+                          Icons.people_alt_outlined,
+                          color: colorPalette.iconSecondary,
+                        ),
+                        activeIcon: Icon(
+                          Icons.people_alt_rounded,
+                          color: colorPalette.primary,
+                        ),
+                        label: 'Groups',
+                      ),
+                    ],
+                  ),
                 ),
               );
             },
           ),
-          CometChatUsers(
-            showBackButton: false,
-            onBack: () {},
-            onItemTap: (context, user) {
-              navigateToMessages(user: user);
-            },
-          ),
-          CometChatGroups(
-            appBarOptions: (context) {
-              return [
-                IconButton(
-                  onPressed: () {
-                    showCreateGroup(
-                      context: context,
-                      colorPalette: colorPalette,
-                      typography: typography,
-                      spacing: spacing,
-                    );
-                  },
-                  icon: Icon(
-                    Icons.group_add,
-                    color: colorPalette.iconHighlight,
-                  ),
-                ),
-              ];
-            },
-            showBackButton: false,
-            onItemTap: (context, group) {
-              JoinProtectedGroupUtils.onGroupItemTap(
-                  context, group, colorPalette, typography, spacing);
-            },
-          ),
-        ],
-      ),
-      bottomNavigationBar: Container(
-        padding: EdgeInsets.symmetric(vertical: spacing.padding ?? 0),
-        decoration: BoxDecoration(
-          color: colorPalette.background1,
-          border: Border(
-            top: BorderSide(
-              color: colorPalette.borderLight ?? Colors.transparent,
-              width: 1,
-            ),
-          ),
-        ),
-        child: Theme(
-          data: Theme.of(context).copyWith(
-            splashFactory: NoSplash.splashFactory, // Remove ripple effect
-            highlightColor: Colors.transparent, // Disable highlight feedback
-          ),
-          child: BottomNavigationBar(
-            currentIndex: _selectedIndex,
-            elevation: 0,
-            onTap: _onItemTapped,
-            selectedItemColor: colorPalette.primary,
-            showUnselectedLabels: true,
-            unselectedItemColor: colorPalette.textSecondary,
-            selectedLabelStyle: TextStyle(
-              color: colorPalette.primary,
-              fontSize: typography.caption1?.medium?.fontSize,
-              fontFamily: typography.caption1?.medium?.fontFamily,
-              fontWeight: typography.caption1?.medium?.fontWeight,
-            ),
-            unselectedLabelStyle: TextStyle(
-              color: colorPalette.textSecondary,
-              fontSize: typography.caption1?.regular?.fontSize,
-              fontFamily: typography.caption1?.regular?.fontFamily,
-              fontWeight: typography.caption1?.regular?.fontWeight,
-            ),
-            iconSize: 32,
-            type: BottomNavigationBarType.fixed,
-            backgroundColor: colorPalette.background1,
-            enableFeedback: false,
-            items: [
-              BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.chat_outlined,
-                  color: colorPalette.iconSecondary,
-                ),
-                activeIcon: Icon(
-                  Icons.chat_rounded,
-                  color: colorPalette.primary,
-                ),
-                label: 'Chats',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.call_outlined,
-                  color: colorPalette.iconSecondary,
-                ),
-                activeIcon: Icon(
-                  Icons.call_rounded,
-                  color: colorPalette.primary,
-                ),
-                label: 'Calls',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.person_outline_rounded,
-                    color: colorPalette.iconSecondary),
-                activeIcon: Icon(
-                  Icons.person_rounded,
-                  color: colorPalette.primary,
-                ),
-                label: 'Users',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.people_alt_outlined,
-                  color: colorPalette.iconSecondary,
-                ),
-                activeIcon: Icon(
-                  Icons.people_alt_rounded,
-                  color: colorPalette.primary,
-                ),
-                label: 'Groups',
-              ),
-            ],
-          ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

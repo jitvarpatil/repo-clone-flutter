@@ -746,6 +746,7 @@ class CometChatMessageComposerController extends GetxController
       parentMessageId: parentMessageId,
       muid: DateTime.now().microsecondsSinceEpoch.toString(),
       category: CometChatMessageCategory.message,
+      sentAt: DateTime.now(),
     );
 
     handlePreMessageSend(textMessage);
@@ -807,6 +808,7 @@ class CometChatMessageComposerController extends GetxController
       parentMessageId: parentMessageId,
       muid: muid,
       category: CometChatMessageCategory.message,
+      sentAt: DateTime.now(),
     );
 
     CometChatMessageEvents.ccMessageSent(
@@ -827,6 +829,7 @@ class CometChatMessageComposerController extends GetxController
       parentMessageId: parentMessageId,
       muid: muid,
       category: CometChatMessageCategory.message,
+      sentAt: DateTime.now(),
     );
 
     if (textEditingController != null &&
@@ -916,7 +919,9 @@ class CometChatMessageComposerController extends GetxController
         sender: loggedInUser,
         parentMessageId: parentMessageId,
         muid: DateTime.now().microsecondsSinceEpoch.toString(),
-        category: CometChatMessageCategory.custom);
+        category: CometChatMessageCategory.custom,
+        sentAt: DateTime.now(),
+    );
 
     CometChatMessageEvents.ccMessageSent(
         customMessage, MessageStatus.inProgress);
@@ -1000,6 +1005,7 @@ class CometChatMessageComposerController extends GetxController
     CometChatColorPalette colorPalette,
     CometChatTypography typography,
   ) async {
+    FocusManager.instance.primaryFocus?.unfocus();
     ActionItem? item = await showCometChatAttachmentOptionSheet(
       colorPalette: colorPalette,
       context: context,
@@ -1199,6 +1205,7 @@ class CometChatMessageComposerController extends GetxController
         muid: DateTime.now().microsecondsSinceEpoch.toString(),
         category: CometChatMessageCategory.message,
         metadata: metadata,
+        sentAt: DateTime.now(),
       );
       onSendButtonTap!(context, mediaMessage, previewMessageMode);
     } else {
@@ -1210,6 +1217,7 @@ class CometChatMessageComposerController extends GetxController
     BuildContext context,
     id, CometChatAiOptionSheetStyle? aiOptionSheetStyle,
   ) async {
+    FocusManager.instance.primaryFocus?.unfocus();
     if(activeAiFeatures) {
       Map<String, dynamic> idMap =
       UIEventUtils.createMap(user?.uid,
@@ -1237,10 +1245,16 @@ class CometChatMessageComposerController extends GetxController
             icon: aiFeatureList[i].icon,
             style: CometChatAttachmentOptionSheetStyle(
               titleTextStyle: aiFeatureList[i].style?.titleTextStyle ??
-                  aiOptionStyle?.itemTextStyle,
+                  aiOptionStyle?.titleTextStyle,
               backgroundColor: aiFeatureList[i].style?.backgroundColor ??
-                  aiOptionStyle?.background,
-              borderRadius: aiFeatureList[i].style?.borderRadius,
+                  aiOptionStyle?.backgroundColor,
+              borderRadius: aiFeatureList[i].style?.borderRadius ??
+                  aiOptionStyle?.borderRadius,
+              iconColor: aiFeatureList[i].style?.iconColor ??
+                  aiOptionStyle?.iconColor,
+              border: aiFeatureList[i].style?.border ?? aiOptionStyle?.border,
+              titleColor: aiFeatureList[i].style?.titleColor ??
+                  aiOptionStyle?.titleColor,
             ),
             onItemClick: (BuildContext context, User? user, Group? group) {
               if (aiFeatureList[i].onItemClick != null) {

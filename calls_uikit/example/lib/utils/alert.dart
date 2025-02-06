@@ -63,6 +63,9 @@ Future<String?> getUrl(
                   fit: BoxFit.cover,
                   width: 12.0,
                   height: 12.0,
+                  errorBuilder: (context, error, stackTrace) {
+                     return const Icon(Icons.image_not_supported); // Show fallback image
+                  }
                 ),
               ));
             }).toList()),
@@ -72,5 +75,7 @@ Future<String?> getUrl(
 }
 
 getCard(String url) {
-  return Image.network(url);
+  return Image.network(url, errorBuilder: (context, error, stackTrace) {
+    return const Icon(Icons.image_not_supported); // Show fallback image
+  });
 }

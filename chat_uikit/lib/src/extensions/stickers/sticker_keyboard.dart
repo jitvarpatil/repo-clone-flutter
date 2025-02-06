@@ -483,11 +483,6 @@ class _CometChatStickerKeyboardState extends State<CometChatStickerKeyboard> {
                             Container(
                               decoration: BoxDecoration(
                                 color: colorPalette.background1,
-                                border: Border.all(
-                                  color: colorPalette.borderLight ??
-                                      Colors.transparent,
-                                  width: 1,
-                                ),
                               ),
                               child: Padding(
                                 padding: EdgeInsets.all(
@@ -528,6 +523,9 @@ class _CometChatStickerKeyboardState extends State<CometChatStickerKeyboard> {
                                                     .stickerUrl,
                                                 height: 28,
                                                 width: 28,
+                                                  errorBuilder: (context, error, stackTrace) {
+                                                    return const Icon(Icons.image_not_supported); // Show fallback image
+                                                  }
                                               ),
                                             ),
                                           ),

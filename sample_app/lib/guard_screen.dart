@@ -7,6 +7,8 @@ import 'package:sample_app/dashboard.dart';
 import 'package:sample_app/demo_meta_info_constants.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:sample_app/prefs/shared_preferences.dart';
+import 'package:sample_app/utils/text_constants.dart';
 
 class GuardScreen extends StatefulWidget {
   const GuardScreen({Key? key}) : super(key: key);
@@ -16,20 +18,27 @@ class GuardScreen extends StatefulWidget {
 }
 
 class _GuardScreenState extends State<GuardScreen> {
-  bool? shouldGoToHomeScreen;
+  // bool? shouldGoToHomeScreen;
 
+  final ValueNotifier<bool?> shouldGoToHomeScreen = ValueNotifier<bool?>(null);
   late CometChatColorPalette colorPalette;
 
   @override
-  void didChangeDependencies() {
+  void didChangeDependencies() async {
     super.didChangeDependencies();
     // Initialize typography, color palette, and spacing
     colorPalette = CometChatThemeHelper.getColorPalette(context);
-    if (AppCredentials.appId.isNotEmpty ||
-        AppCredentials.authKey.isNotEmpty ||
+    if (AppCredentials.appId.isNotEmpty &&
+        AppCredentials.authKey.isNotEmpty &&
         AppCredentials.region.isNotEmpty) {
-      init();
+      await SharedPreferencesClass.setString(
+          TextConstants.appId, AppCredentials.appId);
+      await SharedPreferencesClass.setString(
+          TextConstants.authKey, AppCredentials.authKey);
+      await SharedPreferencesClass.setString(
+          TextConstants.region, AppCredentials.region);
     }
+    await init();
   }
 
   getCallButtonConfiguration() {
@@ -70,6 +79,12 @@ class _GuardScreenState extends State<GuardScreen> {
           }
         }
       },
+      onError: (e) {
+        shouldGoToHomeScreen.value = false;
+        if (kDebugMode) {
+          debugPrint("Initialization failed with error: ${e.details}");
+        }
+      },
     );
     debugPrint("CallingExtension enable with context called in login");
   }
@@ -80,9 +95,7 @@ class _GuardScreenState extends State<GuardScreen> {
       await CometChatUIKit.login(
         user.uid,
         onSuccess: (user) {
-          setState(() {
-            shouldGoToHomeScreen = true;
-          });
+          shouldGoToHomeScreen.value = true;
         },
         onError: (excep) {
           if (kDebugMode) {
@@ -91,27 +104,44 @@ class _GuardScreenState extends State<GuardScreen> {
         },
       );
     } else {
-      setState(() {
-        shouldGoToHomeScreen = false;
-      });
+      shouldGoToHomeScreen.value = false;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (AppCredentials.appId.isEmpty ||
-        AppCredentials.authKey.isEmpty ||
-        AppCredentials.region.isEmpty) {
-      return const LoginAppCredential();
-    }
+    return ValueListenableBuilder<bool?>(
+      valueListenable: shouldGoToHomeScreen,
+      builder: (context, value, child) {
+        if ((value != null && !value) &&
+            (AppCredentials.appId.isEmpty ||
+                AppCredentials.authKey.isEmpty ||
+                AppCredentials.region.isEmpty)) {
+          return const LoginAppCredential();
+        }
 
-    return (shouldGoToHomeScreen == null)
-        ? Material(
+        if (value == null) {
+          return Material(
             color: colorPalette.background1,
             child: const SizedBox(),
-          )
-        : (shouldGoToHomeScreen!
-            ? const MyHomePage()
-            : const LoginSampleUsers());
+          );
+        } else {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (context) => value
+                    ? const MyHomePage()
+                    : const LoginSampleUsers(),
+              ),
+                  (route) => false,
+            );
+          });
+
+          // Return an empty widget until navigation completes
+          return const SizedBox();
+        }
+      },
+    );
   }
 }

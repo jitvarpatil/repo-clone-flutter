@@ -39,6 +39,7 @@ Future<CometChatMessageComposerAction?>? showCometChatAiOptionSheet(
         itemBuilder: (_, int index) {
           return GestureDetector(
             onTap: () {
+              FocusManager.instance.primaryFocus?.unfocus();
               Navigator.of(context).pop();
               if (actionItems[index].onItemClick != null) {
                 actionItems[index].onItemClick!(context, user, group);
@@ -51,11 +52,9 @@ Future<CometChatMessageComposerAction?>? showCometChatAiOptionSheet(
               minVerticalPadding: 0,
               minLeadingWidth: 0,
               minTileHeight: 0,
-              leading: ColorFiltered(
-                  colorFilter: ColorFilter.mode(
-                      aiOptionSheetStyle.iconColor ?? Colors.transparent,
-                      BlendMode.srcIn),
-                  child: actionItems[index].icon),
+              leading: actionItems[index].icon,
+              iconColor: aiOptionSheetStyle.iconColor ?? actionItems[index].style?.iconColor ??
+                  colorPalette?.iconHighlight ?? Colors.transparent,
               title: Text(
                 actionItems[index].title,
                 style: TextStyle(

@@ -10,10 +10,9 @@ import 'package:flutter_callkit_incoming/entities/call_event.dart';
 import 'package:flutter_callkit_incoming/entities/call_kit_params.dart';
 import 'package:flutter_callkit_incoming/entities/ios_params.dart';
 import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
-import 'package:sample_app_push_notifications/app_credentials.dart';
 import 'package:sample_app_push_notifications/notifications/models/notification_date_model.dart';
-import 'package:sample_app_push_notifications/notifications/services/shared_preferences.dart';
-
+import 'package:sample_app_push_notifications/prefs/shared_preferences.dart';
+import '../../app_credentials.dart';
 import '../../demo_meta_info_constants.dart';
 import '../../messages.dart';
 import '../models/call_action.dart';
@@ -29,14 +28,15 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 // 1. This has to be defined outside of any class
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage rMessage) async {
-  _showNotification(rMessage.data, rMessage);
+  _showNotification(rMessage.data, rMessage, "");
   await displayIncomingCall(rMessage);
 }
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
-void _showNotification(Map<String, dynamic> data, RemoteMessage msg) async {
+void _showNotification(Map<String, dynamic> data, RemoteMessage msg,
+    String? conversationId) async {
   AndroidNotificationDetails androidPlatformChannelSpecifics =
       const AndroidNotificationDetails(
     'channel_id',
@@ -50,14 +50,25 @@ void _showNotification(Map<String, dynamic> data, RemoteMessage msg) async {
 
   String jsonPayload = jsonEncode(msg.data);
 
-
-  if(msg.data["type"] != null && msg.data["type"] == "call") {
+  if (msg.data["type"] != null && msg.data["type"] == "call") {
     return;
   }
 
+  if (conversationId != null &&
+      conversationId.isNotEmpty &&
+      conversationId == (data["conversationId"] ?? "")) {
+    return;
+  }
 
+  int? id;
+  try {
+    id = int.parse(data["tag"] ?? 0);
+  } catch (e) {
+    id = 0;
+    debugPrint("Error while parsing notification id ${e.toString()}");
+  }
   await flutterLocalNotificationsPlugin.show(
-    0, // Notification ID
+    id, // Notification ID
     data['title'], // Notification title
     data['body'], // Notification body
     platformChannelSpecifics,
@@ -115,7 +126,7 @@ void handleNotificationTap(NotificationResponse response) async {
             sendGroup != null)) {
       if (CallNavigationContext.navigatorKey.currentContext != null &&
           CallNavigationContext.navigatorKey.currentContext!.mounted) {
-        Future.delayed(const Duration(seconds: 2), () {
+        Future.delayed(const Duration(milliseconds: 100), () {
           Navigator.of(CallNavigationContext.navigatorKey.currentContext!).push(
             MaterialPageRoute(
               builder: (context) => MessagesSample(
@@ -161,7 +172,6 @@ init() async {
     },
   );
   debugPrint("CallingExtension enable with context called in login");
-  // CometChat.addCallListener("CometChatService_CallListener", this);
 }
 
 // This method handles displaying incoming calls, accepting, declining, or ending calls using the FlutterCallkitIncoming and CometChat.
@@ -186,7 +196,7 @@ Future<void> displayIncomingCall(RemoteMessage rMessage) async {
       CallKitParams callKitParams = CallKitParams(
         id: callUUID,
         nameCaller: callerName,
-        appName: 'notification_new',
+        appName: 'CometChat Messenger',
         type: (callType == CallType.audio) ? 0 : 1,
         textAccept: 'Accept',
         textDecline: 'Decline',
@@ -277,14 +287,17 @@ Future<void> displayIncomingCall(RemoteMessage rMessage) async {
 
 // This class provides functions to interact and manage Firebase Messaging services such as requesting permissions, initializing listeners, managing notifications, and handling tokens.
 
-class FirebaseService {
+class FirebaseService with CometChatUIEventListener {
   late final FirebaseMessaging _firebaseMessaging;
   late final NotificationSettings _settings;
   late final Function registerToServer;
 
+  late String _listenerId;
+
+  String? conversationId;
+
   Future<void> init(BuildContext context) async {
     try {
-
       // 2. Get FirebaseMessaging instance
       _firebaseMessaging = FirebaseMessaging.instance;
 
@@ -300,6 +313,8 @@ class FirebaseService {
       if (token != null) {
         PNRegistry.registerPNService(token, true, false);
       }
+      _listenerId = "NotificationListener";
+      CometChatUIEvents.addUiListener(_listenerId, this);
     } catch (e) {
       if (kDebugMode) {
         debugPrint('Firebase initialization error: $e');
@@ -353,14 +368,14 @@ class FirebaseService {
         // Handling a notification click event when the app is in the background
         FirebaseMessaging.onMessageOpenedApp
             .listen((RemoteMessage message) async {
-          openNotification(context, message);
+          openNotification(context, message, conversationId);
         });
 
         FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
           if (message.notification != null) {
-            openNotification(context, message);
+            openNotification(context, message, conversationId);
           } else if (message.data.isNotEmpty) {
-            _showNotification(message.data, message);
+            _showNotification(message.data, message, conversationId);
           }
         });
 
@@ -371,7 +386,7 @@ class FirebaseService {
             .getInitialMessage()
             .then((RemoteMessage? message) async {
           if (message != null) {
-            openNotification(context, message);
+            openNotification(context, message, conversationId);
           }
         });
         openFromTerminatedState(context);
@@ -387,9 +402,17 @@ class FirebaseService {
     }
   }
 
-  // This method processes the incoming Firebase message to handle user or group notifications and carries out appropriate actions such as initiating a chat or call.
+  // This methods helps to retrieve the conversation id from the last message received in the chat.
+  @override
+  void ccActiveChatChanged(Map<String, dynamic>? id, BaseMessage? lastMessage,
+      User? user, Group? group, int unreadMessageCount) {
+    if (lastMessage != null) {
+      conversationId = lastMessage.conversationId;
+    }
+  }
 
-  Future<void> openNotification(context, RemoteMessage? message) async {
+  // This method processes the incoming Firebase message to handle user or group notifications and carries out appropriate actions such as initiating a chat or call.
+  Future<void> openNotification(context, RemoteMessage? message, String? conversationId) async {
     if (message != null) {
       Map<String, dynamic> data = message.data;
 
@@ -473,7 +496,12 @@ class FirebaseService {
                   sendUser != null) ||
           (receiverType == ReceiverTypeConstants.group && sendGroup != null)) {
         if (context.mounted) {
-          Future.delayed(const Duration(seconds: 2), () {
+          Future.delayed(const Duration(milliseconds: 100), () {
+            if (conversationId != null &&
+                conversationId.isNotEmpty &&
+                conversationId == (payload.conversationId ?? "")) {
+              return;
+            }
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => MessagesSample(
@@ -488,10 +516,10 @@ class FirebaseService {
     }
   }
 
+  // active call session
   String? activeCallSession;
 
   // Deletes fcm token
-
   Future<void> deleteToken() async {
     try {
       await _firebaseMessaging.deleteToken();

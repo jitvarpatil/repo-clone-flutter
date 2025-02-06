@@ -3,24 +3,25 @@ import 'dart:ui';
 import 'package:cometchat_calls_uikit/cometchat_calls_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:get/get.dart';
 import 'package:sample_app_push_notifications/guard_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
-// import 'firebase_options.dart';
+import 'package:sample_app_push_notifications/utils/page_manager.dart';
+import 'firebase_options.dart';
 import 'notifications/services/firebase_services.dart';
-import 'notifications/services/shared_preferences.dart';
-
-
+import 'prefs/shared_preferences.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  SharedPreferencesClass.init();
+  Get.put(PageManager());
 
   const AndroidInitializationSettings initializationSettingsAndroid =
       AndroidInitializationSettings('ic_launcher');
 
   const InitializationSettings initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,
-      iOS: DarwinInitializationSettings(
-      ));
+      iOS: DarwinInitializationSettings());
 
   await flutterLocalNotificationsPlugin.initialize(
     initializationSettings,
@@ -30,7 +31,7 @@ Future<void> main() async {
   try {
     print('Firebase initialized. BEFORE TRY');
     await Firebase.initializeApp(
-      // options: DefaultFirebaseOptions.currentPlatform,
+      options: DefaultFirebaseOptions.currentPlatform,
     );
     print('Firebase initialized successfully.');
   } catch (e) {
@@ -48,24 +49,18 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  @override
-  void initState() {
-    initServices();
-    super.initState();
-  }
-
-  initServices() async {
-    SharedPreferencesClass.init();
-  }
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'CometChat Flutter Sample App',
-      home: GuardScreen(
-        key: CallNavigationContext.navigatorKey,
+      theme: ThemeData(
+        appBarTheme: AppBarTheme(
+          scrolledUnderElevation: 0.0,
+        ),
       ),
+      title: 'CometChat Flutter Sample App',
+      navigatorKey: CallNavigationContext.navigatorKey,
+      home: GuardScreen(),
       debugShowCheckedModeBanner: false,
     );
   }

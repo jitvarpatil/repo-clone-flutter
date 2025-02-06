@@ -107,6 +107,7 @@ class _CometChatAttachmentOptionSheetState
                       minTileHeight: 0,
                       minVerticalPadding: 0,
                       onTap: () {
+                        FocusManager.instance.primaryFocus?.unfocus();
                         setState(() {
                           selectedIndex = index;
                         });

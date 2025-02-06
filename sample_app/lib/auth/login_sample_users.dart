@@ -67,7 +67,7 @@ class _LoginSampleUsersState extends State<LoginSampleUsers> {
       if (user != null) {
         if (user.uid == userId) {
           // User is already logged in, no need to do anything
-          Navigator.push(
+          Navigator.pushReplacement(
             context,
             MaterialPageRoute(
               builder: (context) => const MyHomePage(),
@@ -94,7 +94,7 @@ class _LoginSampleUsersState extends State<LoginSampleUsers> {
           isLoading = false; // Stop loading on success
         });
         user = loggedInUser;
-        Navigator.push(context,
+        Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (context) => const MyHomePage()));
       }, onError: (CometChatException e) {
         debugPrint("Login failed with exception:  ${e.message}");

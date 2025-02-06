@@ -46,9 +46,13 @@ class CometChatIncomingCallController extends GetxController with CallListener {
       this.callSettingsBuilder});
   bool disabled = false;
 
+  CallStateController? _callStateController;
+
   @override
   void onInit() {
     super.onInit();
+    _callStateController = CallStateController.instance;
+    _callStateController?.setActiveIncomingValue(true);
     _listenerId =
         "incomingCall_${DateTime.now().microsecondsSinceEpoch.toString()}";
     CometChat.addCallListener(_listenerId, this);
@@ -59,6 +63,7 @@ class CometChatIncomingCallController extends GetxController with CallListener {
 
   @override
   void onClose() {
+    _callStateController?.setActiveIncomingValue(false);
     CometChat.removeCallListener(_listenerId);
     if (disableSoundForCalls != true) {
       stopSound();
