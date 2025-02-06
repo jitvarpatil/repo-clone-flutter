@@ -2,7 +2,7 @@
   <img alt="CometChat" src="https://assets.cometchat.io/website/images/logos/banner.png">
 </p>
 
-# CometChat iOS UI Kit
+# CometChat Flutter UI Kit
 
 CometChat Flutter UIKit provides a pre-built user interface kit that developers can use to quickly integrate a reliable & fully-featured chat experience into an existing or a new mobile app.<br />
 
