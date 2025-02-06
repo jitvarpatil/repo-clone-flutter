@@ -16,13 +16,6 @@ export 'stickers/sticker_configuration.dart';
 export 'stickers/stickers_extension_decorator.dart';
 export 'stickers/sticker_auxiliary_button.dart';
 
-//Smart reply
-export 'smart_reply/smart_reply_extension.dart';
-export 'smart_reply/smart_reply_extension_decorator.dart';
-export 'smart_reply/smart_reply_view.dart';
-export 'smart_reply/smart_reply_style.dart';
-export 'smart_reply/smart_reply_configuration.dart';
-
 //message translation
 export 'message_translation/message_translation_extension.dart';
 export 'message_translation/message_translation_bubble.dart';

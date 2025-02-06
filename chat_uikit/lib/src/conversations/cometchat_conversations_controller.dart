@@ -61,6 +61,9 @@ class CometChatConversationsController
   late String _uiUserListener;
   late String _conversationListenerId;
   late String _conversationEventListenerId;
+  CometChatColorPalette? colorPalette;
+  CometChatSpacing? spacing;
+  CometChatTypography? typography;
 
   Map<String, TypingIndicator> typingMap = {};
   User? loggedInUser;
@@ -116,7 +119,8 @@ class CometChatConversationsController
     CometChatCallEvents.addCallEventsListener(_conversationListenerId, this);
     CometChat.addCallListener(_conversationListenerId, this);
     CometChat.addConnectionListener(_conversationListenerId, this);
-    CometChatConversationEvents.addConversationListListener(_conversationEventListenerId, this);
+    CometChatConversationEvents.addConversationListListener(
+        _conversationEventListenerId, this);
     initializeTextFormatters();
     super.onInit();
   }
@@ -134,7 +138,8 @@ class CometChatConversationsController
     CometChatCallEvents.removeCallEventsListener(_conversationListenerId);
     CometChat.removeCallListener(_conversationListenerId);
     CometChat.removeConnectionListener(_conversationListenerId);
-    CometChatConversationEvents.removeConversationListListener(_conversationEventListenerId);
+    CometChatConversationEvents.removeConversationListListener(
+        _conversationEventListenerId);
     super.onClose();
   }
 
@@ -174,7 +179,7 @@ class CometChatConversationsController
 
   @override
   void ccConversationDeleted(Conversation conversation) {
-      removeElement(conversation);
+    removeElement(conversation);
   }
 
   @override
@@ -217,7 +222,9 @@ class CometChatConversationsController
     if (_checkGroupSettings() == false) {
       return;
     }
-    refreshSingleConversation(messages.last, true);
+    if(messages.isNotEmpty) {
+      refreshSingleConversation(messages.last, true);
+    }
   }
 
   //-----------Message Listeners------------------------------------------------
@@ -839,7 +846,8 @@ class CometChatConversationsController
                 var snackBar = SnackBar(
                   backgroundColor: colorPalette.error,
                   content: Text(
-                    cc.Translations.of(context!).errorUnableToDeleteConversation,
+                    cc.Translations.of(context!)
+                        .errorUnableToDeleteConversation,
                     style: TextStyle(
                       color: colorPalette.white,
                       fontSize: typography.button?.medium?.fontSize,
@@ -1125,76 +1133,28 @@ class CometChatConversationsController
   void showPopupMenu(
     BuildContext context,
     List<CometChatOption> options,
-    CometChatColorPalette colorPalette,
-    CometChatTypography typography,
-    CometChatSpacing spacing,
     GlobalKey widgetKey,
   ) {
     RelativeRect? position = _getWidgetPosition(context, widgetKey);
     showMenu(
       context: context,
       position: position ?? const RelativeRect.fromLTRB(0, 0, 0, 0),
-      color: Colors.transparent,
-      shadowColor: Colors.transparent,
+      shadowColor: colorPalette?.background1 ?? Colors.transparent,
+      color: colorPalette?.transparent ?? Colors.transparent,
+      menuPadding: EdgeInsets.zero,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(spacing?.radius2 ?? 0),
+        side: BorderSide(
+          color: colorPalette?.borderLight ?? Colors.transparent,
+          width: 1,
+        ),
+      ),
       items: options.map((CometChatOption option) {
         return CustomPopupMenuItem<CometChatOption>(
-          value: option,
-          child: Container(
-            width: 160,
-            padding: EdgeInsets.symmetric(
-              horizontal: spacing.padding4 ?? 0,
-              vertical: spacing.padding4 ?? 0,
-            ),
-            decoration: BoxDecoration(
-              color: colorPalette.background1,
-              borderRadius: BorderRadius.circular(
-                spacing.radius2 ?? 0,
-              ),
-              border: Border.all(
-                color: colorPalette.borderLight ?? Colors.transparent,
-                width: 1,
-              ),
-              boxShadow: const [
-                BoxShadow(
-                  color: Color(0x14101828),
-                  blurRadius: 6,
-                  offset: Offset(0, 4),
-                ),
-                BoxShadow(
-                  color: Color(0x28101828),
-                  blurRadius: 16,
-                  offset: Offset(0, 12),
-                ),
-              ],
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(right: spacing.padding2 ?? 0),
-                  child: Image.asset(
-                    option.icon ?? "",
-                    package: UIConstants.packageName,
-                    color: option.iconTint ?? colorPalette.error,
-                    height: 24,
-                    width: 24,
-                  ),
-                ),
-                Expanded(
-                  child: Text(
-                    option.title ?? "",
-                    style: TextStyle(
-                      color: colorPalette.textPrimary,
-                      fontSize: typography.body?.regular?.fontSize,
-                      fontWeight: typography.body?.regular?.fontWeight,
-                      fontFamily: typography.body?.regular?.fontFamily,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
+            value: option,
+            child: GetMenuView(
+              option: option,
+            ));
       }).toList(),
     ).then((selectedOption) {
       if (selectedOption != null) {
@@ -1238,33 +1198,5 @@ class CometChatConversationsController
     }
 
     return null;
-  }
-}
-
-class CustomPopupMenuItem<T> extends PopupMenuEntry<T> {
-  final Widget child;
-  final T? value;
-
-  const CustomPopupMenuItem({super.key, required this.child, this.value});
-
-  @override
-  double get height => 48;
-
-  @override
-  bool represents(T? value) => this.value == value;
-
-  @override
-  State<StatefulWidget> createState() => _CustomPopupMenuItemState<T>();
-}
-
-class _CustomPopupMenuItemState<T> extends State<CustomPopupMenuItem<T>> {
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.pop(context, widget.value);
-      },
-      child: widget.child,
-    );
   }
 }

@@ -71,6 +71,7 @@ export 'src/utils/message_utils.dart';
 export 'src/utils/ui_event_utils.dart';
 export 'src/framework/messages_data_source.dart';
 export 'src/utils/file_utils.dart';
+export 'src/utils/string_utils.dart';
 
 //---views---
 //cometchat badge
@@ -190,6 +191,7 @@ export 'src/view_models/cometchat_group_members_controller_protocol.dart';
 export 'src/view_models/cometchat_conversations_controller_protocol.dart';
 export 'src/view_models/cometchat_details_controller_protocol.dart';
 
+//misc
 export 'src/misc/bubble_utils.dart';
 export 'src/misc/container_dotted_border.dart';
 export 'src/misc/ui_event_handler.dart';
@@ -201,6 +203,9 @@ export 'src/misc/media_picker.dart';
 export 'src/misc/section_separator.dart';
 export 'src/misc/utils.dart';
 export 'src/misc/loading_indicator.dart';
+export 'src/misc/audio_bubble_events.dart';
+export 'src/misc/get_menu_view.dart';
+export 'src/misc/custom_pop_up_menu.dart';
 
 export 'src/models/snack_bar_configuration.dart';
 export 'src/utils/snack_bar_utils.dart';

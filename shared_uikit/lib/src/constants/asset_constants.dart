@@ -128,3 +128,16 @@ extension CometChatAssetConstants on AssetConstants {
   String get emptyGroupList => "assets/icons/$_mode/empty_group_list.png";
   String get emptyUserList => "assets/icons/$_mode/user_empty.png";
 }
+
+///[SvgAssetConstants] is a utility class that stores String constants of asset image paths
+class SvgAssetConstants {
+
+  ///[_mode] stores the default asset directory according to the brightness mode of the device
+  String _mode = "light";
+  SvgAssetConstants(Brightness brightness) {
+    _mode = brightness == Brightness.light ? "light" : "dark";
+  }
+
+  static const videoCall = "assets/icons/svg/calls/video_call.svg";
+
+}

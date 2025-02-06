@@ -442,6 +442,11 @@ class _CometChatCreateGroupState extends State<CometChatCreateGroup>
       keyboardAppearance:
       CometChatThemeHelper.getBrightness(context),
       controller: controller,
+      onTapOutside: (event) {
+        if(FocusManager.instance.primaryFocus?.context != null){
+          FocusScope.of(FocusManager.instance.primaryFocus!.context!).unfocus();
+        }
+      },
       validator: (value) {
         if (value == null || value.isEmpty) {
           return "";

@@ -23,6 +23,7 @@ dependencies:
   path_provider: ^2.1.2
   webview_flutter: ^4.4.3
   cometchat_sdk: ^4.0.17
+  flutter_svg: ^2.0.17
 
 dev_dependencies:
   flutter_test:
@@ -61,3 +62,4 @@ flutter:
     - assets/icons/2x/
     - assets/icons/light/
     - assets/icons/dark/
+    - assets/icons/svg/calls/

@@ -330,3 +330,9 @@ class ExtensionType {
   static const String document = "extension_document";
   static const String whiteboard = "extension_whiteboard";
 }
+
+
+class AudioBubbleConstants{
+  static const String localPath = "localPath";
+  static const String usedByMediaRecorder = 'usedByMediaRecorder';
+}

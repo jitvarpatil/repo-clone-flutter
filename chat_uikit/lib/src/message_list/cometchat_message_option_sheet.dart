@@ -181,6 +181,7 @@ class _CometchatMessageOptionSheetState
                             child: IconButton(
                               onPressed: () async {
                                 if (widget.onAddReactionIconTap != null) {
+                                  FocusManager.instance.primaryFocus?.unfocus();
                                   widget.onAddReactionIconTap!(
                                       widget.messageObject);
                                 }
@@ -214,6 +215,7 @@ class _CometchatMessageOptionSheetState
                       minTileHeight: 0,
                       horizontalTitleGap: spacing.padding2,
                       onTap: () {
+                        FocusManager.instance.primaryFocus?.unfocus();
                         setState(() {
                           selectedIndex = index;
                         });

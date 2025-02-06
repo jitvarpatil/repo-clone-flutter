@@ -150,34 +150,37 @@ class _CometChatAIConversationStarterViewState
                         onTap: () {
                           onClickReply(_replies[item]);
                         },
-                        child: Container(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: spacing.padding5 ?? 0,
-                              vertical: spacing.padding2 ?? 0),
-                          decoration: BoxDecoration(
-                            color: style.backgroundColor ??
-                                colorPalette.background1,
-                            border: style.border ??
-                                Border.all(
-                                    color: colorPalette.borderLight ??
-                                        Colors.transparent,
-                                    width: 1),
-                            borderRadius: style.borderRadius ??
-                                BorderRadius.all(
-                                  Radius.circular(
-                                    spacing.radiusMax ?? 0,
+                        child:  Align(
+                          alignment: Alignment.centerLeft,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: spacing.padding5 ?? 0,
+                                vertical: spacing.padding2 ?? 0),
+                            decoration: BoxDecoration(
+                              color: style.backgroundColor ??
+                                  colorPalette.background1,
+                              border: style.border ??
+                                  Border.all(
+                                      color: colorPalette.borderLight ??
+                                          Colors.transparent,
+                                      width: 1),
+                              borderRadius: style.borderRadius ??
+                                  BorderRadius.all(
+                                    Radius.circular(
+                                      spacing.radiusMax ?? 0,
+                                    ),
                                   ),
-                                ),
-                          ),
-                          child: Text(
-                            _replies[item],
-                            style: style.itemTextStyle ??
-                                TextStyle(
-                                  fontSize: typography.body?.regular?.fontSize,
-                                  fontWeight:
-                                      typography.body?.regular?.fontWeight,
-                                  color: colorPalette.textPrimary,
-                                ),
+                            ),
+                            child: Text(
+                              _replies[item],
+                              style: style.itemTextStyle ??
+                                  TextStyle(
+                                    fontSize: typography.body?.regular?.fontSize,
+                                    fontWeight:
+                                        typography.body?.regular?.fontWeight,
+                                    color: colorPalette.textPrimary,
+                                  ),
+                            ),
                           ),
                         ),
                       );

@@ -37,6 +37,9 @@ class _LoginState extends State<Login> {
                       model.imageURL,
                       height: 30,
                       width: 30,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Icon(Icons.image_not_supported); // Show fallback image
+                      }
                     )
                   : Image.asset(
                       model.imageURL,

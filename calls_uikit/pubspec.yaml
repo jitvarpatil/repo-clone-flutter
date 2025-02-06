@@ -14,12 +14,18 @@ dependencies:
   get:  ^4.6.5
   cometchat_sdk: ^4.0.17
   cometchat_calls_sdk: ^4.0.9
-  cometchat_uikit_shared: ^5.0.0-alpha.1
+  cometchat_uikit_shared:
+    path: ../shared_uikit
+  flutter_svg: ^2.0.17
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
+
+dependency_overrides:
+  cometchat_uikit_shared:
+    path: ../shared_uikit
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

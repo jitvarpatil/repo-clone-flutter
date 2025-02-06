@@ -534,11 +534,11 @@ class _CometChatGroupsState extends State<CometChatGroups> {
             Expanded(
               child: CometChatListItem(
                 id: group.guid,
-                avatarName: group.name,
+                avatarName: group.name.removeTabsAndLineBreaks(),
                 avatarURL: group.icon,
                 avatarHeight: 40,
                 avatarWidth: 40,
-                title: group.name,
+                title: group.name.removeTabsAndLineBreaks(),
                 key: UniqueKey(),
                 subtitleView: subtitle,
                 avatarStyle: avatarStyle,
