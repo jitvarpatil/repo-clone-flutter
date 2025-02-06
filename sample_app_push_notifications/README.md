@@ -21,6 +21,7 @@ Sign up for a [CometChat](https://app.cometchat.com/) account to obtain your app
 - XCode
 - Pod (CocoaPods) for iOS
 - An iOS device or emulator with iOS 12.0 or above.
+- Ensure that you have configured the provisioning profile in Xcode to run the app on a physical device.
 
 **Android**
 - Android Studio
@@ -69,7 +70,7 @@ Sign up for a [CometChat](https://app.cometchat.com/) account to obtain your app
 8. Set up CometChat Push Notification:
    - Go to the [Notification Documentation](https://www.cometchat.com/docs/notifications/push-integration) and follow integration steps.
    - Note the provider id entered while configuring the Push Notifications in CometChat Dashboard.
-   
+
    Update provide ID in the `AppCredentials.dart` for push notification
 
       ```dart
