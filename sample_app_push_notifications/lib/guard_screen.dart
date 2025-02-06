@@ -1,12 +1,14 @@
 import 'package:cometchat_calls_uikit/cometchat_calls_uikit.dart';
 import 'package:cometchat_chat_uikit/cometchat_chat_uikit.dart';
-import 'package:sample_app_push_notifications/app_credentials.dart';
-import 'package:sample_app_push_notifications/auth/login_app_credential.dart';
-import 'package:sample_app_push_notifications/auth/login_sample_users.dart';
-import 'package:sample_app_push_notifications/dashboard.dart';
-import 'package:sample_app_push_notifications/demo_meta_info_constants.dart';
+import 'package:master_app/app_credentials.dart';
+import 'package:master_app/auth/login_app_credential.dart';
+import 'package:master_app/auth/login_sample_users.dart';
+import 'package:master_app/dashboard.dart';
+import 'package:master_app/demo_meta_info_constants.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'dart:async';
 
 class GuardScreen extends StatefulWidget {
   const GuardScreen({Key? key}) : super(key: key);
@@ -32,12 +34,30 @@ class _GuardScreenState extends State<GuardScreen> {
     }
   }
 
+  @override
+  void initState() {
+    _checkPermissions();
+    super.initState();
+  }
+
   getCallButtonConfiguration() {
     return CallButtonsConfiguration(
         callButtonsStyle: CometChatCallButtonsStyle(
       voiceCallIconColor: colorPalette.iconPrimary,
       videoCallIconColor: colorPalette.iconPrimary,
     ));
+  }
+
+  Future<void> _checkPermissions() async {
+    // Check and request microphone permission if not granted
+    if (await Permission.microphone.isDenied) {
+      await Permission.microphone.request();
+    }
+
+    // Check and request camera permission if not granted
+    if (await Permission.camera.isDenied) {
+      await Permission.camera.request();
+    }
   }
 
   init() async {
