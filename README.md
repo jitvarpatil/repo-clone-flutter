@@ -15,7 +15,7 @@ CometChat Flutter UIKit provides a pre-built user interface kit that developers 
 
 ## 🚀 Explore the Sample Apps!
 
-Dive straight into our Sample Apps to see CometChat UI Kit in action! Whether you're building a messaging app or enhancing your existing project, this sample app showcases the full potential of our React UI components.  
+Dive straight into our Sample Apps to see CometChat UI Kit in action! Whether you're building a messaging app or enhancing your existing project, this sample app showcases the full potential of our Flutter UI components.  
 - [Sample App ](sample_app#readme)
 - [Sample App with Push Notifications](sample_app_push_notifications#readme)
 
@@ -41,5 +41,5 @@ To set up Flutter Chat UIKit and utilize CometChat for your chat functionality, 
 
 ## Help and Support
 
-For issues running the project or integrating with our UI Kits, consult our [documentation](https://www.cometchat.com/docs/android-uikit/integration)
+For issues running the project or integrating with our UI Kits, consult our [documentation](https://www.cometchat.com/docs/ui-kit/flutter/5.0/overview)
 or create a [support ticket](https://help.cometchat.com/hc/en-us) or seek real-time support via the [CometChat Dashboard](https://app.cometchat.com/).
