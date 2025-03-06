@@ -1,14 +1,16 @@
 import 'package:cometchat_calls_uikit/cometchat_calls_uikit.dart';
 import 'package:cometchat_chat_uikit/cometchat_chat_uikit.dart';
-import 'package:sample_app_push_notifications/app_credentials.dart';
 import 'package:sample_app_push_notifications/auth/login_app_credential.dart';
 import 'package:sample_app_push_notifications/auth/login_sample_users.dart';
+import 'package:sample_app_push_notifications/auth/login_screen.dart';
 import 'package:sample_app_push_notifications/dashboard.dart';
 import 'package:sample_app_push_notifications/demo_meta_info_constants.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:sample_app_push_notifications/prefs/shared_preferences.dart';
 import 'package:sample_app_push_notifications/utils/text_constants.dart';
+
+import 'app_credentials.dart';
 
 class GuardScreen extends StatefulWidget {
   const GuardScreen({Key? key}) : super(key: key);
@@ -132,7 +134,7 @@ class _GuardScreenState extends State<GuardScreen> {
               MaterialPageRoute(
                 builder: (context) => value
                     ? const MyHomePage()
-                    : const LoginSampleUsers(),
+                    : const LoginScreen(),
               ),
                   (route) => false,
             );

@@ -348,7 +348,7 @@ class CometChatGroupMembers extends StatelessWidget {
                   id: member.uid,
                   avatarName: member.name,
                   avatarURL: member.avatar,
-                  title: member.name,
+                  title: (controller.loggedInUser != null && controller.loggedInUser!.uid == member.uid) ? cc.Translations.of(context).you : member.name,
                   key: UniqueKey(),
                   subtitleView: subtitle,
                   tailView: tail,

@@ -1,3 +1,27 @@
+## 5.0.0-beta.2
+
+## Fixes
+- **Resolved Flutter UI Kit Build Failure**: Fixed an issue causing build failures when using Flutter version 3.29.0.
+- **Last Message Not Updating for Group Action Messages**: Addressed a problem where the last message did not update if it was a group action message.
+- **Deleting Mentioned Names in Messages**: Fixed an issue where deleting a mentioned name in a message resulted in character-by-character deletion instead of removing the full mention.
+
+## 5.0.0-beta.1
+
+## New
+- **Revamped UI**: Experience a fresh, modern design for improved visual appeal and consistency. The updated look enhances usability and engagement.
+- **Restructured Components**: Enjoy a redesigned component architecture that improves scalability, making it easier to build and maintain modular designs.
+
+## Enhancements
+- **Optimized User Experience**: Interactions have been streamlined to provide a smoother, more intuitive experience, reducing friction during use.
+- **Advanced Styling and Theming**: Gain greater flexibility with enhanced customization options, allowing you to tailor appearances to suit your brand effortlessly.
+- **Simplified Integration**: Set up faster and with ease thanks to a more intuitive, streamlined integration process.
+
+## Fixes
+- None
+
+## Removals
+- **Style Props Removed**: Style-specific props have been deprecated to encourage the use of modern theming practices, which offer more robust and scalable customization options.
+
 ## 5.0.0-alpha.1
 
 ## New

@@ -353,8 +353,9 @@ class _CometChatCallLogsState extends State<CometChatCallLogs> {
       return SizedBox(
         width: 24,
         height: 24,
-        child: GestureDetector(
-          onTap: () {
+        child: IconButton(
+          padding: EdgeInsets.zero,
+          onPressed: () {
             if (widget.onCallLogIconClicked != null) {
               widget.onCallLogIconClicked!(callLog);
             } else if (CallLogsUtils.isUser(callLog)) {
@@ -364,7 +365,7 @@ class _CometChatCallLogsState extends State<CometChatCallLogs> {
               );
             }
           },
-          child: icon ??
+          icon: icon ??
               Icon(
                 iconData,
                 size: 24,
