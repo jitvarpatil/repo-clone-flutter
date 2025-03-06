@@ -23,7 +23,6 @@ import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.*
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
-import io.flutter.plugin.common.PluginRegistry.Registrar
 import java.io.File
 import java.lang.Exception
 import java.util.ArrayList
@@ -145,36 +144,12 @@ class CometchatUikitSharedPlugin: FlutterPlugin, MethodCallHandler, ActivityAwar
 
   private fun setup(
           activity: Activity,
-          registrar: Registrar?,
           activityBinding: ActivityPluginBinding) {
     this.activity = activity
-    //this.application = application
     delegate = CometChatFilePickerDelegate(activity)
-//    channel = MethodChannel(messenger, FilePickerPlugin.CHANNEL)
-//    channel.setMethodCallHandler(this)
-//    EventChannel(messenger, FilePickerPlugin.EVENT_CHANNEL).setStreamHandler(object : EventChannel.StreamHandler {
-//      override fun onListen(arguments: Any, events: EventSink) {
-//        delegate.setEventHandler(events)
-//      }
-//
-//      override fun onCancel(arguments: Any) {
-//        delegate.setEventHandler(null)
-//      }
-//    })
-    //this.observer = FilePickerPlugin.LifeCycleObserver(activity)
-    if (registrar != null) {
-      // V1 embedding setup for activity listeners.
-      //application.registerActivityLifecycleCallbacks(this.observer)
-      registrar.addActivityResultListener(delegate!!)
-      registrar.addRequestPermissionsResultListener(delegate!!)
-    } else {
-      // V2 embedding setup for activity listeners.
       activityBinding.addActivityResultListener(delegate!!)
       activityBinding.addRequestPermissionsResultListener(delegate!!)
-//      this.lifecycle = FlutterLifecycleAdapter.getActivityLifecycle(activityBinding)
-//      this.lifecycle.addObserver(this.observer)
     }
-  }
 
 
 
@@ -194,7 +169,6 @@ class CometchatUikitSharedPlugin: FlutterPlugin, MethodCallHandler, ActivityAwar
     activityBinding = binding
     setup(
             activity,
-            null,
             activityBinding!!
 
     )

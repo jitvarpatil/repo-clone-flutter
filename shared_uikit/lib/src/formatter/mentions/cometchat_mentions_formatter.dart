@@ -498,6 +498,7 @@ class CometChatMentionsFormatter extends CometChatTextFormatter {
       return;
     }
 
+    _removeMentionIfDeleted(textEditingController);
     //first we check if the current text has any part matching the regex pattern
 
     //the following logic is for when copy paste is involved
@@ -1031,5 +1032,27 @@ CometChatSpacing spacing = CometChatThemeHelper.getSpacing(context);
     } else {
       return attributedTexts;
     }
+  }
+
+  void _removeMentionIfDeleted(TextEditingController? textEditingController) {
+    if (textEditingController == null || textEditingController!.text.isEmpty) return;
+
+    String newText = textEditingController!.text;
+    int cursorPosition = textEditingController!.selection.baseOffset;
+
+    mentionedUsersMap.forEach((mention, users) {
+      Iterable<RegExpMatch> matches = RegExp(mention).allMatches(newText);
+      for (var match in matches) {
+        int spanStart = match.start;
+        int spanEnd = match.end;
+
+        // Check if the cursor is right after a mention (like in Android code)
+        if (cursorPosition == spanEnd) {
+          textEditingController!.text = newText.replaceRange(spanStart, spanEnd, "");
+          mentionedUsersMap.remove(mention);
+          return;
+        }
+      }
+    });
   }
 }

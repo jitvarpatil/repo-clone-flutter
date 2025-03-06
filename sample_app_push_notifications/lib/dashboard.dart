@@ -12,9 +12,12 @@ import 'notifications/services/firebase_services.dart';
 import 'notifications/services/globals.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:async';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import '../guard_screen.dart';
 import '../notifications/services/cometchat_services.dart';
+import '../services/bugsee_services.dart';
+import 'package:firebase_auth/firebase_auth.dart' as fb;
 
 class MyHomePage extends StatelessWidget {
   const MyHomePage({super.key});
@@ -54,7 +57,6 @@ class _MyPageViewState extends State<MyPageView>
   void initState() {
     WidgetsBinding.instance.addObserver(this);
     _pageController = Get.find<PageManager>();
-    _checkPermissions();
 
     _dateString = DateTime.now().millisecondsSinceEpoch.toString();
 
@@ -97,6 +99,7 @@ class _MyPageViewState extends State<MyPageView>
     spacing = CometChatThemeHelper.getSpacing(context);
     _pageController
         .setKeyboardVisible(_pageController.isKeyboardVisible(context));
+    _checkPermissions();
   }
 
   void _onItemTapped(int index) {
@@ -113,7 +116,7 @@ class _MyPageViewState extends State<MyPageView>
     } else if (callStateController.isActiveOutgoingCall.value == true) {
       IncomingCallOverlay.dismiss();
       return;
-    }else if (callStateController.isActiveIncomingCall.value == true) {
+    } else if (callStateController.isActiveIncomingCall.value == true) {
       IncomingCallOverlay.dismiss();
       return;
     } else {
@@ -122,14 +125,28 @@ class _MyPageViewState extends State<MyPageView>
   }
 
   Future<void> _checkPermissions() async {
-    // Check and request microphone permission if not granted
-    if (await Permission.microphone.isDenied) {
+    PermissionStatus micStatus = await Permission.microphone.status;
+    PermissionStatus camStatus = await Permission.camera.status;
+    PermissionStatus notifyStatus = await Permission.notification.status;
+
+    if (micStatus.isDenied) {
       await Permission.microphone.request();
+      await Future.delayed(const Duration(seconds: 1));
     }
 
-    // Check and request camera permission if not granted
-    if (await Permission.camera.isDenied) {
+    if (camStatus.isDenied) {
       await Permission.camera.request();
+      await Future.delayed(const Duration(seconds: 1));
+    }
+
+    if (notifyStatus.isDenied) {
+      await Permission.notification.request();
+    }
+
+    if (micStatus.isPermanentlyDenied ||
+        camStatus.isPermanentlyDenied ||
+        notifyStatus.isPermanentlyDenied) {
+      openAppSettings();
     }
   }
 
@@ -141,6 +158,8 @@ class _MyPageViewState extends State<MyPageView>
     });
 
     try {
+      await fb.FirebaseAuth.instance.signOut();
+      await GoogleSignIn().signOut();
       PNRegistry.unregisterPNService();
       await CometChatUIKit.logout(
         onSuccess: (p0) {
@@ -162,6 +181,15 @@ class _MyPageViewState extends State<MyPageView>
     }
   }
 
+  Future<void> launchBugsee() async {
+    await BugseeServices.launchBugsee((bool isBugseeLaunched) async {
+      if (isBugseeLaunched) {
+        debugPrint('Bugsee successfully launched!');
+      } else {
+        debugPrint('Bugsee launch failed.');
+      }
+    });
+  }
 
   @override
   void openChat(
@@ -218,6 +246,9 @@ class _MyPageViewState extends State<MyPageView>
                       case '/name':
                         break;
                       case '/version':
+                        break;
+                      case '/bugsee':
+                        launchBugsee();
                         break;
                     }
                   },
@@ -288,6 +319,36 @@ class _MyPageViewState extends State<MyPageView>
                       PopupMenuItem(
                         height: 44,
                         padding: EdgeInsets.all(spacing.padding4 ?? 0),
+                        value: '/bugsee',
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding:
+                                  EdgeInsets.only(right: spacing.padding2 ?? 0),
+                              child: Icon(
+                                Icons.bug_report_outlined,
+                                color: colorPalette.error,
+                                size: 24,
+                              ),
+                            ),
+                            Text(
+                              "Start Reporting",
+                              style: TextStyle(
+                                fontSize: typography.body?.regular?.fontSize,
+                                fontFamily:
+                                    typography.body?.regular?.fontFamily,
+                                fontWeight:
+                                    typography.body?.regular?.fontWeight,
+                                color: colorPalette.error,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      PopupMenuItem(
+                        height: 44,
+                        padding: EdgeInsets.all(spacing.padding4 ?? 0),
                         value: '/logout',
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -334,7 +395,7 @@ class _MyPageViewState extends State<MyPageView>
                           child: Padding(
                             padding: EdgeInsets.all(spacing.padding4 ?? 0),
                             child: Text(
-                              "v5.0.0_beta1",
+                              "v5.0.0_beta2",
                               style: TextStyle(
                                 fontSize: typography.body?.regular?.fontSize,
                                 fontFamily:

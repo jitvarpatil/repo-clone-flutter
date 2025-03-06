@@ -1,6 +1,5 @@
 import 'package:cometchat_calls_uikit/cometchat_calls_uikit.dart';
 import 'package:cometchat_chat_uikit/cometchat_chat_uikit.dart';
-import 'package:sample_app/app_credentials.dart';
 import 'package:sample_app/auth/login_app_credential.dart';
 import 'package:sample_app/auth/login_sample_users.dart';
 import 'package:sample_app/dashboard.dart';
@@ -9,6 +8,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:sample_app/prefs/shared_preferences.dart';
 import 'package:sample_app/utils/text_constants.dart';
+
+import 'app_credentials.dart';
 
 class GuardScreen extends StatefulWidget {
   const GuardScreen({Key? key}) : super(key: key);

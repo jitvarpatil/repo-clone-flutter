@@ -200,6 +200,7 @@ class CometChatBannedMembersController
                     type: MessageTypeConstants.groupActions,
                     receiverType: ReceiverTypeConstants.group,
                     parentMessageId: 0,
+                    receiver: group,
                   ),
                   member,
                   loggedInUser!,

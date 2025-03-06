@@ -111,6 +111,7 @@ class CometChatCallLogsController
     User receiverUser = User(
       uid: CallLogsUtils.returnReceiverId(loggedInUser, callLog),
       name: CallLogsUtils.receiverName(loggedInUser, callLog),
+      avatar: CallLogsUtils.receiverAvatar(loggedInUser, callLog),
     );
 
     CometChatUIKitCalls.initiateCall(call, onSuccess: (Call returnedCall) {

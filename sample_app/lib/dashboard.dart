@@ -9,6 +9,7 @@ import 'package:sample_app/utils/page_manager.dart';
 import 'call_log_details/cometchat_call_log_details.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:async';
+
 import '../guard_screen.dart';
 
 class MyHomePage extends StatelessWidget {
@@ -33,6 +34,7 @@ class _MyPageViewState extends State<MyPageView>
         CometChatUIEventListener,
         CallListener,
         CometChatCallEventListener {
+
   late PageManager _pageController;
   late CometChatColorPalette colorPalette;
   late CometChatTypography typography;
@@ -47,7 +49,6 @@ class _MyPageViewState extends State<MyPageView>
   void initState() {
     WidgetsBinding.instance.addObserver(this);
     _pageController = Get.find<PageManager>();
-    _checkPermissions();
 
     _dateString = DateTime.now().millisecondsSinceEpoch.toString();
 
@@ -77,6 +78,7 @@ class _MyPageViewState extends State<MyPageView>
     spacing = CometChatThemeHelper.getSpacing(context);
     _pageController
         .setKeyboardVisible(_pageController.isKeyboardVisible(context));
+    _checkPermissions();
   }
 
   void _onItemTapped(int index) {
@@ -93,7 +95,7 @@ class _MyPageViewState extends State<MyPageView>
     } else if (callStateController.isActiveOutgoingCall.value == true) {
       IncomingCallOverlay.dismiss();
       return;
-    }else if (callStateController.isActiveIncomingCall.value == true) {
+    } else if (callStateController.isActiveIncomingCall.value == true) {
       IncomingCallOverlay.dismiss();
       return;
     } else {
@@ -102,14 +104,28 @@ class _MyPageViewState extends State<MyPageView>
   }
 
   Future<void> _checkPermissions() async {
-    // Check and request microphone permission if not granted
-    if (await Permission.microphone.isDenied) {
+    PermissionStatus micStatus = await Permission.microphone.status;
+    PermissionStatus camStatus = await Permission.camera.status;
+    PermissionStatus notifyStatus = await Permission.notification.status;
+
+    if (micStatus.isDenied) {
       await Permission.microphone.request();
+      await Future.delayed(const Duration(seconds: 1));
     }
 
-    // Check and request camera permission if not granted
-    if (await Permission.camera.isDenied) {
+    if (camStatus.isDenied) {
       await Permission.camera.request();
+      await Future.delayed(const Duration(seconds: 1));
+    }
+
+    if (notifyStatus.isDenied) {
+      await Permission.notification.request();
+    }
+
+    if (micStatus.isPermanentlyDenied ||
+        camStatus.isPermanentlyDenied ||
+        notifyStatus.isPermanentlyDenied) {
+      openAppSettings();
     }
   }
 
@@ -140,7 +156,6 @@ class _MyPageViewState extends State<MyPageView>
       });
     }
   }
-
 
 
   @override
@@ -314,7 +329,7 @@ class _MyPageViewState extends State<MyPageView>
                           child: Padding(
                             padding: EdgeInsets.all(spacing.padding4 ?? 0),
                             child: Text(
-                              "v5.0.0_beta1",
+                              "v5.0.0_beta2",
                               style: TextStyle(
                                 fontSize: typography.body?.regular?.fontSize,
                                 fontFamily:

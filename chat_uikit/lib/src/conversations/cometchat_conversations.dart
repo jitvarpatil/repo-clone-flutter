@@ -879,12 +879,13 @@ class _CometChatConversationsState extends State<CometChatConversations> {
   }) {
     String prefix = "";
     if (hideThreadIndicator != null && hideThreadIndicator == false) {
+
       if (conversation.conversationWith is User) {
         if (conversation.lastMessage?.sender?.uid !=
             CometChatUIKit.loggedInUser?.uid) {
           prefix = "${conversation.lastMessage?.sender?.name}: ";
         } else {
-          prefix = "${cc.Translations.of(context).you}: ";
+          prefix = "";
         }
       }
     }
