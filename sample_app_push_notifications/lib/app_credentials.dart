@@ -2,11 +2,11 @@ import 'package:sample_app_push_notifications/prefs/shared_preferences.dart';
 import 'package:sample_app_push_notifications/utils/text_constants.dart';
 
 class AppCredentials {
-  static String _appId = "26580020f03ff346";
-  static String _authKey = "4152b0366478871f0fa8d19a287dd6f5ed5f8eff";
-  static String _region = "in";
-  static String _fcmProviderId = "Android-CometChat-Team-Messenger";
-  static String _apnProviderId = "flutterIOsTesting";
+  static String _appId = "";
+  static String _authKey = "";
+  static String _region = "";
+  static String _fcmProviderId = "";
+  static String _apnProviderId = "";
 
   // Getters
   static String get appId {
