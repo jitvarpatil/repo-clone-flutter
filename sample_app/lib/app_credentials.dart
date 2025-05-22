@@ -2,9 +2,9 @@ import 'package:sample_app/prefs/shared_preferences.dart';
 import 'package:sample_app/utils/text_constants.dart';
 
 class AppCredentials {
-  static String _appId = "";
-  static String _authKey = "";
-  static String _region = "";
+  static String _appId = "26580020f03ff346";
+  static String _authKey = "4152b0366478871f0fa8d19a287dd6f5ed5f8eff";
+  static String _region = "in";
 
   // Getters
   static String get appId {
