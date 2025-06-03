@@ -206,7 +206,50 @@ public class CometchatUikitSharedPlugin: NSObject, FlutterPlugin, QLPreviewContr
             }
         }
     }
-    
+
+private func presentAudioPicker() {
+    DispatchQueue.main.async { [weak self] in
+        guard let this = self else { return }
+
+        let documentPicker: UIDocumentPickerViewController
+
+        if #available(iOS 14.0, *) {
+            // iOS 14+ uses UTType
+            var supportedTypes: [UTType] = [
+                .mp3,
+                .mpeg4Audio,
+                .wav,
+                .aiff
+            ]
+
+            if let m4aType = UTType(filenameExtension: "m4a") {
+                supportedTypes.append(m4aType)
+            }
+            documentPicker = UIDocumentPickerViewController(forOpeningContentTypes: supportedTypes, asCopy: true)
+        } else {
+            // iOS 13 and below uses UTI string identifiers
+            let audioUTIs = [
+                "public.mp3",
+                "com.apple.protected-mpeg-4-audio",
+                "com.microsoft.waveform-audio",
+                "public.mpeg-4-audio",
+                "com.apple.coreaudio-format"
+            ]
+            documentPicker = UIDocumentPickerViewController(documentTypes: audioUTIs, in: .import)
+        }
+
+        documentPicker.delegate = this
+        documentPicker.allowsMultipleSelection = false
+        documentPicker.modalPresentationStyle = .fullScreen
+
+        if let controller = CometchatUikitSharedPlugin.uiViewController {
+            controller.present(documentPicker, animated: true, completion: nil)
+        } else {
+            print("⚠️ Warning: Could not present document picker — uiViewController is nil")
+        }
+    }
+}
+
     
     
     private func presentDocumentPicker() {
@@ -299,6 +342,10 @@ private func presentImagePicker(mediaType: String) {
             self.download(args: args, result:result)
         case "pauseRecordingAudio":
             self.pauseRecordingAudio(args: args, result: result)
+        case "setAudioSessionToSpeaker":
+            self.setAudioSessionToSpeaker(args: args, result:result)
+        case "resetAudioSession":
+            self.resetAudioSession(args: args, result:result)
         default:
             result(FlutterMethodNotImplemented)
         }
@@ -357,7 +404,10 @@ private func presentImagePicker(mediaType: String) {
         } else if(type ==  "video") {
          presentImagePicker(mediaType: type)
          return
-        }else{
+        } else if type == "audio" {
+        presentAudioPicker()
+        return
+        } else{
             presentDocumentPicker()
             return
         }
@@ -645,6 +695,34 @@ private func presentImagePicker(mediaType: String) {
                     self.copyMedia(fileLocation)
                 }
             })
+        }
+    }
+
+    // MARK: - Audio Session Management (Speaker/Earpiece Control)
+    private func setAudioSessionToSpeaker(args: [String: Any], result: @escaping FlutterResult) {
+        do {
+            try AVAudioSession.sharedInstance().setCategory(
+                .playAndRecord,
+                mode: .default,
+                options: [.defaultToSpeaker, .allowBluetooth]
+            )
+            try AVAudioSession.sharedInstance().setActive(true)
+            result(true)
+        } catch {
+            result(FlutterError(code: "AUDIO_SESSION_ERROR",
+                                message: "Failed to set audio session: \(error.localizedDescription)",
+                                details: nil))
+        }
+    }
+
+    private func resetAudioSession(args: [String: Any], result: @escaping FlutterResult) {
+        do {
+            try AVAudioSession.sharedInstance().setActive(false)
+            result(true)
+        } catch {
+            result(FlutterError(code: "AUDIO_SESSION_RESET_ERROR",
+                                message: "Failed to reset audio session: \(error.localizedDescription)",
+                                details: nil))
         }
     }
     

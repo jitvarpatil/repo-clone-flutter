@@ -1,3 +1,37 @@
+## 5.0.2
+
+## Enhancements
+- Updated `cometchat_uikit_shared` to version `5.0.2`.
+
+## Fixes
+- Fixed an issue in CometChatMessageList where the `onLoad` callback was not triggered after messages were visually loaded.
+- Fixed an issue where two identical stickers appeared in the message composer when opening a chat or replying in a thread.
+- Fixed an issue where the search bar text for banned members did not appear in the default color on both Android and iOS, reducing visibility.
+- Resolved a crash in the Push Notification Sample App that occurred when accepting a call while the app was closed (killed).
+- Fixed an issue where the app froze or became unresponsive when accepting a call from the background.
+
+## 5.0.1
+
+## Enhancements
+- Improved sticky date separator behavior to remain fixed at the top during new chat sessions, enhancing readability.
+- Updated `cometchat_sdk` to version `4.0.22`.
+- Updated `cometchat_uikit_shared` to version `5.0.1`.
+
+## Fixes
+- Corrected incorrect capitalization in the unblock confirmation popup. It now reads "Unblock this contact?" with proper formatting.
+- Removed the incorrectly displayed password protection icon from the group info section for password-protected groups.
+- Restored the missing online/last seen status in the user info section.
+- Updated the Add Member component to default to selection mode, removing the need for a long press to select users.
+- Resolved an issue where incorrect options (e.g., Change Scope, Ban, Remove) appeared during ownership transfer selection.
+- Fixed an issue allowing messages to be sent without changes after clicking the Edit button. The Send button is now disabled until edits are made.
+- Fixed an issue where the chat UI would break upon reopening the chat screen.
+- Resolved an issue where the summary icon incorrectly appeared in thread view upon opening.
+- Fixed unexpected display of the user name in one-to-one conversation threads.
+- Resolved an issue where the "Edit Message" background appeared in light mode when using dark mode.
+- Fixed flickering of the voice recording UI for a few seconds after recording ended.
+- Corrected display of the unblock option for blocked users .
+- Resolved flickering of the "Leave" option in group info when only one user was present.
+
 ## 5.0.0
 
 ## Enhancements
