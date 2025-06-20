@@ -1,6 +1,6 @@
 import 'translations.dart';
 
-/// The translations for English (`en`).
+/// The translations for English-us (`en`).
 class TranslationsEn extends Translations {
   TranslationsEn([super.locale = 'en']);
 
@@ -1065,7 +1065,8 @@ class TranslationsEn extends Translations {
   String get looksLikeSomethingWrong => "Looks like something went wrong.";
 
   @override
-  String get startNewChatOrInvite => 'Start a new chat or invite others to join the conversation.';
+  String get startNewChatOrInvite =>
+      'Start a new chat or invite others to join the conversation.';
 
   @override
   String get noConversationsYet => "No Conversations Yet";
@@ -1074,41 +1075,43 @@ class TranslationsEn extends Translations {
   String get textTranslated => 'Text Translated';
 
   @override
-  String get lastSeen=>'Last seen';
+  String get lastSeen => 'Last seen';
 
   @override
-  String get minuteAgo=>'minute ago';
+  String get minuteAgo => 'minute ago';
 
   @override
-  String get minutesAgo=>'minutes ago';
+  String get minutesAgo => 'minutes ago';
 
   @override
-  String get at=>'at';
+  String get at => 'at';
 
   @override
-  String get retry=>'Retry';
+  String get retry => 'Retry';
 
   @override
-  String get popScreenDisabled => 'Pop Screen Disabled. Tap on the cancel call button.';
+  String get popScreenDisabled =>
+      'Pop Screen Disabled. Tap on the cancel call button.';
 
   @override
   String get usersUnavailable => 'No Users Available';
 
   @override
-  String get usersUnavailableMessage => 'We couldn’t find any users matching your search. Try adjusting your search.';
+  String get usersUnavailableMessage =>
+      'We couldn’t find any users matching your search. Try adjusting your search.';
 
   @override
   String get save => 'Save';
 
   @override
-  String get changeScopeSubtitle => 'You can change roles to manage group permissions and responsibilities.';
+  String get changeScopeSubtitle =>
+      'You can change roles to manage group permissions and responsibilities.';
 
   @override
   String get remove => 'Remove';
 
   @override
   String get admin => 'Admin';
-
 
   @override
   String get unsupportedMessageType => "This message type is not supported";
@@ -1117,7 +1120,8 @@ class TranslationsEn extends Translations {
   String get addOption => 'Add Option';
 
   @override
-  String get pollEmptyString => 'Please fill in all required fields before creating a poll.';
+  String get pollEmptyString =>
+      'Please fill in all required fields before creating a poll.';
 
   @override
   String get askQuestion => 'Ask Question';
@@ -1141,7 +1145,8 @@ class TranslationsEn extends Translations {
   String get edited => 'Edited';
 
   @override
-  String get deleteMessageWarning => 'Are you sure you want to delete this message? This action cannot be undone.';
+  String get deleteMessageWarning =>
+      'Are you sure you want to delete this message? This action cannot be undone.';
 
   @override
   String get from => 'from';
@@ -1159,5 +1164,97 @@ class TranslationsEn extends Translations {
   String get camera => 'Camera';
 
   @override
+  String get hourAgo => 'hour ago';
+
+  @override
+  String get hoursAgo => 'hours ago';
+
+  @override
   String get areYouSureKick => 'Are you sure you want to kick';
+
+  @override
+  String get noCallLogsYet => 'No Call Logs Yet';
+
+  @override
+  String get makeOrReceiveCalls =>
+      'Make or receive calls to see your call history listed here';
+
+  @override
+  String get blockContact => 'Block this contact?';
+
+  @override
+  String get confirmBlockContact =>
+      'Are you sure you want to block this contact? You won’t receive messages from them anymore.';
+
+  @override
+  String get deleteChat => 'Delete this chat?';
+
+  @override
+  String get confirmDeleteChat =>
+      'Are you sure you want to delete this chat? This action cannot be undone.';
+
+  @override
+  String get errorBlockUser => 'Error, Unable to block user';
+
+  @override
+  String get unblockContact => 'Unblock this contact?';
+
+  @override
+  String get confirmUnblockContact =>
+      'Are you sure you want to unblock this contact?';
+
+  @override
+  String get groupInfo => 'Group Info';
+
+  @override
+  String get errorLeaveGroup => 'Error, Unable to leave group';
+
+  @override
+  String get errorDeleteGroup => 'Error, Unable to delete group';
+
+  @override
+  String get leaveThisGroup => 'Leave this group?';
+
+  @override
+  String get confirmLeaveGroup =>
+      'Are you sure you want to leave this group? You won’t receive any more messages from this chat.';
+
+  @override
+  String get confirmDeleteAndExit =>
+      'Are you sure you want to delete this chat and exit the group? This action cannot be undone.';
+
+  @override
+  String get continueText => 'Continue';
+
+  @override
+  String get confirmTransferOwnership =>
+      'Are you sure you want to transfer ownership? This can\'t be undone, and the new owner will take full control.';
+
+  @override
+  String get ownerShipTransfer => 'Ownership Transfer';
+
+  @override
+  String get errorDeleteUser => 'Error, Unable to delete user';
+
+  @override
+  String get userInfo => 'User Info';
+  @override
+  String get voice => 'Voice';
+  @override
+  String get deleteTheChat => 'Delete Chat';
+  @override
+  String get block => 'Block';
+  @override
+  String get unBlock => 'Unblock';
+
+  @override
+  String get enterTheGroupName => 'Enter the group name';
+  @override
+  String get enterTheGroupPassword => 'Enter the group password';
+  @override
+  String get type => 'Type';
+  @override
+  String get createGroupEmptyString =>
+      'Please fill in all required fields before creating a group.';
+
 }
