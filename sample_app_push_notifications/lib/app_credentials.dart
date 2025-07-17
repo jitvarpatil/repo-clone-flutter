@@ -6,7 +6,7 @@ class AppCredentials {
   static String _authKey = "4152b0366478871f0fa8d19a287dd6f5ed5f8eff";
   static String _region = "in";
   static String _fcmProviderId = "Android-CometChat-Team-Messenger";
-  static String _apnProviderId = "flutterIOsTesting";
+  static String _apnProviderId = "flutterIOsTestingInternal";
 
   // Getters
   static String get appId {
