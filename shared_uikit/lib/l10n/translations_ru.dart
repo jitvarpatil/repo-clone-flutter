@@ -1242,5 +1242,19 @@ class TranslationsRu extends Translations {
   @override
   String get createGroupEmptyString =>
       'Пожалуйста, заполните все обязательные поля перед созданием группы.';
+  @override
+  String get messageBlockedByModeration => 'Ваше сообщение было заблокировано из-за политик модерации.';
+
+  @override
+  String get cantSendMessageBlockedUser => "Невозможно отправить сообщение, так как пользователь заблокирован.";
+
+  @override
+  String get cantSendMessageNotMember => "Вы не можете отправлять сообщения в эту группу, так как больше не являетесь её участником.";
+
+  @override
+  String get youAreNoLongerPartOfThisGroup => 'Вы больше не являетесь частью этой группы.';
+
+  @override
+  String get busy => "Занят";
 
 }

@@ -893,12 +893,6 @@ class CometChatMessageComposerController extends GetxController
       sentAt: DateTime.now(),
     );
 
-    if (textEditingController != null &&
-        textEditingController!.text.isNotEmpty) {
-      textEditingController?.clear();
-      _previousText = '';
-      update();
-    }
 
     await CometChat.sendMediaMessage(mediaMessage2,
         onSuccess: (MediaMessage message) async {
@@ -1169,8 +1163,9 @@ class CometChatMessageComposerController extends GetxController
 
 //triggered if developer doesn't pass their onSendButtonClick handler
   onSendButtonClick() {
-    if (textEditingController != null &&
-        textEditingController!.text.isNotEmpty) {
+    final text = textEditingController?.text.trim();
+    if (text != null &&
+        text.isNotEmpty) {
       if (previewMessageMode == PreviewMessageMode.none) {
         sendTextMessage();
       } else if (previewMessageMode == PreviewMessageMode.edit) {
@@ -1190,6 +1185,7 @@ class CometChatMessageComposerController extends GetxController
     previewMessageMode = PreviewMessageMode.none;
     messagePreviewTitle = "";
     messagePreviewSubtitle = "";
+    textEditingController?.clear();
     update();
     debugPrint('close preview requested');
   }

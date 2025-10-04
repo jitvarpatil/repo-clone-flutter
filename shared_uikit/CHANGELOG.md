@@ -1,3 +1,38 @@
+## 5.1.1
+
+## Enhancements
+- Updated `cometchat_sdk` to version `4.0.26`.
+
+## Fixes
+- Fixed an issue where voice notes would not play without downloading first, ensuring seamless playback.
+- Addressed an issue on some devices where images could not be attached, restoring proper attachment functionality.
+- Resolved an issue on iOS devices where audio messages could not be played after reinstalling the app.
+
+## 5.1.0
+
+## New
+- Added a **Moderation View** in the default bottom view of the message bubble. This view appears for messages that are disapproved based on their moderation status.
+- Introduced a new prop `hideModerationView` in the **CometChatMessageList** component, allowing developers to hide the Moderation View when needed.
+- Added a new prop `moderationStyle` in **CometChatOutgoingMessageBubbleStyle** to customize the background color and text appearance of the Moderation View.
+
+## Enhancements
+- Updated `cometchat_sdk` to version `4.0.25`.
+- Updated **BottomView** behavior: It is now rendered outside the main bubble container, allowing it to appear below the bubble but above the footer. This ensures clearer separation of content and improves layout flexibility.
+
+## 5.0.5
+
+## Enhancements
+- Updated `cometchat_sdk` to version `4.0.24`.
+- Adjusted font size in message bubbles to respect system font scaling preferences, improving accessibility.
+
+## Fixes
+- Fixed an issue where the app forcefully redirected users to system settings when permissions (camera, microphone, attachments) were denied. The app now consistently displays an appropriate error message across Android and iOS platforms when permissions are not granted.
+- Resolved a bug where the search keyword was cleared from the search bar after pressing the "Done" button on the keyboard. The entered keyword now persists, allowing users to view and modify their input.
+- Fixed an error when initiating default group calls in the Flutter v5 UI Kit, which was caused by missing asset references.
+- Standardized date separator formats in the message list to ensure consistency across devices. Formats now consistently display "Today", "Yesterday", or full dates as appropriate.
+- Resolved a screen flicker issue that occurred when users initiated a voice recording while audio playback was active. Playback now stops automatically when recording starts.
+- Fixed a bug where the MessageOptionSheet did not display when only the reactions option was enabled. The options sheet now correctly displays reactions even when all other options are hidden.
+
 ## 5.0.4
 
 ## Enhancements

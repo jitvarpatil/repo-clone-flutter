@@ -120,10 +120,6 @@ class CometChatMessageBubble extends StatelessWidget {
                         children: [
                           Container(
                             padding: EdgeInsets.fromLTRB(spacing.padding1 ?? 0, spacing.padding1 ?? 0, spacing.padding1 ?? 0, 0),
-                            // constraints: BoxConstraints(
-                            //     maxWidth: width ??
-                            //         MediaQuery.of(context).size.width *
-                            //             (messageBubbleStyle.widthFlex ?? (65 / 100))),
                             decoration: BoxDecoration(
                                 color: _getBubbleBackgroundColor(messageBubbleStyle, colorPalette),
                                 borderRadius: messageBubbleStyle.borderRadius ??  BorderRadius.all(
@@ -138,17 +134,17 @@ class CometChatMessageBubble extends StatelessWidget {
                                 mainAxisSize: MainAxisSize.min,
                                 crossAxisAlignment:
                                     alignment == BubbleAlignment.right
-                                        ? CrossAxisAlignment.end
+                                        ? CrossAxisAlignment.start
                                         : CrossAxisAlignment.start,
                                 children: [
                                   if (replyView != null) replyView!,
                                   if (contentView != null) contentView!,
                                   if (statusInfoView != null) statusInfoView!,
-                                  if (bottomView != null) bottomView!,
                                 ],
                               ),
                             ),
                           ),
+                          if (bottomView != null) bottomView!,
                           if (footerView != null)
                             Row(
                               mainAxisAlignment:
