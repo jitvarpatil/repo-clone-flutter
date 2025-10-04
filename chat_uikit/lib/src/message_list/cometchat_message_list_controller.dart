@@ -53,6 +53,8 @@ class CometChatMessageListController
     this.smartRepliesKeywords,
     this.addTemplate,
     this.dateSeparatorPattern,
+    this.hideModerationView,
+    this.hideStickyDate,
   }) : super(
             builderProtocol: user != null
                 ? (messagesBuilderProtocol
@@ -185,6 +187,12 @@ class CometChatMessageListController
   /// [smartRepliesKeywords] The keywords present in the incoming message that will trigger Smart Replies. If set to `[]` smart replies will be fetched for all messages.
   final List<String>? smartRepliesKeywords;
 
+  /// [hideModerationView] This prop defines whether the moderation view of a message should be hidden or not.
+  final bool? hideModerationView;
+
+  ///[hideStickyDate] Hide the sticky date separator
+  final bool? hideStickyDate;
+
   bool isScrolled = false;
 
   Widget? header;
@@ -199,6 +207,8 @@ class CometChatMessageListController
 
   final CometChatMentionsStyle? mentionsStyle;
 
+  final moderationUtil = ModerationCheckUtil.instance;
+
   void _scrollControllerListener() {
     double offset = messageListScrollController.offset;
 
@@ -212,6 +222,40 @@ class CometChatMessageListController
     if (hasScrolled != isScrolled) {
       isScrolled = hasScrolled;
       update();
+    }
+
+    if (list.isEmpty || hideStickyDate == true) return;
+
+    final listBox = context.findRenderObject() as RenderBox?;
+    if (listBox == null) return;
+
+    final listTop = listBox.localToGlobal(Offset.zero).dy;
+
+    DateTime? topDate;
+    double maxY = double.negativeInfinity;
+    int topIndex = 0;
+
+    keys.forEach((index, key) {
+      final ctx = key.currentContext;
+      if (ctx != null) {
+        final box = ctx.findRenderObject() as RenderBox;
+        // position relative to list top
+        final y = box.localToGlobal(Offset.zero).dy - listTop;
+
+        // find the element closest to the top but still visible
+        if (y <= 0 && y > maxY) {
+          maxY = y;
+          topIndex = index;
+        }
+      }
+    });
+
+    topDate = list[topIndex].sentAt;
+
+    if (topDate != null && stickyDateNotifier.value != topDate) {
+      stickyDateNotifier.value = topDate;
+      stickyDateString =
+          dateSeparatorPattern != null ? dateSeparatorPattern!(topDate) : null;
     }
   }
 
@@ -272,14 +316,15 @@ class CometChatMessageListController
     CometChat.addCallListener(_sdkCallListenerId, this);
     CometChat.addConnectionListener(_messageListenerId, this);
     initializeHeaderAndFooterView();
+    moderationUtil.hideModerationStatus = hideModerationView ?? false;
     super.onInit();
   }
 
-  final ValueNotifier<DateTime?> stickyDateNotifier = ValueNotifier<DateTime?>(null);
+  ValueNotifier<DateTime?> stickyDateNotifier = ValueNotifier<DateTime?>(null);
+
+  final Map<int, GlobalKey> keys = {};
 
   String? stickyDateString;
-  int currentIndex = 0;
-
 
   @override
   void onClose() {
@@ -350,36 +395,36 @@ class CometChatMessageListController
 
     try {
       await request.fetchPrevious(onSuccess: (List<BaseMessage> fetchedList) {
-            if (fetchedList.isEmpty) {
-              isLoading = false;
-              hasMoreItems = false;
-              onEmpty?.call();
-              update();
-            } else {
-              isLoading = false;
-              hasMoreItems = true;
-              for (var element in fetchedList.reversed) {
-                if (element is InteractiveMessage) {
-                  element = InteractiveMessageUtils
-                      .getSpecificMessageFromInteractiveMessage(element);
-                }
-
-                list.add(element);
-
-                if (lastParticipantMessage == null) {
-                  if (element.sender?.uid != loggedInUser?.uid) {
-                    lastParticipantMessage = element;
-                    markAsRead(element);
-                  }
-                }
-              }
-              if (inInitialized == false && list.isNotEmpty) {
-                lastMessage = list[0];
-              }
-              onLoad?.call(list);
+        if (fetchedList.isEmpty) {
+          isLoading = false;
+          hasMoreItems = false;
+          onEmpty?.call();
+          update();
+        } else {
+          isLoading = false;
+          hasMoreItems = true;
+          for (var element in fetchedList.reversed) {
+            if (element is InteractiveMessage) {
+              element = InteractiveMessageUtils
+                  .getSpecificMessageFromInteractiveMessage(element);
             }
-            update();
-          }, onError: (CometChatException e) {
+
+            list.add(element);
+
+            if (lastParticipantMessage == null) {
+              if (element.sender?.uid != loggedInUser?.uid) {
+                lastParticipantMessage = element;
+                markAsRead(element);
+              }
+            }
+          }
+          if (inInitialized == false && list.isNotEmpty) {
+            lastMessage = list[0];
+          }
+          onLoad?.call(list);
+        }
+        update();
+      }, onError: (CometChatException e) {
         onError?.call(e);
         error = e;
         hasError = true;
@@ -572,6 +617,33 @@ class CometChatMessageListController
     }
   }
 
+  @override
+  void onMessageModerated(BaseMessage message) {
+    if (_checkIfSentByMeInCurrentConversation(message)) {
+      if (message is TextMessage || message is MediaMessage) {
+        updateModerationStatus(message);
+      }
+    }
+  }
+
+  void updateModerationStatus(BaseMessage message) {
+    final matchingIndex = list.indexWhere((e) => e.muid == message.muid);
+    if (matchingIndex == -1) {
+      return;
+    }
+
+    final existingMessage = list[matchingIndex];
+
+    if (message is TextMessage && existingMessage is TextMessage) {
+      existingMessage.moderationStatus = message.moderationStatus;
+      list[matchingIndex] = existingMessage;
+    } else if (message is MediaMessage && existingMessage is MediaMessage) {
+      existingMessage.moderationStatus = message.moderationStatus;
+      list[matchingIndex] = existingMessage;
+    }
+    update();
+  }
+
   //------------------------SDK Group Event Listeners------------------------------
   @override
   void onMemberAddedToGroup(
@@ -712,7 +784,7 @@ class CometChatMessageListController
           //updating the status of the message that was previously added to list
           //while in progress
           updateMessageWithMuid(message);
-        } else {}
+        }
       } else {
         //check if same conversation but different thread
         if (messageStatus == MessageStatus.sent) {
@@ -758,8 +830,27 @@ class CometChatMessageListController
   @override
   updateMessageWithMuid(BaseMessage message) {
     int matchingIndex =
-        list.indexWhere((element) => (element.muid == message.muid));
-    if (matchingIndex != -1) {
+        list.indexWhere((element) => element.muid == message.muid);
+    if (matchingIndex == -1) return;
+
+    BaseMessage existingMessage = list[matchingIndex];
+
+    if (existingMessage is TextMessage || existingMessage is MediaMessage) {
+      bool isDisapproved =
+          moderationUtil.isMessageDisapprovedFromModeration(existingMessage);
+      if (!isDisapproved) {
+        list[matchingIndex] = message;
+        update();
+      } else {
+        if (existingMessage is TextMessage) {
+          TextMessage textMessage = message as TextMessage;
+          textMessage.moderationStatus = ModerationStatusEnum.DISAPPROVED;
+        } else {
+          MediaMessage mediaMessage = message as MediaMessage;
+          mediaMessage.moderationStatus = ModerationStatusEnum.DISAPPROVED;
+        }
+      }
+    } else {
       list[matchingIndex] = message;
       update();
     }
@@ -798,8 +889,7 @@ class CometChatMessageListController
   }
 
   markAsRead(BaseMessage message) {
-    if (message.sender?.uid != loggedInUser?.uid &&
-        message.readAt == null) {
+    if (message.sender?.uid != loggedInUser?.uid && message.readAt == null) {
       CometChat.markAsRead(message, onSuccess: (String res) {
         CometChatMessageEvents.ccMessageRead(message);
       }, onError: (e) {});
@@ -1186,6 +1276,17 @@ class CometChatMessageListController
             group?.guid == message.receiverUid);
   }
 
+  bool _checkIfSentByMeInCurrentConversation(BaseMessage message) {
+    if (message.sender?.uid != loggedInUser?.uid) {
+      return false;
+    }
+
+    return (message.receiverType == CometChatReceiverType.user &&
+            user?.uid == message.receiverUid) ||
+        (message.receiverType == CometChatReceiverType.group &&
+            group?.guid == message.receiverUid);
+  }
+
   BubbleContentVerifier checkBubbleContent(
       BaseMessage messageObject, ChatAlignment alignment) {
     bool isMessageSentByMe = messageObject.sender?.uid == loggedInUser?.uid;
@@ -1199,8 +1300,7 @@ class CometChatMessageListController
     if (alignment == ChatAlignment.standard) {
       //-----if message is group action-----
       if ((messageObject.category == MessageCategoryConstants.action) ||
-          (messageObject.category == MessageCategoryConstants.call &&
-              messageObject.receiver is User)) {
+          (messageObject.category == MessageCategoryConstants.call)) {
         thumbnail = false;
         name = false;
         readReceipt = false;
@@ -1872,26 +1972,6 @@ class CometChatMessageListController
       ),
     );
   }
-
-  void updateStickyDateFromIndex(
-      int index,
-      DateTime? date,
-      ) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      stickyDateNotifier.value = date;
-      currentIndex = index;
-      String? formattedDate;
-
-      if (dateSeparatorPattern != null && date != null) {
-        formattedDate = dateSeparatorPattern!(date);
-      }
-
-      if (formattedDate != null && stickyDateString != formattedDate) {
-        stickyDateString = formattedDate;
-      }
-    });
-  }
-
 }
 
 class BubbleContentVerifier {

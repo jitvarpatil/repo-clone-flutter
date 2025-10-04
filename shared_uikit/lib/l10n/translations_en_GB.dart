@@ -1256,5 +1256,19 @@ class TranslationsEnGb extends Translations {
   @override
   String get createGroupEmptyString =>
       'Please fill in all required fields before creating a group.';
+  @override
+  String get messageBlockedByModeration => 'Your message was blocked due to moderation policies.';
+
+  @override
+  String get cantSendMessageBlockedUser => "Can’t send a message as the user is blocked.";
+
+  @override
+  String get cantSendMessageNotMember => "You can't send messages to this group because you're no longer a member.";
+
+  @override
+  String get youAreNoLongerPartOfThisGroup => 'You are no longer part of this group.';
+
+  @override
+  String get busy => "Busy";
 
 }

@@ -1261,4 +1261,19 @@ class TranslationsEs extends Translations {
   String get enterTheGroupPassword => 'Ingrese la contraseña del grupo';
   @override
   String get type => 'Escribir';
+  @override
+  String get messageBlockedByModeration => 'Tu mensaje fue bloqueado debido a las políticas de moderación.';
+
+  @override
+  String get cantSendMessageBlockedUser => "No se puede enviar el mensaje porque el usuario está bloqueado.";
+
+  @override
+  String get cantSendMessageNotMember => "No puedes enviar mensajes a este grupo porque ya no eres miembro.";
+
+  @override
+  String get youAreNoLongerPartOfThisGroup => 'Ya no formas parte de este grupo.';
+
+  @override
+  String get busy => "Ocupado";
+
 }

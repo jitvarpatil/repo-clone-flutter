@@ -1,3 +1,59 @@
+## 5.1.1
+
+## Enhancements
+- Updated `cometchat_sdk` to version `4.0.26`.
+- Updated `cometchat_uikit_shared` to version `5.1.1`.
+
+## Fixes
+- Resolved an issue where image thumbnails were not visible, improving media preview functionality.
+- Corrected the display of moderation indicators in messages for accurate moderation visibility.
+- Addressed an issue on some devices where images could not be attached, restoring proper attachment functionality.
+- Fixed extra spacing in the last message of group conversations after sending a media message, ensuring consistent layout.
+- Added the missing `hideStickyDate` prop in `CometChatMessageList` to allow better control over message list display.
+- Resolved an issue where typed chat text was cleared when uploading an image.
+- Fixed sticky date overlapping on the message list header for a cleaner interface.
+- Fixed a problem on Android where incoming call notifications were not received when the app was killed and the screen was off.
+
+## 5.1.0
+
+## New
+- Added a **Moderation View** in the default bottom view of the message bubble. This view appears for messages that are disapproved based on their moderation status.
+- Introduced a new prop `hideModerationView` in the **CometChatMessageList** component, allowing developers to hide the Moderation View when needed.
+
+## Enhancements
+- Updated `cometchat_sdk` to version `4.0.25`.
+- Updated `cometchat_uikit_shared` to version `5.1.0`.
+
+## 5.0.5
+
+## Enhancements
+- Updated `cometchat_sdk` to version `4.0.24`.
+- Updated `cometchat_uikit_shared` to version `5.0.5`.
+- Adjusted font size in message bubbles to respect system font scaling preferences, improving accessibility.
+- Enhanced poll screen behavior to now fully expand or collapse on scroll for a smoother user experience.
+
+## Fixes
+- Resolved an issue where starting an audio call through push notifications incorrectly triggered a video call instead.
+- Fixed a bug where declining a call did not end the call on the sender’s side, causing it to continue indefinitely.
+- Addressed a permission-handling issue where users were redirected to system settings instead of seeing an error message when permissions (camera, mic, attachments) were denied.
+- Fixed a problem where default calling functionality failed in the sample app due to asset-related issues.
+- Resolved a bug where the search keyword was cleared after pressing the “Done” button on the keyboard in various search views.
+- Prevented crashes when accepting incoming calls via push notifications in the sample app.
+- Fixed an issue where the message input was not cleared after cancelling a composed message.
+- Resolved a bug where the incoming call dialog did not close after the caller ended the call.
+- Prevented messages from being sent when the message input only contains white spaces.
+- Fixed an issue where users could reply to messages from blocked users in thread view.
+- Standardized date separator formats across platforms for consistent user experience.
+- Corrected the Save button display logic when a group role remains unchanged.
+- Fixed a real-time sync issue where the `ban/kick` group actions were not reflected immediately for users.
+- Prevented call ringing for users already on another active call (busy state not respected).
+- Fixed a blank info screen that appeared after sending a message and tapping the message info icon.
+- Addressed an issue where the native ongoing call notification failed to appear.
+- Resolved a bug where disabling mentions in the message composer did not work as expected.
+- Fixed an issue where the MessageOptionSheet failed to appear when only the reactions option was enabled.
+- Corrected the issue where the "Send" button became active when only space characters were entered, even if no valid message content was present.
+- Resolved a crash that occurred when cancelling a call from the background state in the sample app.
+
 ## 5.0.4
 
 ## Enhancements

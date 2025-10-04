@@ -1211,5 +1211,19 @@ class TranslationsKo extends Translations {
   @override
   String get createGroupEmptyString =>
       '그룹을 생성하기 전에 모든 필수 항목을 작성하세요.';
+  @override
+  String get messageBlockedByModeration => '귀하의 메시지는 관리 정책으로 인해 차단되었습니다.';
+
+  @override
+  String get cantSendMessageBlockedUser => "사용자가 차단되어 메시지를 보낼 수 없습니다.";
+
+  @override
+  String get cantSendMessageNotMember => "더 이상 이 그룹의 구성원이 아니므로 메시지를 보낼 수 없습니다.";
+
+  @override
+  String get youAreNoLongerPartOfThisGroup => '더 이상 이 그룹의 구성원이 아닙니다.';
+
+  @override
+  String get busy => "바쁨";
 
 }
