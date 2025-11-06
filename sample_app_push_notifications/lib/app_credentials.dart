@@ -5,8 +5,8 @@ class AppCredentials {
   static String _appId = "YOUR_APP_ID";
   static String _authKey = "YOUR_AUTH_KEY";
   static String _region = "REGION";
-  static String _fcmProviderId = "";
-  static String _apnProviderId = "";
+  static String _fcmProviderId = "FCM_PROVIDER_ID";
+  static String _apnProviderId = "APN_PROVIDER_ID";
 
   // Getters
   static String get appId {
